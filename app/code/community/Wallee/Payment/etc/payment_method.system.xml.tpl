@@ -12,9 +12,9 @@
 					<fields>
 						<active translate="label">
 							<label>Enabled</label>
-							<frontend_type>label</frontend_type>
-							<frontend_model>wallee_payment/adminhtml_system_config_form_field_state</frontend_model>
+							<frontend_type>select</frontend_type>
 							<sort_order>10</sort_order>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>0</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
