@@ -45,11 +45,18 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
             ), 3
         );
 
-        $this->_redirect(
-            'checkout/onepage/success', array(
-            '_secure' => true
-            )
-        );
+        $this->_redirectUrl($this->getSuccessUrl($order));
+    }
+
+    private function getSuccessUrl(Mage_Sales_Model_Order $order)
+    {
+        $result = new StdClass;
+        $result->url = Mage::getUrl('checkout/onepage/success', array('_secure' => true));
+        Mage::dispatchEvent('wallee_payment_success_url', array(
+            'result' => $result,
+            'order' => $order
+        ));
+        return $result->url;
     }
 
     /**
@@ -64,7 +71,18 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
         $methodInstance = $order->getPayment()->getMethodInstance();
         $methodInstance->fail($order);
 
-        $this->_redirect('checkout/cart');
+        $this->_redirectUrl($this->getFailureUrl($order));
+    }
+
+    private function getFailureUrl(Mage_Sales_Model_Order $order)
+    {
+        $result = new StdClass;
+        $result->url = Mage::getUrl('checkout/cart');
+        Mage::dispatchEvent('wallee_payment_failure_url', array(
+            'result' => $result,
+            'order' => $order
+        ));
+        return $result->url;
     }
 
     /**
