@@ -61,7 +61,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
                     /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $method */
                     $method = null;
                     foreach ($existingConfigurations as $existingConfiguration) {
-                        /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $existingPaymentMethod */
+                        /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $existingConfiguration */
                         if ($existingConfiguration->getSpaceId() == $spaceId && $existingConfiguration->getConfigurationId() == $configuration->getId()) {
                             $method = $existingConfiguration;
                             $existingFound[] = $method->getId();
@@ -143,9 +143,9 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
     private function getConfigurationState(\Wallee\Sdk\Model\PaymentMethodConfiguration $configuration)
     {
         switch ($configuration->getState()) {
-            case 'ACTIVE':
+            case \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_ACTIVE:
                 return Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE;
-            case 'INACTIVE':
+            case \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_INACTIVE:
                 return Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_INACTIVE;
             default:
                 return Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_HIDDEN;

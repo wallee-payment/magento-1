@@ -25,6 +25,10 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     public function successAction()
     {
         $orderId = $this->getRequest()->getParam('order_id');
+        if (Mage::helper('wallee_payment')->hash($orderId) != $this->getRequest()->getParam('secret')) {
+            Mage::throwException('Invalid secret.');
+        }
+
         /* @var Mage_Sales_Model_Order $order */
         $order = Mage::getModel('sales/order')->load($orderId);
 
@@ -50,12 +54,18 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
 
     private function getSuccessUrl(Mage_Sales_Model_Order $order)
     {
-        $result = new StdClass;
-        $result->url = Mage::getUrl('checkout/onepage/success', array('_secure' => true));
-        Mage::dispatchEvent('wallee_payment_success_url', array(
+        $result = new StdClass();
+        $result->url = Mage::getUrl(
+            'checkout/onepage/success', array(
+            '_secure' => true
+            )
+        );
+        Mage::dispatchEvent(
+            'wallee_payment_success_url', array(
             'result' => $result,
             'order' => $order
-        ));
+            )
+        );
         return $result->url;
     }
 
@@ -65,6 +75,10 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     public function failureAction()
     {
         $orderId = $this->getRequest()->getParam('order_id');
+        if (Mage::helper('wallee_payment')->hash($orderId) != $this->getRequest()->getParam('secret')) {
+            Mage::throwException('Invalid secret.');
+        }
+
         /* @var Mage_Sales_Model_Order $order */
         $order = Mage::getModel('sales/order')->load($orderId);
         /* @var Wallee_Payment_Model_Payment_Method_Abstract $methodInstance */
@@ -76,12 +90,14 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
 
     private function getFailureUrl(Mage_Sales_Model_Order $order)
     {
-        $result = new StdClass;
+        $result = new StdClass();
         $result->url = Mage::getUrl('checkout/cart');
-        Mage::dispatchEvent('wallee_payment_failure_url', array(
+        Mage::dispatchEvent(
+            'wallee_payment_failure_url', array(
             'result' => $result,
             'order' => $order
-        ));
+            )
+        );
         return $result->url;
     }
 

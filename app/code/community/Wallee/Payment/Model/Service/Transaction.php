@@ -135,6 +135,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $info->setOrderId($order->getId());
         $info->setState($transaction->getState());
         $info->setSpaceId($transaction->getLinkedSpaceId());
+        $info->setSpaceViewId($transaction->getSpaceViewId());
         $info->setLanguage($transaction->getLanguage());
         $info->setCurrency($transaction->getCurrency());
         $info->setConnectorId(
@@ -379,7 +380,9 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 Mage::getUrl(
                     'wallee/transaction/success', array(
                     '_secure' => true,
-                    'order_id' => $order->getId()
+                    'order_id' => $order->getId(),
+                    'secret' => $this->getHelper()
+                    ->hash($order->getId())
                     )
                 )
             );
@@ -387,7 +390,9 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 Mage::getUrl(
                     'wallee/transaction/failure', array(
                     '_secure' => true,
-                    'order_id' => $order->getId()
+                    'order_id' => $order->getId(),
+                    'secret' => $this->getHelper()
+                    ->hash($order->getId())
                     )
                 )
             );
@@ -497,8 +502,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     /**
      * Assemble the transaction data for the given quote.
      *
-     * @param Mage_Sales_Model_Order $order
-     * @param Mage_Sales_Model_Order_Invoice $invoice
+     * @param Mage_Sales_Model_Quote $quote
      * @param \Wallee\Sdk\Model\TransactionPending $transaction
      */
     private function assembleQuoteTransactionData(Mage_Sales_Model_Quote $quote, \Wallee\Sdk\Model\TransactionPending $transaction)

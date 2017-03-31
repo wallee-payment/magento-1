@@ -153,4 +153,16 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
             return 2;
         }
     }
+
+    /**
+     * Returns the security hash of the given data.
+     *
+     * @param string $data
+     * @return string
+     */
+    public function hash($data)
+    {
+        $salt = (string) Mage::getConfig()->getNode('global/crypt/key');
+        return sha1($data . $salt);
+    }
 }
