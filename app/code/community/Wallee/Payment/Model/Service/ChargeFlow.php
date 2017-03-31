@@ -39,7 +39,7 @@ class Wallee_Payment_Model_Service_ChargeFlow extends Wallee_Payment_Model_Servi
      *
      * @return \Wallee\Sdk\Service\ChargeFlowService
      */
-    private function getChargeFlowService()
+    protected function getChargeFlowService()
     {
         if ($this->chargeFlowService == null) {
             $this->chargeFlowService = new \Wallee\Sdk\Service\ChargeFlowService($this->getHelper()->getApiClient());

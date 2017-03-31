@@ -44,7 +44,7 @@ class Wallee_Payment_Model_Service_TransactionCompletion extends Wallee_Payment_
      *
      * @return \Wallee\Sdk\Service\TransactionCompletionService
      */
-    private function getTransactionCompletionService()
+    protected function getTransactionCompletionService()
     {
         if ($this->transactionCompletionService == null) {
             $this->transactionCompletionService = new \Wallee\Sdk\Service\TransactionCompletionService($this->getHelper()->getApiClient());

@@ -62,11 +62,11 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         }
     }
 
-    private function failed(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
+    protected function failed(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
     {
     }
 
-    private function refunded(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
+    protected function refunded(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
     {
 
         /* @var Mage_Sales_Model_Order_Creditmemo $existingCreditmemo */
@@ -80,7 +80,7 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         $refundService->registerRefundNotification($refund, $order);
     }
 
-    private function deleteRefundJob(\Wallee\Sdk\Model\Refund $refund)
+    protected function deleteRefundJob(\Wallee\Sdk\Model\Refund $refund)
     {
         /* @var Wallee_Payment_Model_Entity_RefundJob $refundJob */
         $refundJob = Mage::getModel('wallee_payment/entity_refundJob');

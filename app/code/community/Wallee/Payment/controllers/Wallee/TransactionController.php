@@ -115,7 +115,7 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
      *
      * @param string $path
      */
-    private function download(\Wallee\Sdk\Model\RenderedDocument $document)
+    protected function download(\Wallee\Sdk\Model\RenderedDocument $document)
     {
         $this->getResponse()
             ->setHttpResponseCode(200)

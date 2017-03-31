@@ -61,7 +61,7 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
      *
      * @return \Wallee\Sdk\Service\DeliveryIndicationService
      */
-    private function getDeliveryIndicationService()
+    protected function getDeliveryIndicationService()
     {
         if ($this->deliveryIndicationService == null) {
             $this->deliveryIndicationService = new \Wallee\Sdk\Service\DeliveryIndicationService($this->getHelper()->getApiClient());
@@ -77,7 +77,7 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
      * @param int $transactionId
      * @return \Wallee\Sdk\Model\DeliveryIndication
      */
-    private function getDeliveryIndicationForTransaction($spaceId, $transactionId)
+    protected function getDeliveryIndicationForTransaction($spaceId, $transactionId)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $query->setFilter($this->createEntityFilter('transaction.id', $transactionId));

@@ -52,7 +52,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
         $this->_redirectUrl($this->getSuccessUrl($order));
     }
 
-    private function getSuccessUrl(Mage_Sales_Model_Order $order)
+    protected function getSuccessUrl(Mage_Sales_Model_Order $order)
     {
         $result = new StdClass();
         $result->url = Mage::getUrl(
@@ -88,7 +88,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
         $this->_redirectUrl($this->getFailureUrl($order));
     }
 
-    private function getFailureUrl(Mage_Sales_Model_Order $order)
+    protected function getFailureUrl(Mage_Sales_Model_Order $order)
     {
         $result = new StdClass();
         $result->url = Mage::getUrl('checkout/cart');
@@ -140,7 +140,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
      *
      * @param string $path
      */
-    private function download(\Wallee\Sdk\Model\RenderedDocument $document)
+    protected function download(\Wallee\Sdk\Model\RenderedDocument $document)
     {
         $this->getResponse()
             ->setHttpResponseCode(200)
@@ -161,7 +161,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
      *
      * @return Wallee_Payment_Model_Entity_TransactionInfo
      */
-    private function loadTransactionInfo()
+    protected function loadTransactionInfo()
     {
         $order = $this->loadOrder();
         if (! $order) {
@@ -184,7 +184,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
      * @param int $orderId
      * @return Mage_Sales_Model_Order
      */
-    private function loadOrder()
+    protected function loadOrder()
     {
         $orderId = (int) $this->getRequest()->getParam('order_id');
         if (! $orderId) {
@@ -208,7 +208,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
      * @param Mage_Sales_Model_Order $order
      * @return bool
      */
-    private function canViewOrder(Mage_Sales_Model_Order $order)
+    protected function canViewOrder(Mage_Sales_Model_Order $order)
     {
         $customerId = Mage::getSingleton('customer/session')->getCustomerId();
         $availableStates = Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates();

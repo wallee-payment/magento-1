@@ -44,7 +44,7 @@ class Wallee_Payment_Model_Service_Void extends Wallee_Payment_Model_Service_Abs
      *
      * @return \Wallee\Sdk\Service\TransactionVoidService
      */
-    private function getTransactionVoidService()
+    protected function getTransactionVoidService()
     {
         if ($this->transactionVoidService == null) {
             $this->transactionVoidService = new \Wallee\Sdk\Service\TransactionVoidService(Mage::helper('wallee_payment')->getApiClient());

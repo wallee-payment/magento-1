@@ -59,7 +59,7 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
         }
     }
 
-    private function review(Mage_Sales_Model_Order $order)
+    protected function review(Mage_Sales_Model_Order $order)
     {
         if ($order->getState() != Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW) {
             $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true, Mage::helper('wallee_payment')->__('A manual decision about whether to accept the payment is required.'));

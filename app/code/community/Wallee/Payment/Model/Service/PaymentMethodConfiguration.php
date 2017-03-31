@@ -108,7 +108,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
      * @param int $id
      * @return \Wallee\Sdk\Model\PaymentMethod
      */
-    private function getPaymentMethod($id)
+    protected function getPaymentMethod($id)
     {
         /* @var Wallee_Payment_Model_Provider_PaymentMethod $methodProvider */
         $methodProvider = Mage::getSingleton('wallee_payment/provider_paymentMethod');
@@ -121,7 +121,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
      * @param \Wallee\Sdk\Model\DatabaseTranslatedString $translatedString
      * @return string[]
      */
-    private function getTranslationsArray(\Wallee\Sdk\Model\DatabaseTranslatedString $translatedString)
+    protected function getTranslationsArray(\Wallee\Sdk\Model\DatabaseTranslatedString $translatedString)
     {
         $translations = array();
         foreach ($translatedString->getItems() as $item) {
@@ -140,7 +140,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
      * @param \Wallee\Sdk\Model\PaymentMethodConfiguration $configuration
      * @return number
      */
-    private function getConfigurationState(\Wallee\Sdk\Model\PaymentMethodConfiguration $configuration)
+    protected function getConfigurationState(\Wallee\Sdk\Model\PaymentMethodConfiguration $configuration)
     {
         switch ($configuration->getState()) {
             case \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_ACTIVE:
@@ -155,7 +155,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
     /**
      * Creates the model classes for the payment methods.
      */
-    private function createPaymentMethodModelClasses()
+    protected function createPaymentMethodModelClasses()
     {
         /* @var Wallee_Payment_Model_Resource_PaymentMethodConfiguration_Collection $collection */
         $collection = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->getCollection();

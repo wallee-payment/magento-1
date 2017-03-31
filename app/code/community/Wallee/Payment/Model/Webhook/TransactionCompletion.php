@@ -63,7 +63,7 @@ class Wallee_Payment_Model_Webhook_TransactionCompletion extends Wallee_Payment_
         }
     }
 
-    private function failed(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function failed(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
         if ($invoice && $invoice->getWalleeCapturePending() && $invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_OPEN) {
@@ -86,7 +86,7 @@ class Wallee_Payment_Model_Webhook_TransactionCompletion extends Wallee_Payment_
      * @param Mage_Sales_Model_Order $order
      * @return Mage_Sales_Model_Order_Invoice
      */
-    private function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
+    protected function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         foreach ($order->getInvoiceCollection() as $invoice) {
             if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 && $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {

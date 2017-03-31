@@ -80,7 +80,7 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
      *
      * @return \Wallee\Sdk\Service\TransactionInvoiceService
      */
-    private function getTransactionInvoiceService()
+    protected function getTransactionInvoiceService()
     {
         if ($this->transactionInvoiceService == null) {
             $this->transactionInvoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService($this->getHelper()->getApiClient());

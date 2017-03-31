@@ -91,7 +91,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param \Wallee\Sdk\Model\LineItemReductionCreate[] $reductions
      * @return \Wallee\Sdk\Model\LineItemReductionCreate[]
      */
-    private function fixReductions(Mage_Sales_Model_Order_Creditmemo $creditmemo, \Wallee\Sdk\Model\Transaction $transaction, array $reductions)
+    protected function fixReductions(Mage_Sales_Model_Order_Creditmemo $creditmemo, \Wallee\Sdk\Model\Transaction $transaction, array $reductions)
     {
         $baseLineItems = $this->getBaseLineItems($transaction);
 
@@ -124,7 +124,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param Mage_Sales_Model_Order_Creditmemo $creditmemo
      * @return \Wallee\Sdk\Model\LineItemReductionCreate[]
      */
-    private function getProductReductions(Mage_Sales_Model_Order_Creditmemo $creditmemo)
+    protected function getProductReductions(Mage_Sales_Model_Order_Creditmemo $creditmemo)
     {
         $reductions = array();
         foreach ($creditmemo->getAllItems() as $item) {
@@ -158,7 +158,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param Mage_Sales_Model_Order_Creditmemo $creditmemo
      * @return \Wallee\Sdk\Model\LineItemReductionCreate
      */
-    private function getShippingReduction(Mage_Sales_Model_Order_Creditmemo $creditmemo)
+    protected function getShippingReduction(Mage_Sales_Model_Order_Creditmemo $creditmemo)
     {
         if ($creditmemo->getShippingAmount() > 0) {
             $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
@@ -226,7 +226,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param Mage_Sales_Model_Order $order
      * @return array
      */
-    private function getCreditmemoData(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
+    protected function getCreditmemoData(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
     {
         $orderItemMap = array();
         foreach ($order->getAllItems() as $orderItem) {
@@ -304,7 +304,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param number $amount
      * @return string
      */
-    private function formatPrice(Mage_Sales_Model_Order $order, $amount)
+    protected function formatPrice(Mage_Sales_Model_Order $order, $amount)
     {
         return $order->getBaseCurrency()->formatTxt($amount, array());
     }
@@ -315,7 +315,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param Mage_Sales_Model_Order_Payment $payment
      * @param array $data
      */
-    private function updateTotals(Mage_Sales_Model_Order_Payment $payment, array $data)
+    protected function updateTotals(Mage_Sales_Model_Order_Payment $payment, array $data)
     {
         foreach ($data as $key => $amount) {
             if (null !== $amount) {
@@ -334,7 +334,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param \Wallee\Sdk\Model\Refund $refund
      * @return \Wallee\Sdk\Model\LineItem[]
      */
-    private function getBaseLineItems(\Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
+    protected function getBaseLineItems(\Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
     {
         $lastSuccessfulRefund = $this->getLastSuccessfulRefund($transaction, $refund);
         if ($lastSuccessfulRefund) {
@@ -351,7 +351,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @throws Exception
      * @return \Wallee\Sdk\Model\TransactionInvoice
      */
-    private function getTransactionInvoice(\Wallee\Sdk\Model\Transaction $transaction)
+    protected function getTransactionInvoice(\Wallee\Sdk\Model\Transaction $transaction)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
 
@@ -383,7 +383,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param \Wallee\Sdk\Model\Refund $refund
      * @return \Wallee\Sdk\Model\Refund
      */
-    private function getLastSuccessfulRefund(\Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
+    protected function getLastSuccessfulRefund(\Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
 
@@ -421,7 +421,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      *
      * @return \Wallee\Sdk\Service\RefundService
      */
-    private function getRefundService()
+    protected function getRefundService()
     {
         if ($this->refundService == null) {
             $this->refundService = new \Wallee\Sdk\Service\RefundService($this->getHelper()->getApiClient());

@@ -83,7 +83,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $transactionStoreService->updateTransactionInfo($transaction, $order);
     }
 
-    private function authorize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function authorize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         $order->getPayment()
             ->setTransactionId($transaction->getLinkedSpaceId() . '_' . $transaction->getId())
@@ -96,7 +96,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $this->updateShopCustomer($transaction, $order);
     }
 
-    private function decline(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function decline(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         if ($order->getState() != Mage_Sales_Model_Order::STATE_CANCELED) {
             $order->setWalleePaymentInvoiceAllowManipulation(true);
@@ -107,7 +107,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $order->save();
     }
 
-    private function failed(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function failed(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
         if ($invoice) {
@@ -119,7 +119,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $order->registerCancellation(null, false)->save();
     }
 
-    private function fulfill(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function fulfill(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         if ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW) {
             $order->getPayment()->setNotificationResult(true);
@@ -131,7 +131,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $order->save();
     }
 
-    private function voided(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function voided(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         $order->getPayment()->registerVoidNotification();
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
@@ -149,7 +149,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
      *
      * @param Mage_Sales_Model_Order $order
      */
-    private function sendOrderEmail(Mage_Sales_Model_Order $order)
+    protected function sendOrderEmail(Mage_Sales_Model_Order $order)
     {
         if ($order->getStore()->getConfig('wallee_payment/email/order') && ! $order->getEmailSent()) {
             $order->sendNewOrderEmail();
@@ -164,7 +164,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
      * @param Mage_Sales_Model_Order $order
      * @return Mage_Sales_Model_Order_Invoice
      */
-    private function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
+    protected function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         foreach ($order->getInvoiceCollection() as $invoice) {
             if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 && $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
@@ -176,7 +176,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         return false;
     }
 
-    private function updateShopCustomer(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function updateShopCustomer(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         if ($order->getCustomerIsGuest()) {
             return;

@@ -146,7 +146,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
      * @param \Wallee\Sdk\Model\WebhookUrl $webhookUrl
      * @return \Wallee\Sdk\Model\WebhookListenerCreate
      */
-    private function createWebhookListener(Wallee_Payment_Model_Webhook_Entity $entity, $spaceId, \Wallee\Sdk\Model\WebhookUrl $webhookUrl)
+    protected function createWebhookListener(Wallee_Payment_Model_Webhook_Entity $entity, $spaceId, \Wallee\Sdk\Model\WebhookUrl $webhookUrl)
     {
         $webhookListener = new \Wallee\Sdk\Model\WebhookListenerCreate();
         $webhookListener->setEntity($entity->getId());
@@ -166,7 +166,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
      * @param \Wallee\Sdk\Model\WebhookUrl $webhookUrl
      * @return \Wallee\Sdk\Model\WebhookListener[]
      */
-    private function getWebhookListeners($spaceId, \Wallee\Sdk\Model\WebhookUrl $webhookUrl)
+    protected function getWebhookListeners($spaceId, \Wallee\Sdk\Model\WebhookUrl $webhookUrl)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
@@ -187,7 +187,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
      * @param int $spaceId
      * @return \Wallee\Sdk\Model\WebhookUrlCreate
      */
-    private function createWebhookUrl($spaceId)
+    protected function createWebhookUrl($spaceId)
     {
         $webhookUrl = new \Wallee\Sdk\Model\WebhookUrlCreate();
         $webhookUrl->setLinkedSpaceId($spaceId);
@@ -203,7 +203,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
      * @param int $spaceId
      * @return \Wallee\Sdk\Model\WebhookUrl
      */
-    private function getWebhookUrl($spaceId)
+    protected function getWebhookUrl($spaceId)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $query->setNumberOfEntities(1);
@@ -221,7 +221,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
      *
      * @return string
      */
-    private function getUrl()
+    protected function getUrl()
     {
         return Mage::getUrl(
             'wallee/webhook', array(
@@ -236,7 +236,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
      *
      * @return \Wallee\Sdk\Service\WebhookListenerService
      */
-    private function getWebhookListenerService()
+    protected function getWebhookListenerService()
     {
         if ($this->webhookListenerService == null) {
             $this->webhookListenerService = new \Wallee\Sdk\Service\WebhookListenerService(Mage::helper('wallee_payment')->getApiClient());
@@ -250,7 +250,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
      *
      * @return \Wallee\Sdk\Service\WebhookUrlService
      */
-    private function getWebhookUrlService()
+    protected function getWebhookUrlService()
     {
         if ($this->webhookUrlService == null) {
             $this->webhookUrlService = new \Wallee\Sdk\Service\WebhookUrlService(Mage::helper('wallee_payment')->getApiClient());

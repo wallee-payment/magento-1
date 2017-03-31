@@ -80,7 +80,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         }
     }
 
-    private function capture(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $amount)
+    protected function capture(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $amount)
     {
         $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
 
@@ -106,7 +106,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         $order->save();
     }
 
-    private function derecognize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice)
+    protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice)
     {
         if ($invoice && Mage_Sales_Model_Order_Invoice::STATE_OPEN == $invoice->getState()) {
             $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
@@ -131,7 +131,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
      *
      * @param Mage_Sales_Model_Order $order
      */
-    private function sendOrderEmail(Mage_Sales_Model_Order $order)
+    protected function sendOrderEmail(Mage_Sales_Model_Order $order)
     {
         if ($order->getStore()->getConfig('wallee_payment/email/order') && ! $order->getEmailSent()) {
             $order->sendNewOrderEmail();
@@ -146,7 +146,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
      * @param Mage_Sales_Model_Order $order
      * @return Mage_Sales_Model_Order_Invoice
      */
-    private function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
+    protected function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         foreach ($order->getInvoiceCollection() as $invoice) {
             if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 && $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
@@ -166,7 +166,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
      * @param Mage_Sales_Model_Order $order
      * @return Mage_Sales_Model_Order_Invoice
      */
-    private function createInvoice($spaceId, $transactionId, Mage_Sales_Model_Order $order)
+    protected function createInvoice($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         $invoice = $order->prepareInvoice();
         $invoice->register();

@@ -62,7 +62,7 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
         }
     }
 
-    private function updateInfo($spaceId, \Wallee\Sdk\Model\TokenVersion $tokenVersion)
+    protected function updateInfo($spaceId, \Wallee\Sdk\Model\TokenVersion $tokenVersion)
     {
         /* @var Wallee_Payment_Model_Entity_TokenInfo $info */
         $info = Mage::getModel('wallee_payment/entity_tokenInfo')->loadByToken(
@@ -123,7 +123,7 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
      *
      * @return \Wallee\Sdk\Service\TokenService
      */
-    private function getTokenService()
+    protected function getTokenService()
     {
         if ($this->tokenService == null) {
             $this->tokenService = new \Wallee\Sdk\Service\TokenService($this->getHelper()->getApiClient());
@@ -137,7 +137,7 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
      *
      * @return \Wallee\Sdk\Service\TokenVersionService
      */
-    private function getTokenVersionService()
+    protected function getTokenVersionService()
     {
         if ($this->tokenVersionService == null) {
             $this->tokenVersionService = new \Wallee\Sdk\Service\TokenVersionService($this->getHelper()->getApiClient());
