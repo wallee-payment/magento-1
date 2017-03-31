@@ -163,6 +163,6 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
     public function hash($data)
     {
         $salt = (string) Mage::getConfig()->getNode('global/crypt/key');
-        return sha1($data . $salt);
+        return hash_hmac('sha256', $data, $salt, false);
     }
 }
