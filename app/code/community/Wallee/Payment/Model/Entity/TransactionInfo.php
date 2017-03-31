@@ -39,6 +39,9 @@
  * @method Wallee_Payment_Model_Entity_TransactionInfo setConnectorId(int connectorId)
  * @method int getOrderId()
  * @method Wallee_Payment_Model_Entity_TransactionInfo setOrderId(int orderId)
+ * @method int getOrderId()
+ * @method Wallee_Payment_Model_Entity_TransactionInfo setOrderId(int orderId)
+ * @method Wallee_Payment_Model_Entity_TransactionInfo setFailureReason(string failureReason)
  */
 class Wallee_Payment_Model_Entity_TransactionInfo extends Mage_Core_Model_Abstract
 {
@@ -140,5 +143,25 @@ class Wallee_Payment_Model_Entity_TransactionInfo extends Mage_Core_Model_Abstra
         }
 
         return $this->_order;
+    }
+
+    /**
+     * Returns the translated failure reason.
+     *
+     * @param string $locale
+     * @return string
+     */
+    public function getFailureReason($language = null)
+    {
+        $value = $this->getData('failure_reason');
+        if (empty($value)) {
+            return null;
+        }
+
+        if (! is_array($value) && ! is_object($value)) {
+            $this->setData('failure_reason', unserialize($value));
+        }
+
+        return Mage::helper('wallee_payment')->translate($this->getData('failure_reason'), $language);
     }
 }

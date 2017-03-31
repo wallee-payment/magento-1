@@ -62,6 +62,7 @@
 "The refund was requested successfully, but is still pending on the gateway.","The refund was requested successfully, but is still pending on the gateway."
 "The token has been deleted.","The token has been deleted."
 "The void of the payment failed on the gateway.","The void of the payment failed on the gateway."
+"The payment process could not have been finished successfully.","The payment process could not have been finished successfully."
 "There are %s manual tasks that need your attention.","There are %s manual tasks that need your attention."
 "There has been an error while sending the refund to the gateway.","There has been an error while sending the refund to the gateway."
 "There is a manual task that needs your attention.","There is a manual task that needs your attention."

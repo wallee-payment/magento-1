@@ -43,7 +43,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      *
      * @return \Wallee\Sdk\Service\TransactionService
      */
-    private function getTransactionService()
+    protected function getTransactionService()
     {
         if ($this->transactionService == null) {
             $this->transactionService = new \Wallee\Sdk\Service\TransactionService($this->getHelper()->getApiClient());
@@ -104,6 +104,36 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     }
 
     /**
+     * Returns the last failed charge attempt of the transaction.
+     *
+     * @param int $spaceId
+     * @param int $transactionId
+     * @return \Wallee\Sdk\Model\ChargeAttempt
+     */
+    public function getFailedChargeAttempt($spaceId, $transactionId)
+    {
+        $chargeAttemptService = new \Wallee\Sdk\Service\ChargeAttemptService(Mage::helper('wallee_payment')->getApiClient());
+        $query = new \Wallee\Sdk\Model\EntityQuery();
+        $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
+        $filter->setChildren(array(
+            $this->createEntityFilter('charge.transaction.id', $transactionId),
+            $this->createEntityFilter('state', \Wallee\Sdk\Model\ChargeAttempt::STATE_FAILED)
+        ));
+        $query->setFilter($filter);
+        $query->setOrderBys(array(
+            $this->createEntityOrderBy('failedOn')
+        ));
+        $query->setNumberOfEntities(1);
+        $result = $chargeAttemptService->chargeAttemptSearchPost($spaceId, $query);
+        if ($result != null && ! empty($result)) {
+            return current($result);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Updates the line items of the given transaction.
      *
      * @param int $spaceId
@@ -138,18 +168,21 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $info->setSpaceViewId($transaction->getSpaceViewId());
         $info->setLanguage($transaction->getLanguage());
         $info->setCurrency($transaction->getCurrency());
-        $info->setConnectorId(
-            $transaction->getPaymentConnectorConfiguration() != null ? $transaction->getPaymentConnectorConfiguration()
-            ->getConnector() : null
-        );
-        $info->setPaymentMethodId(
-            $transaction->getPaymentConnectorConfiguration() != null && $transaction->getPaymentConnectorConfiguration()
+        $info->setConnectorId($transaction->getPaymentConnectorConfiguration() != null ? $transaction->getPaymentConnectorConfiguration()
+            ->getConnector() : null);
+        $info->setPaymentMethodId($transaction->getPaymentConnectorConfiguration() != null && $transaction->getPaymentConnectorConfiguration()
             ->getPaymentMethodConfiguration() != null ? $transaction->getPaymentConnectorConfiguration()
             ->getPaymentMethodConfiguration()
-            ->getPaymentMethod() : null
-        );
+            ->getPaymentMethod() : null);
         $info->setImage($this->getPaymentMethodImage($transaction, $order));
         $info->setLabels($this->getTransactionLabels($transaction));
+        if ($transaction->getState() == \Wallee\Sdk\Model\Transaction::STATE_FAILED || $transaction->getState() == \Wallee\Sdk\Model\Transaction::STATE_DECLINE) {
+            $failedChargeAttempt = $this->getFailedChargeAttempt($transaction->getLinkedSpaceId(), $transaction->getId());
+            if ($failedChargeAttempt != null && $failedChargeAttempt->getFailureReason() != null) {
+                $info->setFailureReason($failedChargeAttempt->getFailureReason()
+                    ->getDescription());
+            }
+        }
         $info->save();
         return $info;
     }
@@ -160,7 +193,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param \Wallee\Sdk\Model\Transaction $transaction
      * @return string[]
      */
-    private function getTransactionLabels(\Wallee\Sdk\Model\Transaction $transaction)
+    protected function getTransactionLabels(\Wallee\Sdk\Model\Transaction $transaction)
     {
         $chargeAttempt = $this->getChargeAttempt($transaction);
         if ($chargeAttempt != null) {
@@ -180,18 +213,16 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      *
      * @return \Wallee\Sdk\Model\ChargeAttempt
      */
-    private function getChargeAttempt(\Wallee\Sdk\Model\Transaction $transaction)
+    protected function getChargeAttempt(\Wallee\Sdk\Model\Transaction $transaction)
     {
         $chargeAttemptService = new \Wallee\Sdk\Service\ChargeAttemptService(Mage::helper('wallee_payment')->getApiClient());
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
         $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
-        $filter->setChildren(
-            array(
+        $filter->setChildren(array(
             $this->createEntityFilter('charge.transaction.id', $transaction->getId()),
             $this->createEntityFilter('state', \Wallee\Sdk\Model\ChargeAttempt::STATE_SUCCESSFUL)
-            )
-        );
+        ));
         $query->setFilter($filter);
         $query->setNumberOfEntities(1);
         $result = $chargeAttemptService->chargeAttemptSearchPost($transaction->getLinkedSpaceId(), $query);
@@ -209,7 +240,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Order $order
      * @return string
      */
-    private function getPaymentMethodImage(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function getPaymentMethodImage(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         if ($transaction->getPaymentConnectorConfiguration() == null) {
             return $order->getPayment()
@@ -220,18 +251,14 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
 
         /* @var Wallee_Payment_Model_Provider_PaymentConnector $connectorProvider */
         $connectorProvider = Mage::getSingleton('wallee_payment/provider_paymentConnector');
-        $connector = $connectorProvider->find(
-            $transaction->getPaymentConnectorConfiguration()
-            ->getConnector()
-        );
+        $connector = $connectorProvider->find($transaction->getPaymentConnectorConfiguration()
+            ->getConnector());
 
         /* @var Wallee_Payment_Model_Provider_PaymentMethod $methodProvider */
         $methodProvider = Mage::getSingleton('wallee_payment/provider_paymentMethod');
-        $method = $transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null ? $methodProvider->find(
-            $transaction->getPaymentConnectorConfiguration()
+        $method = $transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null ? $methodProvider->find($transaction->getPaymentConnectorConfiguration()
             ->getPaymentMethodConfiguration()
-            ->getPaymentMethod()
-        ) : null;
+            ->getPaymentMethod()) : null;
 
         if ($connector != null && $connector->getPaymentMethodBrand() != null) {
             return $connector->getPaymentMethodBrand()->getImagePath();
@@ -312,7 +339,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Order_Invoice $invoice
      * @return \Wallee\Sdk\Model\TransactionCreate
      */
-    private function createTransactionByOrder($spaceId, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
+    protected function createTransactionByOrder($spaceId, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
     {
         $createTransaction = new \Wallee\Sdk\Model\TransactionCreate();
         $createTransaction->setCustomersPresence(\Wallee\Sdk\Model\Transaction::CUSTOMERS_PRESENCE_VIRTUAL_PRESENT);
@@ -337,65 +364,47 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param \Wallee\Sdk\Model\TransactionPending $transaction
      * @param bool $chargeFlow
      */
-    private function assembleOrderTransactionData(Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, \Wallee\Sdk\Model\TransactionPending $transaction, $chargeFlow = false)
+    protected function assembleOrderTransactionData(Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, \Wallee\Sdk\Model\TransactionPending $transaction, $chargeFlow = false)
     {
         $transaction->setCurrency($order->getOrderCurrencyCode());
         $transaction->setBillingAddress($this->getOrderBillingAddress($order));
         $transaction->setShippingAddress($this->getOrderShippingAddress($order));
         $transaction->setCustomerEmailAddress($this->getCustomerEmailAddress($order->getCustomerEmail(), $order->getCustomerId()));
         $transaction->setCustomerId($order->getCustomerId());
-        $transaction->setLanguage(
-            $order->getStore()
-            ->getConfig('general/locale/code')
-        );
+        $transaction->setLanguage($order->getStore()
+            ->getConfig('general/locale/code'));
         if ($order->getShippingAddress()) {
-            $transaction->setShippingMethod(
-                $this->fixLength(
-                    $order->getShippingAddress()
-                    ->getShippingDescription(), 200
-                )
-            );
+            $transaction->setShippingMethod($this->fixLength($order->getShippingAddress()
+                ->getShippingDescription(), 200));
         }
 
-        $transaction->setSpaceViewId(
-            $order->getStore()
-            ->getConfig('wallee_payment/general/store_view_id')
-        );
+        $transaction->setSpaceViewId($order->getStore()
+            ->getConfig('wallee_payment/general/store_view_id'));
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
         $lineItems = Mage::getSingleton('wallee_payment/service_lineItem');
         $transaction->setLineItems($lineItems->collectLineItems($order));
         $transaction->setMerchantReference($order->getIncrementId());
         $transaction->setInvoiceMerchantReference($invoice->getIncrementId());
         if ($chargeFlow) {
-            $transaction->setAllowedPaymentMethodConfigurations(
-                array(
+            $transaction->setAllowedPaymentMethodConfigurations(array(
                 $order->getPayment()
                     ->getMethodInstance()
                     ->getPaymentMethodConfiguration()
                     ->getConfigurationId()
-                )
-            );
+            ));
         } else {
-            $transaction->setSuccessUrl(
-                Mage::getUrl(
-                    'wallee/transaction/success', array(
-                    '_secure' => true,
-                    'order_id' => $order->getId(),
-                    'secret' => $this->getHelper()
+            $transaction->setSuccessUrl(Mage::getUrl('wallee/transaction/success', array(
+                '_secure' => true,
+                'order_id' => $order->getId(),
+                'secret' => $this->getHelper()
                     ->hash($order->getId())
-                    )
-                )
-            );
-            $transaction->setFailedUrl(
-                Mage::getUrl(
-                    'wallee/transaction/failure', array(
-                    '_secure' => true,
-                    'order_id' => $order->getId(),
-                    'secret' => $this->getHelper()
+            )));
+            $transaction->setFailedUrl(Mage::getUrl('wallee/transaction/failure', array(
+                '_secure' => true,
+                'order_id' => $order->getId(),
+                'secret' => $this->getHelper()
                     ->hash($order->getId())
-                    )
-                )
-            );
+            )));
         }
     }
 
@@ -405,7 +414,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Order $order
      * @return \Wallee\Sdk\Model\AddressCreate
      */
-    private function getOrderBillingAddress(Mage_Sales_Model_Order $order)
+    protected function getOrderBillingAddress(Mage_Sales_Model_Order $order)
     {
         if (! $order->getBillingAddress()) {
             return null;
@@ -424,7 +433,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Order $order
      * @return \Wallee\Sdk\Model\AddressCreate
      */
-    private function getOrderShippingAddress(Mage_Sales_Model_Order $order)
+    protected function getOrderShippingAddress(Mage_Sales_Model_Order $order)
     {
         if (! $order->getShippingAddress()) {
             return null;
@@ -464,7 +473,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Quote $quote
      * @return \Wallee\Sdk\Model\TransactionCreate
      */
-    private function createTransactionByQuote(Mage_Sales_Model_Quote $quote)
+    protected function createTransactionByQuote(Mage_Sales_Model_Quote $quote)
     {
         $spaceId = $quote->getStore()->getConfig('wallee_payment/general/space_id');
         $createTransaction = new \Wallee\Sdk\Model\TransactionCreate();
@@ -485,7 +494,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Quote $quote
      * @return \Wallee\Sdk\Model\TransactionPending
      */
-    private function loadAndUpdateTransaction(Mage_Sales_Model_Quote $quote)
+    protected function loadAndUpdateTransaction(Mage_Sales_Model_Quote $quote)
     {
         $transaction = $this->getTransactionService()->transactionReadGet($quote->getWalleeSpaceId(), $quote->getWalleeTransactionId());
         if ($transaction->getState() != \Wallee\Sdk\Model\Transaction::STATE_PENDING) {
@@ -505,30 +514,22 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Quote $quote
      * @param \Wallee\Sdk\Model\TransactionPending $transaction
      */
-    private function assembleQuoteTransactionData(Mage_Sales_Model_Quote $quote, \Wallee\Sdk\Model\TransactionPending $transaction)
+    protected function assembleQuoteTransactionData(Mage_Sales_Model_Quote $quote, \Wallee\Sdk\Model\TransactionPending $transaction)
     {
         $transaction->setCurrency($quote->getQuoteCurrencyCode());
         $transaction->setBillingAddress($this->getQuoteBillingAddress($quote));
         $transaction->setShippingAddress($this->getQuoteShippingAddress($quote));
         $transaction->setCustomerEmailAddress($this->getCustomerEmailAddress($quote->getCustomerEmail(), $quote->getCustomerId()));
         $transaction->setCustomerId($quote->getCustomerId());
-        $transaction->setLanguage(
-            $quote->getStore()
-            ->getConfig('general/locale/code')
-        );
+        $transaction->setLanguage($quote->getStore()
+            ->getConfig('general/locale/code'));
         if ($quote->getShippingAddress()) {
-            $transaction->setShippingMethod(
-                $this->fixLength(
-                    $quote->getShippingAddress()
-                    ->getShippingDescription(), 200
-                )
-            );
+            $transaction->setShippingMethod($this->fixLength($quote->getShippingAddress()
+                ->getShippingDescription(), 200));
         }
 
-        $transaction->setSpaceViewId(
-            $quote->getStore()
-            ->getConfig('wallee_payment/general/store_view_id')
-        );
+        $transaction->setSpaceViewId($quote->getStore()
+            ->getConfig('wallee_payment/general/store_view_id'));
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
         $lineItems = Mage::getSingleton('wallee_payment/service_lineItem');
         $transaction->setLineItems($lineItems->collectLineItems($quote));
@@ -541,7 +542,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Quote $quote
      * @return \Wallee\Sdk\Model\AddressCreate
      */
-    private function getQuoteBillingAddress(Mage_Sales_Model_Quote $quote)
+    protected function getQuoteBillingAddress(Mage_Sales_Model_Quote $quote)
     {
         if (! $quote->getBillingAddress()) {
             return null;
@@ -561,7 +562,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Sales_Model_Quote $quote
      * @return \Wallee\Sdk\Model\AddressCreate
      */
-    private function getQuoteShippingAddress(Mage_Sales_Model_Quote $quote)
+    protected function getQuoteShippingAddress(Mage_Sales_Model_Quote $quote)
     {
         if (! $quote->getShippingAddress()) {
             return null;
@@ -579,7 +580,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param int $customerId
      * @return string
      */
-    private function getCustomerEmailAddress($customerEmailAddress, $customerId)
+    protected function getCustomerEmailAddress($customerEmailAddress, $customerId)
     {
         if ($customerEmailAddress != null) {
             return $customerEmailAddress;
@@ -601,7 +602,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param int $customerId
      * @return string
      */
-    private function getGender($gender, $customerId)
+    protected function getGender($gender, $customerId)
     {
         $customer = Mage::getModel('customer/customer')->load($customerId);
         if ($gender !== null) {
@@ -626,7 +627,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param int $customerId
      * @return string
      */
-    private function getDateOfBirth($dateOfBirth, $customerId)
+    protected function getDateOfBirth($dateOfBirth, $customerId)
     {
         if ($dateOfBirth === null) {
             $customer = Mage::getModel('customer/customer')->load($customerId);
@@ -645,7 +646,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param int $customerId
      * @return string
      */
-    private function getTaxNumber($taxNumber, $customerId)
+    protected function getTaxNumber($taxNumber, $customerId)
     {
         if ($taxNumber !== null) {
             return $taxNumber;
@@ -661,7 +662,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param Mage_Customer_Model_Address_Abstract $customerAddress
      * @return \Wallee\Sdk\Model\AddressCreate
      */
-    private function getAddress(Mage_Customer_Model_Address_Abstract $customerAddress)
+    protected function getAddress(Mage_Customer_Model_Address_Abstract $customerAddress)
     {
         $address = new \Wallee\Sdk\Model\AddressCreate();
         $address->setSalutation($this->fixLength($customerAddress->getPrefix(), 20));

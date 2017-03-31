@@ -63,6 +63,7 @@
 "The refund was requested successfully, but is still pending on the gateway.","Die Rückerstattung wurde erfolgreich angefordert, ist aber immer noch hängig beim Gateway."
 "The token has been deleted.","Das Token wurde gelöscht."
 "The void of the payment failed on the gateway.","Die Stornierung ist beim Gateway fehlgeschlagen."
+"The payment process could not have been finished successfully.","Der Zahlungsprozess konnte nicht erfolgreich abgeschlossen werden."
 "There are %s manual tasks that need your attention.","Es gibt %s manuelle Aufgaben, die Ihre Aufmerksamkeit benötigen."
 "There has been an error while sending the refund to the gateway.","Es gab einen Fehler beim Senden der Rückerstattung an das Gateway."
 "There is a manual task that needs your attention.","Es gibt eine manuelle Aufgabe, die Ihre Aufmerksamkeit benötigt."

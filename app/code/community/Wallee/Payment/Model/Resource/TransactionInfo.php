@@ -28,6 +28,10 @@ class Wallee_Payment_Model_Resource_TransactionInfo extends Mage_Core_Model_Reso
         'labels' => array(
             null,
             array()
+        ),
+        'failure_reason' => array(
+            null,
+            array()
         )
     );
 

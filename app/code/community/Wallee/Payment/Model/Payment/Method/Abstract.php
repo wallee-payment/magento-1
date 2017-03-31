@@ -505,7 +505,9 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      */
     public function fail(Mage_Sales_Model_Order $order)
     {
+        /* @var Mage_Checkout_Model_Session $session */
         $session = Mage::getSingleton('checkout/session');
+        /* @var Mage_Sales_Model_Quote $quote */
         $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
         if ($quote->getId()) {
             $quote->setWalleeTransactionId(null);
@@ -514,9 +516,19 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                 ->save();
             $session->replaceQuote($quote);
         }
-
         $session->unsLastRealOrderId();
         $session->replaceQuote($quote);
+
+        /* @var Mage_Core_Model_Session $coreSession */
+        $coreSession = Mage::getSingleton('core/session');
+        /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
+        $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
+        $failedChargeAttempt = $transactionService->getFailedChargeAttempt($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
+        if ($failedChargeAttempt != null && $failedChargeAttempt->getUserFailureMessage() != null) {
+            $coreSession->addError($failedChargeAttempt->getUserFailureMessage());
+        } else {
+            $coreSession->addError($this->getHelper()->__('The payment process could not have been finished successfully.'));
+        }
     }
 
     /**
