@@ -78,7 +78,7 @@ class Wallee_Payment_Model_System_Config
                     $action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE;
 
                     $this->setConfigValue('stores/admin' . $basePath . 'active', $active);
-                    $this->setConfigValue('stores/admin' . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, Mage::getSingleton('adminhtml/session')->getLocale()));
+                    $this->setConfigValue('stores/admin' . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, 'en-US'));
                     $this->setConfigValue('stores/admin' . $basePath . 'model', $model);
                     $this->setConfigValue('stores/admin' . $basePath . 'payment_action', $action);
 
