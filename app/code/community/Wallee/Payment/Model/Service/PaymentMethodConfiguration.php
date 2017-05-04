@@ -10,7 +10,6 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
  * @link https://github.com/wallee-payment/magento
  */
-
 class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Payment_Model_Service_Abstract
 {
 
@@ -24,7 +23,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $model */
         $model = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration');
         $model->loadByConfigurationId($configuration->getLinkedSpaceId(), $configuration->getId());
-        if ($model->getId()) {
+        if ($model->getId() && $this->hasChanged($configuration, $model)) {
             $model->setConfigurationName($configuration->getName());
             $model->setTitle($this->getTranslationsArray($configuration->getTitle()));
             $model->setDescription($this->getTranslationsArray($configuration->getDescription()));
@@ -36,6 +35,33 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
             $model->setSortOrder($configuration->getSortOrder());
             $model->save();
         }
+    }
+
+    private function hasChanged(\Wallee\Sdk\Model\PaymentMethodConfiguration $configuration, Wallee_Payment_Model_Entity_PaymentMethodConfiguration $model)
+    {
+        if ($configuration->getName() != $model->getConfigurationName()) {
+            return true;
+        }
+
+        if ($this->getTranslationsArray($configuration->getTitle()) != $model->getTitleArray()) {
+            return true;
+        }
+
+        if ($this->getTranslationsArray($configuration->getDescription()) != $model->getDescriptionArray()) {
+            return true;
+        }
+
+        $image = $configuration->getImageResourcePath() != null ? $configuration->getImageResourcePath()->getPath() : $this->getPaymentMethod($configuration->getPaymentMethod())
+            ->getImagePath();
+        if ($image != $model->getImage()) {
+            return true;
+        }
+
+        if ($configuration->getSortOrder() != $model->getSortOrder()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

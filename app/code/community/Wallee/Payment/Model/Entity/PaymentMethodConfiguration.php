@@ -96,12 +96,22 @@ class Wallee_Payment_Model_Entity_PaymentMethodConfiguration extends Mage_Core_M
      */
     public function getTitle($language = null)
     {
+        return Mage::helper('wallee_payment')->translate($this->getTitleArray(), $language);
+    }
+
+    /**
+     * Returns the title as array.
+     *
+     * @return array
+     */
+    public function getTitleArray()
+    {
         $value = $this->getData('title');
         if (! is_array($value) && ! is_object($value)) {
             $this->setData('title', unserialize($value));
         }
 
-        return Mage::helper('wallee_payment')->translate($this->getData('title'), $language);
+        return $this->getData('title');
     }
 
     /**
@@ -112,11 +122,21 @@ class Wallee_Payment_Model_Entity_PaymentMethodConfiguration extends Mage_Core_M
      */
     public function getDescription($language = null)
     {
+        return Mage::helper('wallee_payment')->translate($this->getDescriptionArray(), $language);
+    }
+
+    /**
+     * Returns the description as array.
+     *
+     * @return array
+     */
+    public function getDescriptionArray()
+    {
         $value = $this->getData('description');
         if (! is_array($value) && ! is_object($value)) {
             $this->setData('description', unserialize($value));
         }
 
-        return Mage::helper('wallee_payment')->translate($this->getData('description'), $language);
+        return $this->getData('description');
     }
 }

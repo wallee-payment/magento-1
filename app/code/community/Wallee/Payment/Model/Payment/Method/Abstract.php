@@ -516,6 +516,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                 ->save();
             $session->replaceQuote($quote);
         }
+
         $session->unsLastRealOrderId();
         $session->replaceQuote($quote);
 
