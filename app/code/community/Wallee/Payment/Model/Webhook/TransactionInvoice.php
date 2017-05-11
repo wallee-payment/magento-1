@@ -28,11 +28,6 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         return $transactionInvoiceService->transactionInvoiceReadGet($request->getSpaceId(), $request->getEntityId());
     }
 
-    protected function getLockType()
-    {
-        return Wallee_Payment_Model_Service_Lock::TYPE_TRANSACTION_INVOICE;
-    }
-
     protected function getOrderIncrementId($transactionInvoice)
     {
         /* @var \Wallee\Sdk\Model\TransactionInvoice $transactionInvoice */

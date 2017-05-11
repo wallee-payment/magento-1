@@ -28,11 +28,6 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         return $refundService->refundReadGet($request->getSpaceId(), $request->getEntityId());
     }
 
-    protected function getLockType()
-    {
-        return Wallee_Payment_Model_Service_Lock::TYPE_REFUND;
-    }
-
     protected function getOrderIncrementId($refund)
     {
         /* @var \Wallee\Sdk\Model\Refund $refund */

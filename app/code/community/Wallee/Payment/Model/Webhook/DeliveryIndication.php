@@ -28,11 +28,6 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
         return $deliveryIndicationService->deliveryIndicationReadGet($request->getSpaceId(), $request->getEntityId());
     }
 
-    protected function getLockType()
-    {
-        return Wallee_Payment_Model_Service_Lock::TYPE_DELIVERY_INDICATION;
-    }
-
     protected function getOrderIncrementId($deliveryIndication)
     {
         /* @var \Wallee\Sdk\Model\DeliveryIndication $deliveryIndication */

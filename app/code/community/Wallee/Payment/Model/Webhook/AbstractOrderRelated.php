@@ -30,13 +30,14 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
         $order = Mage::getModel('sales/order');
         $order->getResource()->beginTransaction();
         try {
-            $this->lock($this->getLockType());
             $order->loadByIncrementId($this->getOrderIncrementId($entity));
             if ($order->getId() > 0) {
                 if ($order->getWalleeTransactionId() != $this->getTransactionId($entity)) {
                     return;
                 }
 
+                $this->lock($order);
+                $order->load($order->getId());
                 $this->processOrderRelatedInner($order, $entity);
             }
 
@@ -54,13 +55,6 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
      * @return object
      */
     abstract protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request);
-
-    /**
-     * Returns the lock type.
-     *
-     * @return int
-     */
-    abstract protected function getLockType();
 
     /**
      * Returns the order's increment id linked to the entity.
@@ -87,4 +81,22 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
      * @param unknown $entity
      */
     abstract protected function processOrderRelatedInner(Mage_Sales_Model_Order $order, $entity);
+
+    /**
+     * Create a lock to prevent concurrency.
+     *
+     * @param Mage_Sales_Model_Order $order
+     */
+    private function lock(Mage_Sales_Model_Order $order)
+    {
+        /* @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+        $resource->getConnection('core_write')->update(
+            $resource->getTableName('sales/order'), array(
+                'wallee_lock' => date("Y-m-d H:i:s")
+            ), array(
+                'entity_id = ?' => $order->getId()
+            )
+        );
+    }
 }

@@ -34,15 +34,4 @@ abstract class Wallee_Payment_Model_Webhook_Abstract
      */
     abstract protected function process(Wallee_Payment_Model_Webhook_Request $request);
 
-    /**
-     * Create a lock to prevent concurrency.
-     *
-     * @param int $lockType
-     */
-    protected function lock($lockType)
-    {
-        /* @var Wallee_Payment_Model_Service_Lock $lockService */
-        $lockService = Mage::getSingleton('wallee_payment/service_lock');
-        $lockService->lock($lockType);
-    }
 }

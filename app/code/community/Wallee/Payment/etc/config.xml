@@ -14,7 +14,7 @@
 <config>
 	<modules>
 		<Wallee_Payment>
-			<version>1.0.2</version>
+			<version>1.0.3</version>
 		</Wallee_Payment>
 	</modules>
 	<global>
