@@ -68,7 +68,7 @@ class InstallmentPlanCalculationService {
 
 
 	/**
-	 * Operation installmentPlanCalculationCalculatePlansPost
+	 * Operation calculatePlans
 	 *
 	 * Calculate Plans
 	 *
@@ -77,12 +77,12 @@ class InstallmentPlanCalculationService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\InstallmentCalculatedPlan[]
 	 */
-	public function installmentPlanCalculationCalculatePlansPost($spaceId, $transactionId) {
-		return $this->installmentPlanCalculationCalculatePlansPostWithHttpInfo($spaceId, $transactionId)->getData();
+	public function calculatePlans($spaceId, $transactionId) {
+		return $this->calculatePlansWithHttpInfo($spaceId, $transactionId)->getData();
 	}
 
 	/**
-	 * Operation installmentPlanCalculationCalculatePlansPostWithHttpInfo
+	 * Operation calculatePlansWithHttpInfo
 	 *
 	 * Calculate Plans
 	 *
@@ -91,14 +91,14 @@ class InstallmentPlanCalculationService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function installmentPlanCalculationCalculatePlansPostWithHttpInfo($spaceId, $transactionId) {
+	public function calculatePlansWithHttpInfo($spaceId, $transactionId) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling installmentPlanCalculationCalculatePlansPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling calculatePlans');
 		}
 		// verify the required parameter 'transactionId' is set
 		if ($transactionId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $transactionId when calling installmentPlanCalculationCalculatePlansPost');
+			throw new \InvalidArgumentException('Missing the required parameter $transactionId when calling calculatePlans');
 		}
 		// header params
 		$headerParams = array();

@@ -32,7 +32,7 @@ class Wallee_Payment_Model_Service_Void extends Wallee_Payment_Model_Service_Abs
      */
     public function void(Mage_Sales_Model_Order_Payment $payment)
     {
-        return $this->getTransactionVoidService()->transactionVoidVoidOnlinePost(
+        return $this->getTransactionVoidService()->voidOnline(
             $payment->getOrder()
             ->getWalleeSpaceId(), $payment->getOrder()
             ->getWalleeTransactionId()

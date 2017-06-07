@@ -52,7 +52,7 @@ class SubscriptionMetric  {
 		'id' => 'int',
 		'linkedSpaceId' => 'int',
 		'name' => '\Wallee\Sdk\Model\DatabaseTranslatedString',
-		'plannedPurgeDate' => 'string',
+		'plannedPurgeDate' => '\DateTime',
 		'state' => 'string',
 		'type' => '\Wallee\Sdk\Model\SubscriptionMetricType',
 		'version' => 'int'	);
@@ -117,7 +117,7 @@ class SubscriptionMetric  {
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
@@ -259,7 +259,7 @@ class SubscriptionMetric  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -268,7 +268,7 @@ class SubscriptionMetric  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return SubscriptionMetric
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {

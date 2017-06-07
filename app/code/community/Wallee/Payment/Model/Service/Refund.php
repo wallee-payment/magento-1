@@ -36,7 +36,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $query->setFilter($this->createEntityFilter('externalId', $externalId));
         $query->setNumberOfEntities(1);
-        $result = $this->getRefundService()->refundSearchPost($spaceId, $query);
+        $result = $this->getRefundService()->search($spaceId, $query);
         if ($result != null && ! empty($result)) {
             return current($result);
         } else {
@@ -186,7 +186,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      */
     public function refund($spaceId, \Wallee\Sdk\Model\RefundCreate $refund)
     {
-        return $this->getRefundService()->refundRefundPost($spaceId, $refund);
+        return $this->getRefundService()->create($spaceId, $refund);
     }
 
     /**
@@ -368,7 +368,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $query->setNumberOfEntities(1);
 
         $invoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService($this->getHelper()->getApiClient());
-        $result = $invoiceService->transactionInvoiceSearchPost($transaction->getLinkedSpaceId(), $query);
+        $result = $invoiceService->search($transaction->getLinkedSpaceId(), $query);
         if (! empty($result)) {
             return $result[0];
         } else {
@@ -408,7 +408,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
 
         $query->setNumberOfEntities(1);
 
-        $result = $this->getRefundService()->refundSearchPost($transaction->getLinkedSpaceId(), $query);
+        $result = $this->getRefundService()->search($transaction->getLinkedSpaceId(), $query);
         if (! empty($result)) {
             return $result[0];
         } else {

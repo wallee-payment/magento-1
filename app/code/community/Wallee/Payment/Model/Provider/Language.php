@@ -64,7 +64,7 @@ class Wallee_Payment_Model_Provider_Language extends Wallee_Payment_Model_Provid
     protected function fetchData()
     {
         $languageService = new \Wallee\Sdk\Service\LanguageService(Mage::helper('wallee_payment')->getApiClient());
-        return $languageService->languageAllGet();
+        return $languageService->all();
     }
 
     protected function getId($entry)

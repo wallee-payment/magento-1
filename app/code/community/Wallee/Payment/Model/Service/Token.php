@@ -33,7 +33,7 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
 
     public function updateTokenVersion($spaceId, $tokenVersionId)
     {
-        $tokenVersion = $this->getTokenVersionService()->tokenVersionReadGet($spaceId, $tokenVersionId);
+        $tokenVersion = $this->getTokenVersionService()->read($spaceId, $tokenVersionId);
         $this->updateInfo($spaceId, $tokenVersion);
     }
 
@@ -50,7 +50,7 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
         );
         $query->setFilter($filter);
         $query->setNumberOfEntities(1);
-        $tokenVersion = $this->getTokenVersionService()->tokenVersionSearchPost($spaceId, $query);
+        $tokenVersion = $this->getTokenVersionService()->search($spaceId, $query);
         if (! empty($tokenVersion)) {
             $this->updateInfo($spaceId, current($tokenVersion));
         } else {
@@ -115,7 +115,7 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
 
     public function deleteToken($spaceId, $tokenId)
     {
-        $this->getTokenService()->tokenDeletePost($spaceId, $tokenId);
+        $this->getTokenService()->delete($spaceId, $tokenId);
     }
 
     /**

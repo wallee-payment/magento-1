@@ -48,8 +48,8 @@ class ConnectorInvocation extends TransactionAwareEntity  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'createdOn' => 'string',
-		'plannedPurgeDate' => 'string',
+		'createdOn' => '\DateTime',
+		'plannedPurgeDate' => '\DateTime',
 		'stage' => 'string',
 		'timeTookInMilliseconds' => 'int',
 		'transaction' => 'int',
@@ -91,14 +91,14 @@ class ConnectorInvocation extends TransactionAwareEntity  {
 	/**
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $createdOn;
 
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
@@ -148,7 +148,7 @@ class ConnectorInvocation extends TransactionAwareEntity  {
 	 *
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getCreatedOn() {
 		return $this->createdOn;
@@ -157,7 +157,7 @@ class ConnectorInvocation extends TransactionAwareEntity  {
 	/**
 	 * Sets createdOn.
 	 *
-	 * @param string $createdOn
+	 * @param \DateTime $createdOn
 	 * @return ConnectorInvocation
 	 */
 	protected function setCreatedOn($createdOn) {
@@ -171,7 +171,7 @@ class ConnectorInvocation extends TransactionAwareEntity  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -180,7 +180,7 @@ class ConnectorInvocation extends TransactionAwareEntity  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return ConnectorInvocation
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {
@@ -291,9 +291,6 @@ class ConnectorInvocation extends TransactionAwareEntity  {
 	public function validate() {
 		parent::validate();
 
-		if ($this->getCreatedOn() === null) {
-			throw new ValidationException("'createdOn' can't be null", 'createdOn', $this);
-		}
 		$allowed_values = array("PAYMENT_METHOD_LIST", "FORM_GENERATION", "VALIDATION", "AUTHORIZATION");
 		if (!in_array($this->getStage(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'stage', must be one of #{allowed_values}.", 'stage', $this);

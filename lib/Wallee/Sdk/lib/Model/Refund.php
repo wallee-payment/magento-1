@@ -51,9 +51,9 @@ class Refund  {
 		'amount' => 'float',
 		'baseLineItems' => '\Wallee\Sdk\Model\LineItem[]',
 		'createdBy' => 'int',
-		'createdOn' => 'string',
+		'createdOn' => '\DateTime',
 		'externalId' => 'string',
-		'failedOn' => 'string',
+		'failedOn' => '\DateTime',
 		'failureReason' => '\Wallee\Sdk\Model\FailureReason',
 		'id' => 'int',
 		'labels' => '\Wallee\Sdk\Model\Label[]',
@@ -61,15 +61,15 @@ class Refund  {
 		'lineItems' => '\Wallee\Sdk\Model\LineItem[]',
 		'linkedSpaceId' => 'int',
 		'merchantReference' => 'string',
-		'nextUpdateOn' => 'string',
-		'plannedPurgeDate' => 'string',
+		'nextUpdateOn' => '\DateTime',
+		'plannedPurgeDate' => '\DateTime',
 		'processorReference' => 'string',
 		'reducedLineItems' => '\Wallee\Sdk\Model\LineItem[]',
 		'reductions' => '\Wallee\Sdk\Model\LineItemReduction[]',
 		'state' => 'string',
-		'succeededOn' => 'string',
+		'succeededOn' => '\DateTime',
 		'taxes' => '\Wallee\Sdk\Model\Tax[]',
-		'timeoutOn' => 'string',
+		'timeoutOn' => '\DateTime',
 		'transaction' => '\Wallee\Sdk\Model\Transaction',
 		'type' => 'string',
 		'version' => 'int'	);
@@ -153,7 +153,7 @@ class Refund  {
 	/**
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $createdOn;
 
@@ -167,7 +167,7 @@ class Refund  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $failedOn;
 
@@ -219,14 +219,14 @@ class Refund  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $nextUpdateOn;
 
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
@@ -261,7 +261,7 @@ class Refund  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $succeededOn;
 
@@ -275,7 +275,7 @@ class Refund  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $timeoutOn;
 
@@ -416,7 +416,7 @@ class Refund  {
 	 *
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getCreatedOn() {
 		return $this->createdOn;
@@ -425,7 +425,7 @@ class Refund  {
 	/**
 	 * Sets createdOn.
 	 *
-	 * @param string $createdOn
+	 * @param \DateTime $createdOn
 	 * @return Refund
 	 */
 	protected function setCreatedOn($createdOn) {
@@ -462,7 +462,7 @@ class Refund  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getFailedOn() {
 		return $this->failedOn;
@@ -471,7 +471,7 @@ class Refund  {
 	/**
 	 * Sets failedOn.
 	 *
-	 * @param string $failedOn
+	 * @param \DateTime $failedOn
 	 * @return Refund
 	 */
 	protected function setFailedOn($failedOn) {
@@ -642,7 +642,7 @@ class Refund  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getNextUpdateOn() {
 		return $this->nextUpdateOn;
@@ -651,7 +651,7 @@ class Refund  {
 	/**
 	 * Sets nextUpdateOn.
 	 *
-	 * @param string $nextUpdateOn
+	 * @param \DateTime $nextUpdateOn
 	 * @return Refund
 	 */
 	protected function setNextUpdateOn($nextUpdateOn) {
@@ -665,7 +665,7 @@ class Refund  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -674,7 +674,7 @@ class Refund  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return Refund
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {
@@ -784,7 +784,7 @@ class Refund  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getSucceededOn() {
 		return $this->succeededOn;
@@ -793,7 +793,7 @@ class Refund  {
 	/**
 	 * Sets succeededOn.
 	 *
-	 * @param string $succeededOn
+	 * @param \DateTime $succeededOn
 	 * @return Refund
 	 */
 	protected function setSucceededOn($succeededOn) {
@@ -830,7 +830,7 @@ class Refund  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getTimeoutOn() {
 		return $this->timeoutOn;
@@ -839,7 +839,7 @@ class Refund  {
 	/**
 	 * Sets timeoutOn.
 	 *
-	 * @param string $timeoutOn
+	 * @param \DateTime $timeoutOn
 	 * @return Refund
 	 */
 	protected function setTimeoutOn($timeoutOn) {
@@ -888,7 +888,7 @@ class Refund  {
 	 */
 	protected function setType($type) {
 		$allowed_values = array('CUSTOMER_INITIATED_AUTOMATIC', 'CUSTOMER_INITIATED_MANUAL', 'MERCHANT_INITIATED_ONLINE', 'MERCHANT_INITIATED_OFFLINE');
-		if ((!in_array($type, $allowed_values))) {
+		if (!is_null($type) && (!in_array($type, $allowed_values))) {
 			throw new \InvalidArgumentException("Invalid value for 'type', must be one of 'CUSTOMER_INITIATED_AUTOMATIC', 'CUSTOMER_INITIATED_MANUAL', 'MERCHANT_INITIATED_ONLINE', 'MERCHANT_INITIATED_OFFLINE'");
 		}
 		$this->type = $type;
@@ -926,20 +926,11 @@ class Refund  {
 	 */
 	public function validate() {
 
-		if ($this->getExternalId() === null) {
-			throw new ValidationException("'externalId' can't be null", 'externalId', $this);
-		}
-		if ($this->getReductions() === null) {
-			throw new ValidationException("'reductions' can't be null", 'reductions', $this);
-		}
 		$allowed_values = array("CREATE", "PENDING", "MANUAL_CHECK", "FAILED", "SUCCESSFUL");
 		if (!in_array($this->getState(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'state', must be one of #{allowed_values}.", 'state', $this);
 		}
 
-		if ($this->getType() === null) {
-			throw new ValidationException("'type' can't be null", 'type', $this);
-		}
 		$allowed_values = array("CUSTOMER_INITIATED_AUTOMATIC", "CUSTOMER_INITIATED_MANUAL", "MERCHANT_INITIATED_ONLINE", "MERCHANT_INITIATED_OFFLINE");
 		if (!in_array($this->getType(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'type', must be one of #{allowed_values}.", 'type', $this);

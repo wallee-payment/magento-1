@@ -36,7 +36,7 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $query->setNumberOfEntities(1);
         $query->setFilter($this->createEntityFilter('completion.id', $completionId));
-        $result = $this->getTransactionInvoiceService()->transactionInvoiceSearchPost($spaceId, $query);
+        $result = $this->getTransactionInvoiceService()->search($spaceId, $query);
         if ($result != null && ! empty($result)) {
             return current($result);
         } else {
@@ -53,7 +53,7 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
      */
     public function isReplacementPossible($spaceId, $invoiceId)
     {
-        return $this->getTransactionInvoiceService()->transactionInvoiceIsReplacementPossibleGet($spaceId, $invoiceId);
+        return $this->getTransactionInvoiceService()->isReplacementPossible($spaceId, $invoiceId);
     }
 
     /**
@@ -72,7 +72,7 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
         $lineItems = Mage::getSingleton('wallee_payment/service_lineItem');
         $replacement->setLineItems($lineItems->collectInvoiceLineItems($invoice, $invoice->getGrandTotal()));
-        return $this->getTransactionInvoiceService()->transactionInvoiceReplacePost($spaceId, $invoiceId, $replacement);
+        return $this->getTransactionInvoiceService()->replace($spaceId, $invoiceId, $replacement);
     }
 
     /**

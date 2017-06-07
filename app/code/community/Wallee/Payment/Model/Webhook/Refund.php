@@ -25,7 +25,7 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
     protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request)
     {
         $refundService = new \Wallee\Sdk\Service\RefundService(Mage::helper('wallee_payment')->getApiClient());
-        return $refundService->refundReadGet($request->getSpaceId(), $request->getEntityId());
+        return $refundService->read($request->getSpaceId(), $request->getEntityId());
     }
 
     protected function getOrderIncrementId($refund)

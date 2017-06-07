@@ -51,7 +51,7 @@ class Address  {
 		'city' => 'string',
 		'commercialRegisterNumber' => 'string',
 		'country' => 'string',
-		'dateOfBirth' => 'string',
+		'dateOfBirth' => '\DateTime',
 		'dependentLocality' => 'string',
 		'emailAddress' => 'string',
 		'familyName' => 'string',
@@ -122,7 +122,7 @@ class Address  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $dateOfBirth;
 
@@ -323,7 +323,7 @@ class Address  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getDateOfBirth() {
 		return $this->dateOfBirth;
@@ -332,7 +332,7 @@ class Address  {
 	/**
 	 * Sets dateOfBirth.
 	 *
-	 * @param string $dateOfBirth
+	 * @param \DateTime $dateOfBirth
 	 * @return Address
 	 */
 	protected function setDateOfBirth($dateOfBirth) {

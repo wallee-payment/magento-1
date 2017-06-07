@@ -68,26 +68,26 @@ class CountryService {
 
 
 	/**
-	 * Operation countryAllGet
+	 * Operation all
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\RestCountry[]
 	 */
-	public function countryAllGet() {
-		return $this->countryAllGetWithHttpInfo()->getData();
+	public function all() {
+		return $this->allWithHttpInfo()->getData();
 	}
 
 	/**
-	 * Operation countryAllGetWithHttpInfo
+	 * Operation allWithHttpInfo
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function countryAllGetWithHttpInfo() {
+	public function allWithHttpInfo() {
 		// header params
 		$headerParams = array();
 		$headerAccept = $this->apiClient->selectHeaderAccept(array('*/*'));

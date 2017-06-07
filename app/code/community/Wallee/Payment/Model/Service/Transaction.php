@@ -71,7 +71,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
             $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo');
             $transactionInfo->loadByOrder($order);
-            if (! in_array($transactionInfo->getState(), $states)) {
+            if (in_array($transactionInfo->getState(), $states)) {
                 return true;
             }
 
@@ -88,7 +88,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     public function getJavaScriptUrl(Mage_Sales_Model_Quote $quote)
     {
         $transaction = $this->getTransactionByQuote($quote);
-        return $this->getTransactionService()->transactionBuildJavaScriptUrlGet($transaction->getLinkedSpaceId(), $transaction->getId());
+        return $this->getTransactionService()->buildJavaScriptUrl($transaction->getLinkedSpaceId(), $transaction->getId());
     }
 
     /**
@@ -100,7 +100,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     public function getTransaction($spaceId, $transactionId)
     {
-        return $this->getTransactionService()->transactionReadGet($spaceId, $transactionId);
+        return $this->getTransactionService()->read($spaceId, $transactionId);
     }
 
     /**
@@ -129,7 +129,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             )
         );
         $query->setNumberOfEntities(1);
-        $result = $chargeAttemptService->chargeAttemptSearchPost($spaceId, $query);
+        $result = $chargeAttemptService->search($spaceId, $query);
         if ($result != null && ! empty($result)) {
             return current($result);
         } else {
@@ -150,7 +150,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $updateRequest = new \Wallee\Sdk\Model\TransactionLineItemUpdateRequest();
         $updateRequest->setTransactionId($transactionId);
         $updateRequest->setNewLineItems($lineItems);
-        return $this->getTransactionService()->transactionUpdateTransactionLineItemsPost($spaceId, $updateRequest);
+        return $this->getTransactionService()->updateTransactionLineItems($spaceId, $updateRequest);
     }
 
     /**
@@ -238,7 +238,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         );
         $query->setFilter($filter);
         $query->setNumberOfEntities(1);
-        $result = $chargeAttemptService->chargeAttemptSearchPost($transaction->getLinkedSpaceId(), $query);
+        $result = $chargeAttemptService->search($transaction->getLinkedSpaceId(), $query);
         if ($result != null && ! empty($result)) {
             return current($result);
         } else {
@@ -306,7 +306,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     {
         if (! isset(self::$possiblePaymentMethodCache[$quote->getId()]) || self::$possiblePaymentMethodCache[$quote->getId()] == null) {
             $transaction = $this->getTransactionByQuote($quote);
-            $paymentMethods = $this->getTransactionService()->transactionFetchPossiblePaymentMethodsGet($transaction->getLinkedSpaceId(), $transaction->getId());
+            $paymentMethods = $this->getTransactionService()->fetchPossiblePaymentMethods($transaction->getLinkedSpaceId(), $transaction->getId());
 
             /* @var Wallee_Payment_Model_Service_PaymentMethodConfiguration $paymentMethodConfigurationService */
             $paymentMethodConfigurationService = Mage::getSingleton('wallee_payment/service_paymentMethodConfiguration');
@@ -332,7 +332,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     public function updateTransaction($transactionId, $spaceId, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
     {
-        $transaction = $this->getTransactionService()->transactionReadGet($spaceId, $transactionId);
+        $transaction = $this->getTransactionService()->read($spaceId, $transactionId);
         if (!($transaction instanceof \Wallee\Sdk\Model\Transaction) || $transaction->getState() != \Wallee\Sdk\Model\Transaction::STATE_PENDING) {
             return $this->createTransactionByOrder($order);
         }
@@ -342,10 +342,10 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $pendingTransaction->setVersion($transaction->getVersion());
         $this->assembleOrderTransactionData($order, $invoice, $pendingTransaction, $chargeFlow);
         if ($token != null) {
-            $pendingTransaction->setToken($token);
+            $pendingTransaction->setToken($token->getId());
         }
 
-        return $this->getTransactionService()->transactionUpdatePost($spaceId, $pendingTransaction);
+        return $this->getTransactionService()->update($spaceId, $pendingTransaction);
     }
 
     /**
@@ -362,10 +362,10 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $createTransaction->setCustomersPresence(\Wallee\Sdk\Model\Transaction::CUSTOMERS_PRESENCE_VIRTUAL_PRESENT);
         $this->assembleOrderTransactionData($order, $invoice, $createTransaction, $chargeFlow);
         if ($token != null) {
-            $createTransaction->setToken($token);
+            $createTransaction->setToken($token->getId());
         }
 
-        $transaction = $this->getTransactionService()->transactionCreatePost($spaceId, $createTransaction);
+        $transaction = $this->getTransactionService()->create($spaceId, $createTransaction);
         $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
         $quote->setWalleeSpaceId($transaction->getLinkedSpaceId());
         $quote->setWalleeTransactionId($transaction->getId());
@@ -514,7 +514,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $createTransaction = new \Wallee\Sdk\Model\TransactionCreate();
         $createTransaction->setCustomersPresence(\Wallee\Sdk\Model\Transaction::CUSTOMERS_PRESENCE_VIRTUAL_PRESENT);
         $this->assembleQuoteTransactionData($quote, $createTransaction);
-        $transaction = $this->getTransactionService()->transactionCreatePost($spaceId, $createTransaction);
+        $transaction = $this->getTransactionService()->create($spaceId, $createTransaction);
         $quote->setWalleeSpaceId($transaction->getLinkedSpaceId());
         $quote->setWalleeTransactionId($transaction->getId());
         $quote->save();
@@ -531,7 +531,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     protected function loadAndUpdateTransaction(Mage_Sales_Model_Quote $quote)
     {
-        $transaction = $this->getTransactionService()->transactionReadGet($quote->getWalleeSpaceId(), $quote->getWalleeTransactionId());
+        $transaction = $this->getTransactionService()->read($quote->getWalleeSpaceId(), $quote->getWalleeTransactionId());
         if (!($transaction instanceof \Wallee\Sdk\Model\Transaction) || $transaction->getState() != \Wallee\Sdk\Model\Transaction::STATE_PENDING) {
             return $this->createTransactionByQuote($quote);
         }
@@ -540,7 +540,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $pendingTransaction->setId($transaction->getId());
         $pendingTransaction->setVersion($transaction->getVersion());
         $this->assembleQuoteTransactionData($quote, $pendingTransaction);
-        return $this->getTransactionService()->transactionUpdatePost($quote->getWalleeSpaceId(), $pendingTransaction);
+        return $this->getTransactionService()->update($quote->getWalleeSpaceId(), $pendingTransaction);
     }
 
     /**

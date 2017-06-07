@@ -68,26 +68,26 @@ class CountryStateService {
 
 
 	/**
-	 * Operation countryStateAllGet
+	 * Operation all
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\RestCountryState[]
 	 */
-	public function countryStateAllGet() {
-		return $this->countryStateAllGetWithHttpInfo()->getData();
+	public function all() {
+		return $this->allWithHttpInfo()->getData();
 	}
 
 	/**
-	 * Operation countryStateAllGetWithHttpInfo
+	 * Operation allWithHttpInfo
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function countryStateAllGetWithHttpInfo() {
+	public function allWithHttpInfo() {
 		// header params
 		$headerParams = array();
 		$headerAccept = $this->apiClient->selectHeaderAccept(array('*/*'));
@@ -147,31 +147,31 @@ class CountryStateService {
 	}
 
 	/**
-	 * Operation countryStateCountryGet
+	 * Operation findByCountry
 	 *
-	 * findByCountry
+	 * Find by Country
 	 *
 	 * @param string $code The country code in ISO code two letter format for which all states should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\RestCountryState[]
 	 */
-	public function countryStateCountryGet($code) {
-		return $this->countryStateCountryGetWithHttpInfo($code)->getData();
+	public function findByCountry($code) {
+		return $this->findByCountryWithHttpInfo($code)->getData();
 	}
 
 	/**
-	 * Operation countryStateCountryGetWithHttpInfo
+	 * Operation findByCountryWithHttpInfo
 	 *
-	 * findByCountry
+	 * Find by Country
 	 *
 	 * @param string $code The country code in ISO code two letter format for which all states should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function countryStateCountryGetWithHttpInfo($code) {
+	public function findByCountryWithHttpInfo($code) {
 		// verify the required parameter 'code' is set
 		if ($code === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $code when calling countryStateCountryGet');
+			throw new \InvalidArgumentException('Missing the required parameter $code when calling findByCountry');
 		}
 		// header params
 		$headerParams = array();

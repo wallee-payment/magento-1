@@ -68,26 +68,26 @@ class EmailTemplateTypeService {
 
 
 	/**
-	 * Operation emailTemplateTypeAllGet
+	 * Operation all
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\EmailTemplateType[]
 	 */
-	public function emailTemplateTypeAllGet() {
-		return $this->emailTemplateTypeAllGetWithHttpInfo()->getData();
+	public function all() {
+		return $this->allWithHttpInfo()->getData();
 	}
 
 	/**
-	 * Operation emailTemplateTypeAllGetWithHttpInfo
+	 * Operation allWithHttpInfo
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function emailTemplateTypeAllGetWithHttpInfo() {
+	public function allWithHttpInfo() {
 		// header params
 		$headerParams = array();
 		$headerAccept = $this->apiClient->selectHeaderAccept(array('*/*'));
@@ -147,31 +147,31 @@ class EmailTemplateTypeService {
 	}
 
 	/**
-	 * Operation emailTemplateTypeReadGet
+	 * Operation read
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $id The id of the email template type which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\EmailTemplateType
 	 */
-	public function emailTemplateTypeReadGet($id) {
-		return $this->emailTemplateTypeReadGetWithHttpInfo($id)->getData();
+	public function read($id) {
+		return $this->readWithHttpInfo($id)->getData();
 	}
 
 	/**
-	 * Operation emailTemplateTypeReadGetWithHttpInfo
+	 * Operation readWithHttpInfo
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $id The id of the email template type which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function emailTemplateTypeReadGetWithHttpInfo($id) {
+	public function readWithHttpInfo($id) {
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling emailTemplateTypeReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling read');
 		}
 		// header params
 		$headerParams = array();

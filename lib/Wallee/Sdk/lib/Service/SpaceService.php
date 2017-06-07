@@ -68,28 +68,28 @@ class SpaceService {
 
 
 	/**
-	 * Operation spaceCountPost
+	 * Operation count
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the entities which are used to calculate the count. (optional)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return int
 	 */
-	public function spaceCountPost($filter = null) {
-		return $this->spaceCountPostWithHttpInfo($filter)->getData();
+	public function count($filter = null) {
+		return $this->countWithHttpInfo($filter)->getData();
 	}
 
 	/**
-	 * Operation spaceCountPostWithHttpInfo
+	 * Operation countWithHttpInfo
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the entities which are used to calculate the count. (optional)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function spaceCountPostWithHttpInfo($filter = null) {
+	public function countWithHttpInfo($filter = null) {
 		// header params
 		$headerParams = array();
 		$headerAccept = $this->apiClient->selectHeaderAccept(array('application/json;charset=utf-8'));
@@ -154,31 +154,31 @@ class SpaceService {
 	}
 
 	/**
-	 * Operation spaceCreatePost
+	 * Operation create
 	 *
-	 * create
+	 * Create
 	 *
 	 * @param \Wallee\Sdk\Model\SpaceCreate $entity The space object with the properties which should be created. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\SpaceCreate
 	 */
-	public function spaceCreatePost($entity) {
-		return $this->spaceCreatePostWithHttpInfo($entity)->getData();
+	public function create($entity) {
+		return $this->createWithHttpInfo($entity)->getData();
 	}
 
 	/**
-	 * Operation spaceCreatePostWithHttpInfo
+	 * Operation createWithHttpInfo
 	 *
-	 * create
+	 * Create
 	 *
 	 * @param \Wallee\Sdk\Model\SpaceCreate $entity The space object with the properties which should be created. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function spaceCreatePostWithHttpInfo($entity) {
+	public function createWithHttpInfo($entity) {
 		// verify the required parameter 'entity' is set
 		if ($entity === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $entity when calling spaceCreatePost');
+			throw new \InvalidArgumentException('Missing the required parameter $entity when calling create');
 		}
 		// header params
 		$headerParams = array();
@@ -244,31 +244,31 @@ class SpaceService {
 	}
 
 	/**
-	 * Operation spaceDeletePost
+	 * Operation delete
 	 *
-	 * delete
+	 * Delete
 	 *
 	 * @param int $id  (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return void
 	 */
-	public function spaceDeletePost($id) {
-		return $this->spaceDeletePostWithHttpInfo($id)->getData();
+	public function delete($id) {
+		return $this->deleteWithHttpInfo($id)->getData();
 	}
 
 	/**
-	 * Operation spaceDeletePostWithHttpInfo
+	 * Operation deleteWithHttpInfo
 	 *
-	 * delete
+	 * Delete
 	 *
 	 * @param int $id  (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function spaceDeletePostWithHttpInfo($id) {
+	public function deleteWithHttpInfo($id) {
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling spaceDeletePost');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling delete');
 		}
 		// header params
 		$headerParams = array();
@@ -315,6 +315,10 @@ class SpaceService {
 			return new ApiResponse($response->getStatusCode(), $response->getHeaders());
 		} catch (ApiException $e) {
 			switch ($e->getCode()) {
+				case 409:
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
+					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
+					break;
 				case 442:
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
 					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
@@ -330,31 +334,31 @@ class SpaceService {
 	}
 
 	/**
-	 * Operation spaceReadGet
+	 * Operation read
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $id The id of the space which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\Space
 	 */
-	public function spaceReadGet($id) {
-		return $this->spaceReadGetWithHttpInfo($id)->getData();
+	public function read($id) {
+		return $this->readWithHttpInfo($id)->getData();
 	}
 
 	/**
-	 * Operation spaceReadGetWithHttpInfo
+	 * Operation readWithHttpInfo
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $id The id of the space which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function spaceReadGetWithHttpInfo($id) {
+	public function readWithHttpInfo($id) {
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling spaceReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling read');
 		}
 		// header params
 		$headerParams = array();
@@ -418,31 +422,31 @@ class SpaceService {
 	}
 
 	/**
-	 * Operation spaceSearchPost
+	 * Operation search
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the spaces which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\Space[]
 	 */
-	public function spaceSearchPost($query) {
-		return $this->spaceSearchPostWithHttpInfo($query)->getData();
+	public function search($query) {
+		return $this->searchWithHttpInfo($query)->getData();
 	}
 
 	/**
-	 * Operation spaceSearchPostWithHttpInfo
+	 * Operation searchWithHttpInfo
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the spaces which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function spaceSearchPostWithHttpInfo($query) {
+	public function searchWithHttpInfo($query) {
 		// verify the required parameter 'query' is set
 		if ($query === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $query when calling spaceSearchPost');
+			throw new \InvalidArgumentException('Missing the required parameter $query when calling search');
 		}
 		// header params
 		$headerParams = array();
@@ -508,31 +512,31 @@ class SpaceService {
 	}
 
 	/**
-	 * Operation spaceUpdatePost
+	 * Operation update
 	 *
-	 * update
+	 * Update
 	 *
 	 * @param \Wallee\Sdk\Model\SpaceUpdate $entity The space object with all the properties which should be updated. The id and the version are required properties. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\SpaceUpdate
 	 */
-	public function spaceUpdatePost($entity) {
-		return $this->spaceUpdatePostWithHttpInfo($entity)->getData();
+	public function update($entity) {
+		return $this->updateWithHttpInfo($entity)->getData();
 	}
 
 	/**
-	 * Operation spaceUpdatePostWithHttpInfo
+	 * Operation updateWithHttpInfo
 	 *
-	 * update
+	 * Update
 	 *
 	 * @param \Wallee\Sdk\Model\SpaceUpdate $entity The space object with all the properties which should be updated. The id and the version are required properties. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function spaceUpdatePostWithHttpInfo($entity) {
+	public function updateWithHttpInfo($entity) {
 		// verify the required parameter 'entity' is set
 		if ($entity === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $entity when calling spaceUpdatePost');
+			throw new \InvalidArgumentException('Missing the required parameter $entity when calling update');
 		}
 		// header params
 		$headerParams = array();
@@ -581,6 +585,10 @@ class SpaceService {
 			switch ($e->getCode()) {
 				case 200:
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\SpaceUpdate', $e->getResponseHeaders());
+					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
+					break;
+				case 409:
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
 					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
 					break;
 				case 442:

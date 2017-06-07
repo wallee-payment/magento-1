@@ -68,26 +68,26 @@ class PaymentConnectorService {
 
 
 	/**
-	 * Operation paymentConnectorAllGet
+	 * Operation all
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\PaymentConnector[]
 	 */
-	public function paymentConnectorAllGet() {
-		return $this->paymentConnectorAllGetWithHttpInfo()->getData();
+	public function all() {
+		return $this->allWithHttpInfo()->getData();
 	}
 
 	/**
-	 * Operation paymentConnectorAllGetWithHttpInfo
+	 * Operation allWithHttpInfo
 	 *
-	 * all
+	 * All
 	 *
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function paymentConnectorAllGetWithHttpInfo() {
+	public function allWithHttpInfo() {
 		// header params
 		$headerParams = array();
 		$headerAccept = $this->apiClient->selectHeaderAccept(array('*/*'));
@@ -147,31 +147,31 @@ class PaymentConnectorService {
 	}
 
 	/**
-	 * Operation paymentConnectorReadGet
+	 * Operation read
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $id The id of the connector which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\PaymentConnector
 	 */
-	public function paymentConnectorReadGet($id) {
-		return $this->paymentConnectorReadGetWithHttpInfo($id)->getData();
+	public function read($id) {
+		return $this->readWithHttpInfo($id)->getData();
 	}
 
 	/**
-	 * Operation paymentConnectorReadGetWithHttpInfo
+	 * Operation readWithHttpInfo
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $id The id of the connector which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function paymentConnectorReadGetWithHttpInfo($id) {
+	public function readWithHttpInfo($id) {
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling paymentConnectorReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling read');
 		}
 		// header params
 		$headerParams = array();

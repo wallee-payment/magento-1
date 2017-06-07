@@ -156,7 +156,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
         $webhookListener->setState(\Wallee\Sdk\Model\WebhookListenerCreate::STATE_ACTIVE);
         $webhookListener->setUrl($webhookUrl->getId());
         $webhookListener->setNotifyEveryChange($entity->isNotifyEveryChange());
-        return $this->getWebhookListenerService()->webhookListenerCreatePost($spaceId, $webhookListener);
+        return $this->getWebhookListenerService()->create($spaceId, $webhookListener);
     }
 
     /**
@@ -173,12 +173,12 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
         $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
         $filter->setChildren(
             array(
-            $this->createEntityFilter('state', \Wallee\Sdk\Model\WebhookUrl::STATE_ACTIVE),
+            $this->createEntityFilter('state', \Wallee\Sdk\Model\WebhookListener::STATE_ACTIVE),
             $this->createEntityFilter('url.id', $webhookUrl->getId())
             )
         );
         $query->setFilter($filter);
-        return $this->getWebhookListenerService()->webhookListenerSearchPost($spaceId, $query);
+        return $this->getWebhookListenerService()->search($spaceId, $query);
     }
 
     /**
@@ -194,7 +194,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
         $webhookUrl->setUrl($this->getUrl());
         $webhookUrl->setState(\Wallee\Sdk\Model\WebhookUrlCreate::STATE_ACTIVE);
         $webhookUrl->setName('Magento');
-        return $this->getWebhookUrlService()->webhookUrlCreatePost($spaceId, $webhookUrl);
+        return $this->getWebhookUrlService()->create($spaceId, $webhookUrl);
     }
 
     /**
@@ -207,8 +207,16 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $query->setNumberOfEntities(1);
-        $query->setFilter($this->createEntityFilter('url', $this->getUrl()));
-        $result = $this->getWebhookUrlService()->webhookUrlSearchPost($spaceId, $query);
+        $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
+        $filter->setChildren(
+            array(
+                $this->createEntityFilter('state', \Wallee\Sdk\Model\WebhookUrl::STATE_ACTIVE),
+                $this->createEntityFilter('url', $this->getUrl())
+            )
+            );
+        $query->setFilter($filter);
+        $result = $this->getWebhookUrlService()->search($spaceId, $query);
         if (! empty($result)) {
             return $result[0];
         } else {

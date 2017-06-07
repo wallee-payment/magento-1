@@ -31,7 +31,7 @@ class Wallee_Payment_Model_Service_ChargeFlow extends Wallee_Payment_Model_Servi
      */
     public function applyFlow(\Wallee\Sdk\Model\Transaction $transaction)
     {
-        $this->getChargeFlowService()->chargeFlowApplyFlowPost($transaction->getLinkedSpaceId(), $transaction->getId());
+        $this->getChargeFlowService()->applyFlow($transaction->getLinkedSpaceId(), $transaction->getId());
     }
 
     /**

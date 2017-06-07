@@ -68,37 +68,37 @@ class InstallmentPlanSliceConfigurationService {
 
 
 	/**
-	 * Operation installmentPlanSliceConfigurationCountPost
+	 * Operation count
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the installment plan slice configurations which are used to calculate the count. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return int
 	 */
-	public function installmentPlanSliceConfigurationCountPost($spaceId, $filter) {
-		return $this->installmentPlanSliceConfigurationCountPostWithHttpInfo($spaceId, $filter)->getData();
+	public function count($spaceId, $filter) {
+		return $this->countWithHttpInfo($spaceId, $filter)->getData();
 	}
 
 	/**
-	 * Operation installmentPlanSliceConfigurationCountPostWithHttpInfo
+	 * Operation countWithHttpInfo
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the installment plan slice configurations which are used to calculate the count. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function installmentPlanSliceConfigurationCountPostWithHttpInfo($spaceId, $filter) {
+	public function countWithHttpInfo($spaceId, $filter) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling installmentPlanSliceConfigurationCountPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling count');
 		}
 		// verify the required parameter 'filter' is set
 		if ($filter === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $filter when calling installmentPlanSliceConfigurationCountPost');
+			throw new \InvalidArgumentException('Missing the required parameter $filter when calling count');
 		}
 		// header params
 		$headerParams = array();
@@ -167,37 +167,37 @@ class InstallmentPlanSliceConfigurationService {
 	}
 
 	/**
-	 * Operation installmentPlanSliceConfigurationReadGet
+	 * Operation read
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $spaceId  (required)
 	 * @param int $id The id of the installment plan slice configuration which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\InstallmentPlanSliceConfiguration
 	 */
-	public function installmentPlanSliceConfigurationReadGet($spaceId, $id) {
-		return $this->installmentPlanSliceConfigurationReadGetWithHttpInfo($spaceId, $id)->getData();
+	public function read($spaceId, $id) {
+		return $this->readWithHttpInfo($spaceId, $id)->getData();
 	}
 
 	/**
-	 * Operation installmentPlanSliceConfigurationReadGetWithHttpInfo
+	 * Operation readWithHttpInfo
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $spaceId  (required)
 	 * @param int $id The id of the installment plan slice configuration which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function installmentPlanSliceConfigurationReadGetWithHttpInfo($spaceId, $id) {
+	public function readWithHttpInfo($spaceId, $id) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling installmentPlanSliceConfigurationReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling read');
 		}
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling installmentPlanSliceConfigurationReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling read');
 		}
 		// header params
 		$headerParams = array();
@@ -264,37 +264,37 @@ class InstallmentPlanSliceConfigurationService {
 	}
 
 	/**
-	 * Operation installmentPlanSliceConfigurationSearchPost
+	 * Operation search
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the installment plan slice configurations which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\InstallmentPlanSliceConfiguration[]
 	 */
-	public function installmentPlanSliceConfigurationSearchPost($spaceId, $query) {
-		return $this->installmentPlanSliceConfigurationSearchPostWithHttpInfo($spaceId, $query)->getData();
+	public function search($spaceId, $query) {
+		return $this->searchWithHttpInfo($spaceId, $query)->getData();
 	}
 
 	/**
-	 * Operation installmentPlanSliceConfigurationSearchPostWithHttpInfo
+	 * Operation searchWithHttpInfo
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the installment plan slice configurations which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function installmentPlanSliceConfigurationSearchPostWithHttpInfo($spaceId, $query) {
+	public function searchWithHttpInfo($spaceId, $query) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling installmentPlanSliceConfigurationSearchPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling search');
 		}
 		// verify the required parameter 'query' is set
 		if ($query === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $query when calling installmentPlanSliceConfigurationSearchPost');
+			throw new \InvalidArgumentException('Missing the required parameter $query when calling search');
 		}
 		// header params
 		$headerParams = array();

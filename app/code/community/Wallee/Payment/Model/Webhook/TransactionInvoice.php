@@ -25,7 +25,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
     protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request)
     {
         $transactionInvoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService(Mage::helper('wallee_payment')->getApiClient());
-        return $transactionInvoiceService->transactionInvoiceReadGet($request->getSpaceId(), $request->getEntityId());
+        return $transactionInvoiceService->read($request->getSpaceId(), $request->getEntityId());
     }
 
     protected function getOrderIncrementId($transactionInvoice)

@@ -37,7 +37,7 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
             ->getWalleeSpaceId(), $payment->getOrder()
             ->getWalleeTransactionId()
         );
-        return $this->getDeliveryIndicationService()->deliveryIndicationMarkAsSuitablePost($deliveryIndication->getLinkedSpaceId(), $deliveryIndication->getId());
+        return $this->getDeliveryIndicationService()->markAsSuitable($deliveryIndication->getLinkedSpaceId(), $deliveryIndication->getId());
     }
 
     /**
@@ -53,7 +53,7 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
             ->getWalleeSpaceId(), $payment->getOrder()
             ->getWalleeTransactionId()
         );
-        return $this->getDeliveryIndicationService()->deliveryIndicationMarkAsNotSuitablePost($deliveryIndication->getLinkedSpaceId(), $deliveryIndication->getId());
+        return $this->getDeliveryIndicationService()->markAsNotSuitable($deliveryIndication->getLinkedSpaceId(), $deliveryIndication->getId());
     }
 
     /**
@@ -82,6 +82,6 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $query->setFilter($this->createEntityFilter('transaction.id', $transactionId));
         $query->setNumberOfEntities(1);
-        return current($this->getDeliveryIndicationService()->deliveryIndicationSearchPost($spaceId, $query));
+        return current($this->getDeliveryIndicationService()->search($spaceId, $query));
     }
 }

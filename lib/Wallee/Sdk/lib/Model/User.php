@@ -49,7 +49,7 @@ class User  {
 	 */
 	private static $swaggerTypes = array(
 		'id' => 'int',
-		'plannedPurgeDate' => 'string',
+		'plannedPurgeDate' => '\DateTime',
 		'scope' => '\Wallee\Sdk\Model\Scope',
 		'state' => 'string',
 		'userType' => 'string',
@@ -122,7 +122,7 @@ class User  {
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
@@ -199,7 +199,7 @@ class User  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -208,7 +208,7 @@ class User  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return User
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {
@@ -257,7 +257,7 @@ class User  {
 	 */
 	protected function setState($state) {
 		$allowed_values = array('CREATE', 'ACTIVE', 'INACTIVE', 'DELETING', 'DELETED');
-		if ((!in_array($state, $allowed_values))) {
+		if (!is_null($state) && (!in_array($state, $allowed_values))) {
 			throw new \InvalidArgumentException("Invalid value for 'state', must be one of 'CREATE', 'ACTIVE', 'INACTIVE', 'DELETING', 'DELETED'");
 		}
 		$this->state = $state;
@@ -284,7 +284,7 @@ class User  {
 	 */
 	protected function setUserType($userType) {
 		$allowed_values = array('HUMAN_USER', 'APPLICATION_USER', 'ANONYMOUS_USER', 'SERVER_USER');
-		if ((!in_array($userType, $allowed_values))) {
+		if (!is_null($userType) && (!in_array($userType, $allowed_values))) {
 			throw new \InvalidArgumentException("Invalid value for 'userType', must be one of 'HUMAN_USER', 'APPLICATION_USER', 'ANONYMOUS_USER', 'SERVER_USER'");
 		}
 		$this->userType = $userType;
@@ -322,17 +322,11 @@ class User  {
 	 */
 	public function validate() {
 
-		if ($this->getState() === null) {
-			throw new ValidationException("'state' can't be null", 'state', $this);
-		}
 		$allowed_values = array("CREATE", "ACTIVE", "INACTIVE", "DELETING", "DELETED");
 		if (!in_array($this->getState(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'state', must be one of #{allowed_values}.", 'state', $this);
 		}
 
-		if ($this->getUserType() === null) {
-			throw new ValidationException("'userType' can't be null", 'userType', $this);
-		}
 		$allowed_values = array("HUMAN_USER", "APPLICATION_USER", "ANONYMOUS_USER", "SERVER_USER");
 		if (!in_array($this->getUserType(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'userType', must be one of #{allowed_values}.", 'userType', $this);

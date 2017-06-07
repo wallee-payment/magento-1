@@ -76,7 +76,7 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
         $transactionId = $this->getRequest()->getParam('transaction_id');
 
         $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
-        $document = $service->transactionGetInvoiceDocumentGet($spaceId, $transactionId);
+        $document = $service->getInvoiceDocument($spaceId, $transactionId);
         $this->download($document);
     }
 
@@ -89,7 +89,7 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
         $transactionId = $this->getRequest()->getParam('transaction_id');
 
         $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
-        $document = $service->transactionGetPackingSlipGet($spaceId, $transactionId);
+        $document = $service->getPackingSlip($spaceId, $transactionId);
         $this->download($document);
     }
 
@@ -106,7 +106,7 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
         $refund = $refundService->getRefundByExternalId($spaceId, $externalId);
 
         $service = new \Wallee\Sdk\Service\RefundService(Mage::helper('wallee_payment')->getApiClient());
-        $document = $service->refundGetRefundDocumentGet($spaceId, $refund->getId());
+        $document = $service->getRefundDocument($spaceId, $refund->getId());
         $this->download($document);
     }
 

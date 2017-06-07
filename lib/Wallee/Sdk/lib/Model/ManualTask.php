@@ -50,11 +50,11 @@ class ManualTask  {
 	private static $swaggerTypes = array(
 		'actions' => 'int[]',
 		'contextEntityId' => 'int',
-		'createdOn' => 'string',
-		'expiresOn' => 'string',
+		'createdOn' => '\DateTime',
+		'expiresOn' => '\DateTime',
 		'id' => 'int',
 		'linkedSpaceId' => 'int',
-		'plannedPurgeDate' => 'string',
+		'plannedPurgeDate' => '\DateTime',
 		'spaceId' => 'int',
 		'state' => 'string',
 		'type' => 'int'	);
@@ -105,14 +105,14 @@ class ManualTask  {
 	/**
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $createdOn;
 
 	/**
 	 * The expiry date indicates until when the manual task has to be executed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $expiresOn;
 
@@ -131,7 +131,7 @@ class ManualTask  {
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
@@ -222,7 +222,7 @@ class ManualTask  {
 	 *
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getCreatedOn() {
 		return $this->createdOn;
@@ -231,7 +231,7 @@ class ManualTask  {
 	/**
 	 * Sets createdOn.
 	 *
-	 * @param string $createdOn
+	 * @param \DateTime $createdOn
 	 * @return ManualTask
 	 */
 	protected function setCreatedOn($createdOn) {
@@ -245,7 +245,7 @@ class ManualTask  {
 	 *
 	 * The expiry date indicates until when the manual task has to be executed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getExpiresOn() {
 		return $this->expiresOn;
@@ -254,7 +254,7 @@ class ManualTask  {
 	/**
 	 * Sets expiresOn.
 	 *
-	 * @param string $expiresOn
+	 * @param \DateTime $expiresOn
 	 * @return ManualTask
 	 */
 	protected function setExpiresOn($expiresOn) {
@@ -312,7 +312,7 @@ class ManualTask  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -321,7 +321,7 @@ class ManualTask  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return ManualTask
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {

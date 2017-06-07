@@ -68,7 +68,7 @@ class SubscriptionService {
 
 
 	/**
-	 * Operation subscriptionApplyChangesPost
+	 * Operation applyChanges
 	 *
 	 * apply changes
 	 *
@@ -77,12 +77,12 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\SubscriptionVersion
 	 */
-	public function subscriptionApplyChangesPost($spaceId, $request) {
-		return $this->subscriptionApplyChangesPostWithHttpInfo($spaceId, $request)->getData();
+	public function applyChanges($spaceId, $request) {
+		return $this->applyChangesWithHttpInfo($spaceId, $request)->getData();
 	}
 
 	/**
-	 * Operation subscriptionApplyChangesPostWithHttpInfo
+	 * Operation applyChangesWithHttpInfo
 	 *
 	 * apply changes
 	 *
@@ -91,14 +91,14 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionApplyChangesPostWithHttpInfo($spaceId, $request) {
+	public function applyChangesWithHttpInfo($spaceId, $request) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionApplyChangesPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling applyChanges');
 		}
 		// verify the required parameter 'request' is set
 		if ($request === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $request when calling subscriptionApplyChangesPost');
+			throw new \InvalidArgumentException('Missing the required parameter $request when calling applyChanges');
 		}
 		// header params
 		$headerParams = array();
@@ -152,6 +152,10 @@ class SubscriptionService {
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\SubscriptionVersion', $e->getResponseHeaders());
 					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
 					break;
+				case 409:
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
+					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
+					break;
 				case 442:
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
 					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
@@ -167,33 +171,33 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionCountPost
+	 * Operation count
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the entities which are used to calculate the count. (optional)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return int
 	 */
-	public function subscriptionCountPost($spaceId, $filter = null) {
-		return $this->subscriptionCountPostWithHttpInfo($spaceId, $filter)->getData();
+	public function count($spaceId, $filter = null) {
+		return $this->countWithHttpInfo($spaceId, $filter)->getData();
 	}
 
 	/**
-	 * Operation subscriptionCountPostWithHttpInfo
+	 * Operation countWithHttpInfo
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the entities which are used to calculate the count. (optional)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionCountPostWithHttpInfo($spaceId, $filter = null) {
+	public function countWithHttpInfo($spaceId, $filter = null) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionCountPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling count');
 		}
 		// header params
 		$headerParams = array();
@@ -262,37 +266,37 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionCreatePost
+	 * Operation create
 	 *
-	 * create
+	 * Create
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\SubscriptionCreateRequest $createRequest  (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\SubscriptionVersion
 	 */
-	public function subscriptionCreatePost($spaceId, $createRequest) {
-		return $this->subscriptionCreatePostWithHttpInfo($spaceId, $createRequest)->getData();
+	public function create($spaceId, $createRequest) {
+		return $this->createWithHttpInfo($spaceId, $createRequest)->getData();
 	}
 
 	/**
-	 * Operation subscriptionCreatePostWithHttpInfo
+	 * Operation createWithHttpInfo
 	 *
-	 * create
+	 * Create
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\SubscriptionCreateRequest $createRequest  (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionCreatePostWithHttpInfo($spaceId, $createRequest) {
+	public function createWithHttpInfo($spaceId, $createRequest) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionCreatePost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling create');
 		}
 		// verify the required parameter 'createRequest' is set
 		if ($createRequest === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $createRequest when calling subscriptionCreatePost');
+			throw new \InvalidArgumentException('Missing the required parameter $createRequest when calling create');
 		}
 		// header params
 		$headerParams = array();
@@ -361,7 +365,7 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionInitializePost
+	 * Operation initialize
 	 *
 	 * initialize
 	 *
@@ -370,12 +374,12 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\SubscriptionCharge
 	 */
-	public function subscriptionInitializePost($spaceId, $subscriptionId) {
-		return $this->subscriptionInitializePostWithHttpInfo($spaceId, $subscriptionId)->getData();
+	public function initialize($spaceId, $subscriptionId) {
+		return $this->initializeWithHttpInfo($spaceId, $subscriptionId)->getData();
 	}
 
 	/**
-	 * Operation subscriptionInitializePostWithHttpInfo
+	 * Operation initializeWithHttpInfo
 	 *
 	 * initialize
 	 *
@@ -384,14 +388,14 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionInitializePostWithHttpInfo($spaceId, $subscriptionId) {
+	public function initializeWithHttpInfo($spaceId, $subscriptionId) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionInitializePost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling initialize');
 		}
 		// verify the required parameter 'subscriptionId' is set
 		if ($subscriptionId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling subscriptionInitializePost');
+			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling initialize');
 		}
 		// header params
 		$headerParams = array();
@@ -458,7 +462,7 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionInitializeSubscriberPresentPost
+	 * Operation initializeSubscriberPresent
 	 *
 	 * initializeSubscriberPresent
 	 *
@@ -469,12 +473,12 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\SubscriptionCharge
 	 */
-	public function subscriptionInitializeSubscriberPresentPost($spaceId, $subscriptionId, $successUrl = null, $failedUrl = null) {
-		return $this->subscriptionInitializeSubscriberPresentPostWithHttpInfo($spaceId, $subscriptionId, $successUrl, $failedUrl)->getData();
+	public function initializeSubscriberPresent($spaceId, $subscriptionId, $successUrl = null, $failedUrl = null) {
+		return $this->initializeSubscriberPresentWithHttpInfo($spaceId, $subscriptionId, $successUrl, $failedUrl)->getData();
 	}
 
 	/**
-	 * Operation subscriptionInitializeSubscriberPresentPostWithHttpInfo
+	 * Operation initializeSubscriberPresentWithHttpInfo
 	 *
 	 * initializeSubscriberPresent
 	 *
@@ -485,14 +489,14 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionInitializeSubscriberPresentPostWithHttpInfo($spaceId, $subscriptionId, $successUrl = null, $failedUrl = null) {
+	public function initializeSubscriberPresentWithHttpInfo($spaceId, $subscriptionId, $successUrl = null, $failedUrl = null) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionInitializeSubscriberPresentPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling initializeSubscriberPresent');
 		}
 		// verify the required parameter 'subscriptionId' is set
 		if ($subscriptionId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling subscriptionInitializeSubscriberPresentPost');
+			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling initializeSubscriberPresent');
 		}
 		// header params
 		$headerParams = array();
@@ -550,6 +554,10 @@ class SubscriptionService {
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\SubscriptionCharge', $e->getResponseHeaders());
 					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
 					break;
+				case 409:
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
+					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
+					break;
 				case 442:
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
 					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
@@ -565,37 +573,37 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionReadGet
+	 * Operation read
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $spaceId  (required)
 	 * @param int $id The id of the subscription which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\Subscription
 	 */
-	public function subscriptionReadGet($spaceId, $id) {
-		return $this->subscriptionReadGetWithHttpInfo($spaceId, $id)->getData();
+	public function read($spaceId, $id) {
+		return $this->readWithHttpInfo($spaceId, $id)->getData();
 	}
 
 	/**
-	 * Operation subscriptionReadGetWithHttpInfo
+	 * Operation readWithHttpInfo
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $spaceId  (required)
 	 * @param int $id The id of the subscription which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionReadGetWithHttpInfo($spaceId, $id) {
+	public function readWithHttpInfo($spaceId, $id) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling read');
 		}
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling subscriptionReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling read');
 		}
 		// header params
 		$headerParams = array();
@@ -662,37 +670,37 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionSearchPost
+	 * Operation search
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the subscriptions which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\Subscription[]
 	 */
-	public function subscriptionSearchPost($spaceId, $query) {
-		return $this->subscriptionSearchPostWithHttpInfo($spaceId, $query)->getData();
+	public function search($spaceId, $query) {
+		return $this->searchWithHttpInfo($spaceId, $query)->getData();
 	}
 
 	/**
-	 * Operation subscriptionSearchPostWithHttpInfo
+	 * Operation searchWithHttpInfo
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the subscriptions which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionSearchPostWithHttpInfo($spaceId, $query) {
+	public function searchWithHttpInfo($spaceId, $query) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionSearchPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling search');
 		}
 		// verify the required parameter 'query' is set
 		if ($query === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $query when calling subscriptionSearchPost');
+			throw new \InvalidArgumentException('Missing the required parameter $query when calling search');
 		}
 		// header params
 		$headerParams = array();
@@ -761,7 +769,7 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionTerminatePost
+	 * Operation terminate
 	 *
 	 * terminate
 	 *
@@ -771,12 +779,12 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return void
 	 */
-	public function subscriptionTerminatePost($spaceId, $subscriptionId, $respectTerminationPeriod) {
-		return $this->subscriptionTerminatePostWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod)->getData();
+	public function terminate($spaceId, $subscriptionId, $respectTerminationPeriod) {
+		return $this->terminateWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod)->getData();
 	}
 
 	/**
-	 * Operation subscriptionTerminatePostWithHttpInfo
+	 * Operation terminateWithHttpInfo
 	 *
 	 * terminate
 	 *
@@ -786,18 +794,18 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionTerminatePostWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod) {
+	public function terminateWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionTerminatePost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling terminate');
 		}
 		// verify the required parameter 'subscriptionId' is set
 		if ($subscriptionId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling subscriptionTerminatePost');
+			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling terminate');
 		}
 		// verify the required parameter 'respectTerminationPeriod' is set
 		if ($respectTerminationPeriod === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $respectTerminationPeriod when calling subscriptionTerminatePost');
+			throw new \InvalidArgumentException('Missing the required parameter $respectTerminationPeriod when calling terminate');
 		}
 		// header params
 		$headerParams = array();
@@ -863,7 +871,7 @@ class SubscriptionService {
 	}
 
 	/**
-	 * Operation subscriptionUpdateProductVersionPost
+	 * Operation updateProductVersion
 	 *
 	 * update product version
 	 *
@@ -873,12 +881,12 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\SubscriptionVersion
 	 */
-	public function subscriptionUpdateProductVersionPost($spaceId, $subscriptionId, $respectTerminationPeriod) {
-		return $this->subscriptionUpdateProductVersionPostWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod)->getData();
+	public function updateProductVersion($spaceId, $subscriptionId, $respectTerminationPeriod) {
+		return $this->updateProductVersionWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod)->getData();
 	}
 
 	/**
-	 * Operation subscriptionUpdateProductVersionPostWithHttpInfo
+	 * Operation updateProductVersionWithHttpInfo
 	 *
 	 * update product version
 	 *
@@ -888,18 +896,18 @@ class SubscriptionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function subscriptionUpdateProductVersionPostWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod) {
+	public function updateProductVersionWithHttpInfo($spaceId, $subscriptionId, $respectTerminationPeriod) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling subscriptionUpdateProductVersionPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling updateProductVersion');
 		}
 		// verify the required parameter 'subscriptionId' is set
 		if ($subscriptionId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling subscriptionUpdateProductVersionPost');
+			throw new \InvalidArgumentException('Missing the required parameter $subscriptionId when calling updateProductVersion');
 		}
 		// verify the required parameter 'respectTerminationPeriod' is set
 		if ($respectTerminationPeriod === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $respectTerminationPeriod when calling subscriptionUpdateProductVersionPost');
+			throw new \InvalidArgumentException('Missing the required parameter $respectTerminationPeriod when calling updateProductVersion');
 		}
 		// header params
 		$headerParams = array();
@@ -952,6 +960,10 @@ class SubscriptionService {
 			switch ($e->getCode()) {
 				case 200:
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\SubscriptionVersion', $e->getResponseHeaders());
+					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
+					break;
+				case 409:
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
 					$e = new ApiException($responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
 					break;
 				case 442:

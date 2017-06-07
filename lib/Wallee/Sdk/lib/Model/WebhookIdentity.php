@@ -51,7 +51,7 @@ class WebhookIdentity  {
 		'id' => 'int',
 		'linkedSpaceId' => 'int',
 		'name' => 'string',
-		'plannedPurgeDate' => 'string',
+		'plannedPurgeDate' => '\DateTime',
 		'state' => 'string',
 		'version' => 'int'	);
 
@@ -112,7 +112,7 @@ class WebhookIdentity  {
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
@@ -221,7 +221,7 @@ class WebhookIdentity  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -230,7 +230,7 @@ class WebhookIdentity  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return WebhookIdentity
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {
@@ -296,9 +296,6 @@ class WebhookIdentity  {
 	 */
 	public function validate() {
 
-		if ($this->getName() === null) {
-			throw new ValidationException("'name' can't be null", 'name', $this);
-		}
 		$allowed_values = array("CREATE", "ACTIVE", "INACTIVE", "DELETING", "DELETED");
 		if (!in_array($this->getState(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'state', must be one of #{allowed_values}.", 'state', $this);

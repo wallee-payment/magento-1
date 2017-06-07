@@ -82,7 +82,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
             $spaceId = $website->getConfig('wallee_payment/general/space_id');
             if ($spaceId && ! in_array($spaceId, $spaceIds)) {
                 $paymentMethodConfigurationService = new \Wallee\Sdk\Service\PaymentMethodConfigurationService($this->getHelper()->getApiClient());
-                $configurations = $paymentMethodConfigurationService->paymentMethodConfigurationSearchPost($spaceId, new \Wallee\Sdk\Model\EntityQuery());
+                $configurations = $paymentMethodConfigurationService->search($spaceId, new \Wallee\Sdk\Model\EntityQuery());
                 foreach ($configurations as $configuration) {
                     /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $method */
                     $method = null;

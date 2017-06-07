@@ -32,7 +32,7 @@ class Wallee_Payment_Model_Service_TransactionCompletion extends Wallee_Payment_
      */
     public function complete(Mage_Sales_Model_Order_Payment $payment)
     {
-        return $this->getTransactionCompletionService()->transactionCompletionCompleteOnlinePost(
+        return $this->getTransactionCompletionService()->completeOnline(
             $payment->getOrder()
             ->getWalleeSpaceId(), $payment->getOrder()
             ->getWalleeTransactionId()

@@ -52,21 +52,21 @@ class Transaction  {
 		'allowedPaymentMethodBrands' => '\Wallee\Sdk\Model\PaymentMethodBrand[]',
 		'allowedPaymentMethodConfigurations' => 'int[]',
 		'authorizationAmount' => 'float',
-		'authorizedOn' => 'string',
+		'authorizedOn' => '\DateTime',
 		'billingAddress' => '\Wallee\Sdk\Model\Address',
 		'chargeRetryEnabled' => 'bool',
-		'completedOn' => 'string',
-		'completionTimeoutOn' => 'string',
+		'completedOn' => '\DateTime',
+		'completionTimeoutOn' => '\DateTime',
 		'confirmedBy' => 'int',
-		'confirmedOn' => 'string',
+		'confirmedOn' => '\DateTime',
 		'createdBy' => 'int',
-		'createdOn' => 'string',
+		'createdOn' => '\DateTime',
 		'currency' => 'string',
 		'customerEmailAddress' => 'string',
 		'customerId' => 'string',
 		'customersPresence' => 'string',
-		'endOfLife' => 'string',
-		'failedOn' => 'string',
+		'endOfLife' => '\DateTime',
+		'failedOn' => '\DateTime',
 		'failedUrl' => 'string',
 		'group' => '\Wallee\Sdk\Model\TransactionGroup',
 		'id' => 'int',
@@ -78,8 +78,8 @@ class Transaction  {
 		'linkedSpaceId' => 'int',
 		'merchantReference' => 'string',
 		'paymentConnectorConfiguration' => '\Wallee\Sdk\Model\PaymentConnectorConfiguration',
-		'plannedPurgeDate' => 'string',
-		'processingOn' => 'string',
+		'plannedPurgeDate' => '\DateTime',
+		'processingOn' => '\DateTime',
 		'refundedAmount' => 'float',
 		'shippingAddress' => '\Wallee\Sdk\Model\Address',
 		'shippingMethod' => 'string',
@@ -184,7 +184,7 @@ class Transaction  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $authorizedOn;
 
@@ -203,14 +203,14 @@ class Transaction  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $completedOn;
 
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $completionTimeoutOn;
 
@@ -224,7 +224,7 @@ class Transaction  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $confirmedOn;
 
@@ -238,7 +238,7 @@ class Transaction  {
 	/**
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $createdOn;
 
@@ -273,14 +273,14 @@ class Transaction  {
 	/**
 	 * The transaction's end of life indicates the date from which on no operation can be carried out anymore.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $endOfLife;
 
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $failedOn;
 
@@ -358,14 +358,14 @@ class Transaction  {
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $processingOn;
 
@@ -567,7 +567,7 @@ class Transaction  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getAuthorizedOn() {
 		return $this->authorizedOn;
@@ -576,7 +576,7 @@ class Transaction  {
 	/**
 	 * Sets authorizedOn.
 	 *
-	 * @param string $authorizedOn
+	 * @param \DateTime $authorizedOn
 	 * @return Transaction
 	 */
 	protected function setAuthorizedOn($authorizedOn) {
@@ -634,7 +634,7 @@ class Transaction  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getCompletedOn() {
 		return $this->completedOn;
@@ -643,7 +643,7 @@ class Transaction  {
 	/**
 	 * Sets completedOn.
 	 *
-	 * @param string $completedOn
+	 * @param \DateTime $completedOn
 	 * @return Transaction
 	 */
 	protected function setCompletedOn($completedOn) {
@@ -657,7 +657,7 @@ class Transaction  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getCompletionTimeoutOn() {
 		return $this->completionTimeoutOn;
@@ -666,7 +666,7 @@ class Transaction  {
 	/**
 	 * Sets completionTimeoutOn.
 	 *
-	 * @param string $completionTimeoutOn
+	 * @param \DateTime $completionTimeoutOn
 	 * @return Transaction
 	 */
 	protected function setCompletionTimeoutOn($completionTimeoutOn) {
@@ -703,7 +703,7 @@ class Transaction  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getConfirmedOn() {
 		return $this->confirmedOn;
@@ -712,7 +712,7 @@ class Transaction  {
 	/**
 	 * Sets confirmedOn.
 	 *
-	 * @param string $confirmedOn
+	 * @param \DateTime $confirmedOn
 	 * @return Transaction
 	 */
 	protected function setConfirmedOn($confirmedOn) {
@@ -749,7 +749,7 @@ class Transaction  {
 	 *
 	 * The created on date indicates the date on which the entity was stored into the database.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getCreatedOn() {
 		return $this->createdOn;
@@ -758,7 +758,7 @@ class Transaction  {
 	/**
 	 * Sets createdOn.
 	 *
-	 * @param string $createdOn
+	 * @param \DateTime $createdOn
 	 * @return Transaction
 	 */
 	protected function setCreatedOn($createdOn) {
@@ -855,7 +855,7 @@ class Transaction  {
 	 */
 	protected function setCustomersPresence($customersPresence) {
 		$allowed_values = array('NOT_PRESENT', 'VIRTUAL_PRESENT', 'PHYSICAL_PRESENT');
-		if ((!in_array($customersPresence, $allowed_values))) {
+		if (!is_null($customersPresence) && (!in_array($customersPresence, $allowed_values))) {
 			throw new \InvalidArgumentException("Invalid value for 'customersPresence', must be one of 'NOT_PRESENT', 'VIRTUAL_PRESENT', 'PHYSICAL_PRESENT'");
 		}
 		$this->customersPresence = $customersPresence;
@@ -868,7 +868,7 @@ class Transaction  {
 	 *
 	 * The transaction's end of life indicates the date from which on no operation can be carried out anymore.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getEndOfLife() {
 		return $this->endOfLife;
@@ -877,7 +877,7 @@ class Transaction  {
 	/**
 	 * Sets endOfLife.
 	 *
-	 * @param string $endOfLife
+	 * @param \DateTime $endOfLife
 	 * @return Transaction
 	 */
 	protected function setEndOfLife($endOfLife) {
@@ -891,7 +891,7 @@ class Transaction  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getFailedOn() {
 		return $this->failedOn;
@@ -900,7 +900,7 @@ class Transaction  {
 	/**
 	 * Sets failedOn.
 	 *
-	 * @param string $failedOn
+	 * @param \DateTime $failedOn
 	 * @return Transaction
 	 */
 	protected function setFailedOn($failedOn) {
@@ -1161,7 +1161,7 @@ class Transaction  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -1170,7 +1170,7 @@ class Transaction  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return Transaction
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {
@@ -1184,7 +1184,7 @@ class Transaction  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getProcessingOn() {
 		return $this->processingOn;
@@ -1193,7 +1193,7 @@ class Transaction  {
 	/**
 	 * Sets processingOn.
 	 *
-	 * @param string $processingOn
+	 * @param \DateTime $processingOn
 	 * @return Transaction
 	 */
 	protected function setProcessingOn($processingOn) {
@@ -1309,7 +1309,7 @@ class Transaction  {
 	 */
 	protected function setState($state) {
 		$allowed_values = array('CREATE', 'PENDING', 'CONFIRMED', 'PROCESSING', 'FAILED', 'AUTHORIZED', 'VOIDED', 'COMPLETED', 'FULFILL', 'DECLINE');
-		if ((!in_array($state, $allowed_values))) {
+		if (!is_null($state) && (!in_array($state, $allowed_values))) {
 			throw new \InvalidArgumentException("Invalid value for 'state', must be one of 'CREATE', 'PENDING', 'CONFIRMED', 'PROCESSING', 'FAILED', 'AUTHORIZED', 'VOIDED', 'COMPLETED', 'FULFILL', 'DECLINE'");
 		}
 		$this->state = $state;
@@ -1414,26 +1414,11 @@ class Transaction  {
 	 */
 	public function validate() {
 
-		if ($this->getCreatedOn() === null) {
-			throw new ValidationException("'createdOn' can't be null", 'createdOn', $this);
-		}
-		if ($this->getCurrency() === null) {
-			throw new ValidationException("'currency' can't be null", 'currency', $this);
-		}
-		if ($this->getCustomersPresence() === null) {
-			throw new ValidationException("'customersPresence' can't be null", 'customersPresence', $this);
-		}
 		$allowed_values = array("NOT_PRESENT", "VIRTUAL_PRESENT", "PHYSICAL_PRESENT");
 		if (!in_array($this->getCustomersPresence(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'customersPresence', must be one of #{allowed_values}.", 'customersPresence', $this);
 		}
 
-		if ($this->getLineItems() === null) {
-			throw new ValidationException("'lineItems' can't be null", 'lineItems', $this);
-		}
-		if ($this->getState() === null) {
-			throw new ValidationException("'state' can't be null", 'state', $this);
-		}
 		$allowed_values = array("CREATE", "PENDING", "CONFIRMED", "PROCESSING", "FAILED", "AUTHORIZED", "VOIDED", "COMPLETED", "FULFILL", "DECLINE");
 		if (!in_array($this->getState(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'state', must be one of #{allowed_values}.", 'state', $this);

@@ -114,7 +114,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
         }
 
         $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
-        $document = $service->transactionGetInvoiceDocumentGet($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
+        $document = $service->getInvoiceDocument($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
         $this->download($document);
     }
 
@@ -131,7 +131,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
         }
 
         $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
-        $document = $service->transactionGetPackingSlipGet($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
+        $document = $service->getPackingSlip($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
         $this->download($document);
     }
 
@@ -212,7 +212,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     {
         $customerId = Mage::getSingleton('customer/session')->getCustomerId();
         $availableStates = Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates();
-        if ($order->getId() && $order->getCustomerId() && ($order->getCustomerId() == $customerId) && in_array($order->getState(), $availableStates, $strict = true)) {
+        if ($order->getId() && $order->getCustomerId() && ($order->getCustomerId() == $customerId) && in_array($order->getState(), $availableStates)) {
             return true;
         }
 

@@ -159,7 +159,7 @@ class SubscriptionChargeCreate extends SubscriptionCharge  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedExecutionDate() {
 		return parent::getPlannedExecutionDate();
@@ -168,7 +168,7 @@ class SubscriptionChargeCreate extends SubscriptionCharge  {
 	/**
 	 * Sets plannedExecutionDate.
 	 *
-	 * @param string $plannedExecutionDate
+	 * @param \DateTime $plannedExecutionDate
 	 * @return SubscriptionChargeCreate
 	 */
 	public function setPlannedExecutionDate($plannedExecutionDate) {

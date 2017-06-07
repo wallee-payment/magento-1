@@ -385,9 +385,6 @@ class ProductPeriodFee  {
 	 */
 	public function validate() {
 
-		if ($this->getPeriodFee() === null) {
-			throw new ValidationException("'periodFee' can't be null", 'periodFee', $this);
-		}
 		$allowed_values = array("METERED_FEE", "SETUP_FEE", "PERIOD_FEE");
 		if (!in_array($this->getType(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'type', must be one of #{allowed_values}.", 'type', $this);

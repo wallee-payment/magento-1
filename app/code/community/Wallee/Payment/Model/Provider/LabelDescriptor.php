@@ -46,7 +46,7 @@ class Wallee_Payment_Model_Provider_LabelDescriptor extends Wallee_Payment_Model
     protected function fetchData()
     {
         $labelDescriptorService = new \Wallee\Sdk\Service\LabelDescriptorService(Mage::helper('wallee_payment')->getApiClient());
-        return $labelDescriptorService->labelDescriptionServiceAllGet();
+        return $labelDescriptorService->all();
     }
 
     protected function getId($entry)

@@ -249,7 +249,7 @@ class PaymentConnector  {
 	 */
 	protected function setDataCollectionType($dataCollectionType) {
 		$allowed_values = array('ONSITE', 'OFFSITE');
-		if ((!in_array($dataCollectionType, $allowed_values))) {
+		if (!is_null($dataCollectionType) && (!in_array($dataCollectionType, $allowed_values))) {
 			throw new \InvalidArgumentException("Invalid value for 'dataCollectionType', must be one of 'ONSITE', 'OFFSITE'");
 		}
 		$this->dataCollectionType = $dataCollectionType;
@@ -492,17 +492,11 @@ class PaymentConnector  {
 	 */
 	public function validate() {
 
-		if ($this->getDataCollectionType() === null) {
-			throw new ValidationException("'dataCollectionType' can't be null", 'dataCollectionType', $this);
-		}
 		$allowed_values = array("ONSITE", "OFFSITE");
 		if (!in_array($this->getDataCollectionType(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'dataCollectionType', must be one of #{allowed_values}.", 'dataCollectionType', $this);
 		}
 
-		if ($this->getName() === null) {
-			throw new ValidationException("'name' can't be null", 'name', $this);
-		}
 		$allowed_values = array("CUSTOMER", "MERCHANT", "THIRD_PARTY");
 		if (!in_array($this->getPrimaryRiskTaker(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'primaryRiskTaker', must be one of #{allowed_values}.", 'primaryRiskTaker', $this);

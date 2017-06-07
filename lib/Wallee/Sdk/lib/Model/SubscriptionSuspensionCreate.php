@@ -154,7 +154,7 @@ class SubscriptionSuspensionCreate extends SubscriptionSuspensionRunning  {
 	 *
 	 * The planned end date of the suspension identifies the date on which the suspension will be ended automatically.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedEndDate() {
 		return parent::getPlannedEndDate();
@@ -163,7 +163,7 @@ class SubscriptionSuspensionCreate extends SubscriptionSuspensionRunning  {
 	/**
 	 * Sets plannedEndDate.
 	 *
-	 * @param string $plannedEndDate
+	 * @param \DateTime $plannedEndDate
 	 * @return SubscriptionSuspensionCreate
 	 */
 	public function setPlannedEndDate($plannedEndDate) {

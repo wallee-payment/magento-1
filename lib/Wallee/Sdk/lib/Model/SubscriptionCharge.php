@@ -48,22 +48,22 @@ class SubscriptionCharge  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'createdOn' => 'string',
+		'createdOn' => '\DateTime',
 		'discardedBy' => 'int',
-		'discardedOn' => 'string',
+		'discardedOn' => '\DateTime',
 		'externalId' => 'string',
-		'failedOn' => 'string',
+		'failedOn' => '\DateTime',
 		'failedUrl' => 'string',
 		'id' => 'int',
 		'ledgerEntries' => '\Wallee\Sdk\Model\SubscriptionLedgerEntry[]',
 		'linkedSpaceId' => 'int',
-		'plannedExecutionDate' => 'string',
-		'plannedPurgeDate' => 'string',
+		'plannedExecutionDate' => '\DateTime',
+		'plannedPurgeDate' => '\DateTime',
 		'processingType' => 'string',
 		'reference' => 'string',
 		'state' => 'string',
 		'subscription' => '\Wallee\Sdk\Model\Subscription',
-		'succeedOn' => 'string',
+		'succeedOn' => '\DateTime',
 		'successUrl' => 'string',
 		'transaction' => '\Wallee\Sdk\Model\Transaction',
 		'type' => 'string',
@@ -143,7 +143,7 @@ class SubscriptionCharge  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $createdOn;
 
@@ -157,7 +157,7 @@ class SubscriptionCharge  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $discardedOn;
 
@@ -171,7 +171,7 @@ class SubscriptionCharge  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $failedOn;
 
@@ -204,14 +204,14 @@ class SubscriptionCharge  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedExecutionDate;
 
 	/**
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $plannedPurgeDate;
 
@@ -244,7 +244,7 @@ class SubscriptionCharge  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \DateTime
 	 */
 	private $succeedOn;
 
@@ -307,7 +307,7 @@ class SubscriptionCharge  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getCreatedOn() {
 		return $this->createdOn;
@@ -316,7 +316,7 @@ class SubscriptionCharge  {
 	/**
 	 * Sets createdOn.
 	 *
-	 * @param string $createdOn
+	 * @param \DateTime $createdOn
 	 * @return SubscriptionCharge
 	 */
 	protected function setCreatedOn($createdOn) {
@@ -353,7 +353,7 @@ class SubscriptionCharge  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getDiscardedOn() {
 		return $this->discardedOn;
@@ -362,7 +362,7 @@ class SubscriptionCharge  {
 	/**
 	 * Sets discardedOn.
 	 *
-	 * @param string $discardedOn
+	 * @param \DateTime $discardedOn
 	 * @return SubscriptionCharge
 	 */
 	protected function setDiscardedOn($discardedOn) {
@@ -399,7 +399,7 @@ class SubscriptionCharge  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getFailedOn() {
 		return $this->failedOn;
@@ -408,7 +408,7 @@ class SubscriptionCharge  {
 	/**
 	 * Sets failedOn.
 	 *
-	 * @param string $failedOn
+	 * @param \DateTime $failedOn
 	 * @return SubscriptionCharge
 	 */
 	protected function setFailedOn($failedOn) {
@@ -512,7 +512,7 @@ class SubscriptionCharge  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedExecutionDate() {
 		return $this->plannedExecutionDate;
@@ -521,7 +521,7 @@ class SubscriptionCharge  {
 	/**
 	 * Sets plannedExecutionDate.
 	 *
-	 * @param string $plannedExecutionDate
+	 * @param \DateTime $plannedExecutionDate
 	 * @return SubscriptionCharge
 	 */
 	protected function setPlannedExecutionDate($plannedExecutionDate) {
@@ -535,7 +535,7 @@ class SubscriptionCharge  {
 	 *
 	 * The planned purge date indicates when the entity is permanently removed. When the date is null the entity is not planned to be removed.
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getPlannedPurgeDate() {
 		return $this->plannedPurgeDate;
@@ -544,7 +544,7 @@ class SubscriptionCharge  {
 	/**
 	 * Sets plannedPurgeDate.
 	 *
-	 * @param string $plannedPurgeDate
+	 * @param \DateTime $plannedPurgeDate
 	 * @return SubscriptionCharge
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {
@@ -572,7 +572,7 @@ class SubscriptionCharge  {
 	 */
 	protected function setProcessingType($processingType) {
 		$allowed_values = array('SYNCHRONOUS', 'CHARGE_FLOW');
-		if ((!in_array($processingType, $allowed_values))) {
+		if (!is_null($processingType) && (!in_array($processingType, $allowed_values))) {
 			throw new \InvalidArgumentException("Invalid value for 'processingType', must be one of 'SYNCHRONOUS', 'CHARGE_FLOW'");
 		}
 		$this->processingType = $processingType;
@@ -656,7 +656,7 @@ class SubscriptionCharge  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getSucceedOn() {
 		return $this->succeedOn;
@@ -665,7 +665,7 @@ class SubscriptionCharge  {
 	/**
 	 * Sets succeedOn.
 	 *
-	 * @param string $succeedOn
+	 * @param \DateTime $succeedOn
 	 * @return SubscriptionCharge
 	 */
 	protected function setSucceedOn($succeedOn) {
@@ -775,12 +775,6 @@ class SubscriptionCharge  {
 	 */
 	public function validate() {
 
-		if ($this->getExternalId() === null) {
-			throw new ValidationException("'externalId' can't be null", 'externalId', $this);
-		}
-		if ($this->getProcessingType() === null) {
-			throw new ValidationException("'processingType' can't be null", 'processingType', $this);
-		}
 		$allowed_values = array("SYNCHRONOUS", "CHARGE_FLOW");
 		if (!in_array($this->getProcessingType(), $allowed_values)) {
 			throw new ValidationException("invalid value for 'processingType', must be one of #{allowed_values}.", 'processingType', $this);

@@ -68,7 +68,7 @@ class TransactionCompletionService {
 
 
 	/**
-	 * Operation transactionCompletionCompleteOfflinePost
+	 * Operation completeOffline
 	 *
 	 * completeOffline
 	 *
@@ -77,12 +77,12 @@ class TransactionCompletionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\TransactionCompletion
 	 */
-	public function transactionCompletionCompleteOfflinePost($spaceId, $id) {
-		return $this->transactionCompletionCompleteOfflinePostWithHttpInfo($spaceId, $id)->getData();
+	public function completeOffline($spaceId, $id) {
+		return $this->completeOfflineWithHttpInfo($spaceId, $id)->getData();
 	}
 
 	/**
-	 * Operation transactionCompletionCompleteOfflinePostWithHttpInfo
+	 * Operation completeOfflineWithHttpInfo
 	 *
 	 * completeOffline
 	 *
@@ -91,14 +91,14 @@ class TransactionCompletionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function transactionCompletionCompleteOfflinePostWithHttpInfo($spaceId, $id) {
+	public function completeOfflineWithHttpInfo($spaceId, $id) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling transactionCompletionCompleteOfflinePost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling completeOffline');
 		}
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling transactionCompletionCompleteOfflinePost');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling completeOffline');
 		}
 		// header params
 		$headerParams = array();
@@ -165,7 +165,7 @@ class TransactionCompletionService {
 	}
 
 	/**
-	 * Operation transactionCompletionCompleteOnlinePost
+	 * Operation completeOnline
 	 *
 	 * completeOnline
 	 *
@@ -174,12 +174,12 @@ class TransactionCompletionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\TransactionCompletion
 	 */
-	public function transactionCompletionCompleteOnlinePost($spaceId, $id) {
-		return $this->transactionCompletionCompleteOnlinePostWithHttpInfo($spaceId, $id)->getData();
+	public function completeOnline($spaceId, $id) {
+		return $this->completeOnlineWithHttpInfo($spaceId, $id)->getData();
 	}
 
 	/**
-	 * Operation transactionCompletionCompleteOnlinePostWithHttpInfo
+	 * Operation completeOnlineWithHttpInfo
 	 *
 	 * completeOnline
 	 *
@@ -188,14 +188,14 @@ class TransactionCompletionService {
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function transactionCompletionCompleteOnlinePostWithHttpInfo($spaceId, $id) {
+	public function completeOnlineWithHttpInfo($spaceId, $id) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling transactionCompletionCompleteOnlinePost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling completeOnline');
 		}
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling transactionCompletionCompleteOnlinePost');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling completeOnline');
 		}
 		// header params
 		$headerParams = array();
@@ -262,33 +262,33 @@ class TransactionCompletionService {
 	}
 
 	/**
-	 * Operation transactionCompletionCountPost
+	 * Operation count
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the entities which are used to calculate the count. (optional)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return int
 	 */
-	public function transactionCompletionCountPost($spaceId, $filter = null) {
-		return $this->transactionCompletionCountPostWithHttpInfo($spaceId, $filter)->getData();
+	public function count($spaceId, $filter = null) {
+		return $this->countWithHttpInfo($spaceId, $filter)->getData();
 	}
 
 	/**
-	 * Operation transactionCompletionCountPostWithHttpInfo
+	 * Operation countWithHttpInfo
 	 *
-	 * count
+	 * Count
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the entities which are used to calculate the count. (optional)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function transactionCompletionCountPostWithHttpInfo($spaceId, $filter = null) {
+	public function countWithHttpInfo($spaceId, $filter = null) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling transactionCompletionCountPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling count');
 		}
 		// header params
 		$headerParams = array();
@@ -357,37 +357,37 @@ class TransactionCompletionService {
 	}
 
 	/**
-	 * Operation transactionCompletionReadGet
+	 * Operation read
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $spaceId  (required)
 	 * @param int $id The id of the transaction completions which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\TransactionCompletion
 	 */
-	public function transactionCompletionReadGet($spaceId, $id) {
-		return $this->transactionCompletionReadGetWithHttpInfo($spaceId, $id)->getData();
+	public function read($spaceId, $id) {
+		return $this->readWithHttpInfo($spaceId, $id)->getData();
 	}
 
 	/**
-	 * Operation transactionCompletionReadGetWithHttpInfo
+	 * Operation readWithHttpInfo
 	 *
-	 * read
+	 * Read
 	 *
 	 * @param int $spaceId  (required)
 	 * @param int $id The id of the transaction completions which should be returned. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function transactionCompletionReadGetWithHttpInfo($spaceId, $id) {
+	public function readWithHttpInfo($spaceId, $id) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling transactionCompletionReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling read');
 		}
 		// verify the required parameter 'id' is set
 		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling transactionCompletionReadGet');
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling read');
 		}
 		// header params
 		$headerParams = array();
@@ -454,37 +454,37 @@ class TransactionCompletionService {
 	}
 
 	/**
-	 * Operation transactionCompletionSearchPost
+	 * Operation search
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the transaction completions which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return \Wallee\Sdk\Model\TransactionCompletion[]
 	 */
-	public function transactionCompletionSearchPost($spaceId, $query) {
-		return $this->transactionCompletionSearchPostWithHttpInfo($spaceId, $query)->getData();
+	public function search($spaceId, $query) {
+		return $this->searchWithHttpInfo($spaceId, $query)->getData();
 	}
 
 	/**
-	 * Operation transactionCompletionSearchPostWithHttpInfo
+	 * Operation searchWithHttpInfo
 	 *
-	 * search
+	 * Search
 	 *
 	 * @param int $spaceId  (required)
 	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the transaction completions which are returned by the search. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function transactionCompletionSearchPostWithHttpInfo($spaceId, $query) {
+	public function searchWithHttpInfo($spaceId, $query) {
 		// verify the required parameter 'spaceId' is set
 		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling transactionCompletionSearchPost');
+			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling search');
 		}
 		// verify the required parameter 'query' is set
 		if ($query === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $query when calling transactionCompletionSearchPost');
+			throw new \InvalidArgumentException('Missing the required parameter $query when calling search');
 		}
 		// header params
 		$headerParams = array();

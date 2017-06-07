@@ -4,7 +4,7 @@
  *
  * This library allows to interact with the Wallee payment service.
  * Wallee SDK: 1.0.0
- *
+ * 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,36 +26,35 @@
  * would cause the function to attempt to load the \Wallee\Sdk\Baz\Qux class
  * from /path/to/project/lib/Baz/Qux.php:
  *
- * new \Wallee\Sdk\Baz\Qux;
+ *	  new \Wallee\Sdk\Baz\Qux;
  *
- * @param string $class
- *            the fully-qualified class name.
+ * @param string $class the fully-qualified class name.
  */
 spl_autoload_register(function ($class) {
 
-    // project-specific namespace prefix
-    $prefix = 'Wallee\\Sdk\\';
+	// project-specific namespace prefix
+	$prefix = 'Wallee\\Sdk\\';
 
-    // base directory for the namespace prefix
-    $base_dir = __DIR__ . '/lib/';
+	// base directory for the namespace prefix
+	$base_dir = __DIR__ . '/lib/';
 
-    // does the class use the namespace prefix?
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) {
-        // no, move to the next registered autoloader
-        return;
-    }
+	// does the class use the namespace prefix?
+	$len = strlen($prefix);
+	if (strncmp($prefix, $class, $len) !== 0) {
+		// no, move to the next registered autoloader
+		return;
+	}
 
-    // get the relative class name
-    $relative_class = substr($class, $len);
+	// get the relative class name
+	$relative_class = substr($class, $len);
 
-    // replace the namespace prefix with the base directory, replace namespace
-    // separators with directory separators in the relative class name, append
-    // with .php
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+	// replace the namespace prefix with the base directory, replace namespace
+	// separators with directory separators in the relative class name, append
+	// with .php
+	$file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
 
-    // if the file exists, require it
-    if (file_exists($file)) {
-        require $file;
-    }
-}, true, true);
+	// if the file exists, require it
+	if (file_exists($file)) {
+		require $file;
+	}
+});

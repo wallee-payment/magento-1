@@ -219,7 +219,7 @@ class AddressCreate extends Address  {
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \DateTime
 	 */
 	public function getDateOfBirth() {
 		return parent::getDateOfBirth();
@@ -228,7 +228,7 @@ class AddressCreate extends Address  {
 	/**
 	 * Sets dateOfBirth.
 	 *
-	 * @param string $dateOfBirth
+	 * @param \DateTime $dateOfBirth
 	 * @return AddressCreate
 	 */
 	public function setDateOfBirth($dateOfBirth) {

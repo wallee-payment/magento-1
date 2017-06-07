@@ -25,7 +25,7 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
     protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request)
     {
         $deliveryIndicationService = new \Wallee\Sdk\Service\DeliveryIndicationService(Mage::helper('wallee_payment')->getApiClient());
-        return $deliveryIndicationService->deliveryIndicationReadGet($request->getSpaceId(), $request->getEntityId());
+        return $deliveryIndicationService->read($request->getSpaceId(), $request->getEntityId());
     }
 
     protected function getOrderIncrementId($deliveryIndication)

@@ -24,23 +24,23 @@ namespace Wallee\Sdk\Model;
 use \Wallee\Sdk\ValidationException;
 
 /**
- * TenantDatabase model
+ * SubscriptionMetricUpdate model
  *
  * @category    Class
- * @description 
+ * @description A metric represents the usage of a resource that can be measured.
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class TenantDatabase  {
+class SubscriptionMetricUpdate extends SubscriptionMetric  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'TenantDatabase';
+	private static $swaggerModelName = 'SubscriptionMetric.Update';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,9 +48,7 @@ class TenantDatabase  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'id' => 'int',
-		'name' => 'string',
-		'version' => 'int'	);
+	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -58,31 +56,10 @@ class TenantDatabase  {
 	 * @return string[]
 	 */
 	public static function swaggerTypes() {
-		return self::$swaggerTypes;
+		return self::$swaggerTypes + parent::swaggerTypes();
 	}
 
 	
-
-	/**
-	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
-	 *
-	 * @var int
-	 */
-	private $id;
-
-	/**
-	 * The name of the database.
-	 *
-	 * @var string
-	 */
-	private $name;
-
-	/**
-	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
-	 *
-	 * @var int
-	 */
-	private $version;
 
 
 	/**
@@ -91,82 +68,53 @@ class TenantDatabase  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['id']) && $data['id'] != null) {
-			$this->setId($data['id']);
+		parent::__construct($data);
+
+		if (isset($data['description']) && $data['description'] != null) {
+			$this->setDescription($data['description']);
 		}
-		if (isset($data['version']) && $data['version'] != null) {
-			$this->setVersion($data['version']);
+		if (isset($data['name']) && $data['name'] != null) {
+			$this->setName($data['name']);
 		}
 	}
 
 
 	/**
-	 * Returns id.
+	 * Returns description.
 	 *
-	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
-	 *
-	 * @return int
+	 * @return \Wallee\Sdk\Model\DatabaseTranslatedStringUpdate
 	 */
-	public function getId() {
-		return $this->id;
+	public function getDescription() {
+		return parent::getDescription();
 	}
 
 	/**
-	 * Sets id.
+	 * Sets description.
 	 *
-	 * @param int $id
-	 * @return TenantDatabase
+	 * @param \Wallee\Sdk\Model\DatabaseTranslatedStringUpdate $description
+	 * @return SubscriptionMetricUpdate
 	 */
-	public function setId($id) {
-		$this->id = $id;
-
-		return $this;
+	public function setDescription($description) {
+		return parent::setDescription($description);
 	}
 
 	/**
 	 * Returns name.
 	 *
-	 * The name of the database.
-	 *
-	 * @return string
+	 * @return \Wallee\Sdk\Model\DatabaseTranslatedStringUpdate
 	 */
 	public function getName() {
-		return $this->name;
+		return parent::getName();
 	}
 
 	/**
 	 * Sets name.
 	 *
-	 * @param string $name
-	 * @return TenantDatabase
+	 * @param \Wallee\Sdk\Model\DatabaseTranslatedStringUpdate $name
+	 * @return SubscriptionMetricUpdate
 	 */
-	protected function setName($name) {
-		$this->name = $name;
-
-		return $this;
-	}
-
-	/**
-	 * Returns version.
-	 *
-	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
-	 *
-	 * @return int
-	 */
-	public function getVersion() {
-		return $this->version;
-	}
-
-	/**
-	 * Sets version.
-	 *
-	 * @param int $version
-	 * @return TenantDatabase
-	 */
-	public function setVersion($version) {
-		$this->version = $version;
-
-		return $this;
+	public function setName($name) {
+		return parent::setName($name);
 	}
 
 	/**
@@ -175,6 +123,7 @@ class TenantDatabase  {
 	 * @throws ValidationException
 	 */
 	public function validate() {
+		parent::validate();
 
 	}
 
