@@ -292,7 +292,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         $customerGroup = Mage::getModel('customer/group');
 
         $classId = $customerGroup->getTaxClassId($entity->getCustomerGroupId());
-        $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(), $classId, $entity->getStoreId());
+        $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(), $classId, $entity->getStore());
         $shippingTaxClass = Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_SHIPPING_TAX_CLASS, $entity->getStore());
 
         /* @var Mage_Tax_Model_Class $taxClass */
