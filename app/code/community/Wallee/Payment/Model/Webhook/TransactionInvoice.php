@@ -54,15 +54,15 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         );
         if (! $invoice || $invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_OPEN) {
             switch ($transactionInvoice->getState()) {
-                case \Wallee\Sdk\Model\TransactionInvoice::STATE_NOT_APPLICABLE:
-                case \Wallee\Sdk\Model\TransactionInvoice::STATE_PAID:
+                case \Wallee\Sdk\Model\TransactionInvoiceState::NOT_APPLICABLE:
+                case \Wallee\Sdk\Model\TransactionInvoiceState::PAID:
                     $this->capture(
                         $transactionInvoice->getCompletion()
                         ->getLineItemVersion()
                         ->getTransaction(), $order, $invoice, $transactionInvoice->getAmount()
                     );
                     break;
-                case \Wallee\Sdk\Model\TransactionInvoice::STATE_DERECOGNIZED:
+                case \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED:
                     $this->derecognize(
                         $transactionInvoice->getCompletion()
                         ->getLineItemVersion()
@@ -90,7 +90,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         }
 
         $this->sendOrderEmail($order);
-        if ($transaction->getState() == \Wallee\Sdk\Model\Transaction::STATE_COMPLETED) {
+        if ($transaction->getState() == \Wallee\Sdk\Model\TransactionState::COMPLETED) {
             $order->setStatus('processing_wallee');
         }
 

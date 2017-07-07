@@ -58,10 +58,10 @@ class Wallee_Payment_Model_Service_Abstract
      * @param string $operator
      * @return \Wallee\Sdk\Model\EntityQueryFilter
      */
-    protected function createEntityFilter($fieldName, $value, $operator = \Wallee\Sdk\Model\EntityQueryFilter::OPERATOR_EQUALS)
+    protected function createEntityFilter($fieldName, $value, $operator = \Wallee\Sdk\Model\CriteriaOperator::EQUALS)
     {
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
-        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_LEAF);
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::LEAF);
         $filter->setOperator($operator);
         $filter->setFieldName($fieldName);
         $filter->setValue($value);
@@ -75,7 +75,7 @@ class Wallee_Payment_Model_Service_Abstract
      * @param string $sortOrder
      * @return \Wallee\Sdk\Model\EntityQueryOrderBy
      */
-    protected function createEntityOrderBy($fieldName, $sortOrder = \Wallee\Sdk\Model\EntityQueryOrderBy::SORTING_DESC)
+    protected function createEntityOrderBy($fieldName, $sortOrder = \Wallee\Sdk\Model\EntityQueryOrderByType::DESC)
     {
         $orderBy = new \Wallee\Sdk\Model\EntityQueryOrderBy();
         $orderBy->setFieldName($fieldName);

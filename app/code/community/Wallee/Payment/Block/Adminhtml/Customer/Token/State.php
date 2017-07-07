@@ -21,9 +21,9 @@ class Wallee_Payment_Block_Adminhtml_Customer_Token_State extends Mage_Adminhtml
     {
         $helper = Mage::helper('wallee_payment');
         switch ($row->state) {
-            case \Wallee\Sdk\Model\Token::STATE_ACTIVE:
+            case \Wallee\Sdk\Model\CreationEntityState::ACTIVE:
                 return $helper->__('Active');
-            case \Wallee\Sdk\Model\Token::STATE_INACTIVE:
+            case \Wallee\Sdk\Model\CreationEntityState::INACTIVE:
                 return $helper->__('Inactive');
         }
     }

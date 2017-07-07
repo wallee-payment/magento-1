@@ -46,7 +46,7 @@ class Wallee_Payment_Model_Webhook_TransactionCompletion extends Wallee_Payment_
     {
         /* @var \Wallee\Sdk\Model\TransactionCompletion $completion */
         switch ($completion->getState()) {
-            case \Wallee\Sdk\Model\TransactionCompletion::STATE_FAILED:
+            case \Wallee\Sdk\Model\TransactionCompletionState::FAILED:
                 $this->failed(
                     $completion->getLineItemVersion()
                     ->getTransaction(), $order

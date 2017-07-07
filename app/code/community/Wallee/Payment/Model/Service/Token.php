@@ -41,11 +41,11 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
-        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
         $filter->setChildren(
             array(
             $this->createEntityFilter('token.id', $tokenId),
-            $this->createEntityFilter('state', \Wallee\Sdk\Model\TokenVersion::STATE_ACTIVE)
+            $this->createEntityFilter('state', \Wallee\Sdk\Model\TokenVersionState::ACTIVE)
             )
         );
         $query->setFilter($filter);
@@ -72,8 +72,8 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
 
         if (! in_array(
             $tokenVersion->getToken()->getState(), array(
-            \Wallee\Sdk\Model\Token::STATE_ACTIVE,
-            \Wallee\Sdk\Model\Token::STATE_INACTIVE
+            \Wallee\Sdk\Model\CreationEntityState::ACTIVE,
+            \Wallee\Sdk\Model\CreationEntityState::INACTIVE
             )
         )) {
             if ($info->getId()) {

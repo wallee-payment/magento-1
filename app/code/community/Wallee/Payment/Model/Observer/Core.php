@@ -21,11 +21,15 @@ class Wallee_Payment_Model_Observer_Core
 
     /**
      * Registers an autoloader that provides the generated payment method model classes.
+     * 
+     * The varien autoloader is unregistered and registered again to allow the wallee SDK autoloader to come first.
      */
     public function addAutoloader()
     {
         if (! $this->autoloaderRegistered) {
+            spl_autoload_unregister(array(Varien_Autoload::instance(), 'autoload'));
             require_once Mage::getBaseDir('lib') . '/Wallee/Sdk/autoload.php';
+            spl_autoload_register(array(Varien_Autoload::instance(), 'autoload'));
 
             set_include_path(get_include_path() . PATH_SEPARATOR . Mage::helper('wallee_payment')->getGenerationDirectoryPath());
 

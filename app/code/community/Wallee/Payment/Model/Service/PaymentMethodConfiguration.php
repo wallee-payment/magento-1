@@ -169,9 +169,9 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
     protected function getConfigurationState(\Wallee\Sdk\Model\PaymentMethodConfiguration $configuration)
     {
         switch ($configuration->getState()) {
-            case \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_ACTIVE:
+            case \Wallee\Sdk\Model\CreationEntityState::ACTIVE:
                 return Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE;
-            case \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_INACTIVE:
+            case \Wallee\Sdk\Model\CreationEntityState::INACTIVE:
                 return Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_INACTIVE;
             default:
                 return Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_HIDDEN;

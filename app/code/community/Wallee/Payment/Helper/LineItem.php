@@ -104,7 +104,7 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
             $lineItem->setName(Mage::helper('wallee_payment')->__('Rounding Adjustment'));
             $lineItem->setQuantity(1);
             $lineItem->setSku('rounding-adjustment');
-            $lineItem->setType($diff < 0 ? \Wallee\Sdk\Model\LineItem::TYPE_DISCOUNT : \Wallee\Sdk\Model\LineItem::TYPE_FEE);
+            $lineItem->setType($diff < 0 ? \Wallee\Sdk\Model\LineItemType::DISCOUNT : \Wallee\Sdk\Model\LineItemType::FEE);
             $lineItem->setUniqueId('rounding-adjustment');
             $lineItems[] = $lineItem;
         }

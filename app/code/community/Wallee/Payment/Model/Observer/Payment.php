@@ -63,7 +63,7 @@ class Wallee_Payment_Model_Observer_Payment
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
-        if ($transaction->getState() != \Wallee\Sdk\Model\Transaction::STATE_AUTHORIZED) {
+        if ($transaction->getState() != \Wallee\Sdk\Model\TransactionState::AUTHORIZED) {
             Mage::throwException(Mage::helper('wallee_payment')->__('The invoice cannot be cancelled.'));
         }
 
@@ -72,7 +72,7 @@ class Wallee_Payment_Model_Observer_Payment
         if ($methodInstance instanceof Wallee_Payment_Model_Payment_Method_Abstract) {
             /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
             $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder($order);
-            if ($transactionInfo->getState() != \Wallee\Sdk\Model\TransactionInvoice::STATE_DERECOGNIZED) {
+            if ($transactionInfo->getState() != \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED) {
                 $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, 'processing_wallee');
             }
         }
@@ -125,7 +125,7 @@ class Wallee_Payment_Model_Observer_Payment
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
-        if ($transaction->getState() != \Wallee\Sdk\Model\Transaction::STATE_AUTHORIZED) {
+        if ($transaction->getState() != \Wallee\Sdk\Model\TransactionState::AUTHORIZED) {
             Mage::throwException(Mage::helper('wallee_payment')->__('The invoice cannot be created.'));
         }
 
@@ -176,9 +176,9 @@ class Wallee_Payment_Model_Observer_Payment
                 $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
                 $transactionService->waitForTransactionState(
                     $order, array(
-                    \Wallee\Sdk\Model\Transaction::STATE_CONFIRMED,
-                    \Wallee\Sdk\Model\Transaction::STATE_PENDING,
-                    \Wallee\Sdk\Model\Transaction::STATE_PROCESSING
+                    \Wallee\Sdk\Model\TransactionState::CONFIRMED,
+                    \Wallee\Sdk\Model\TransactionState::PENDING,
+                    \Wallee\Sdk\Model\TransactionState::PROCESSING
                     )
                 );
             }

@@ -47,26 +47,26 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder($order);
         if ($transaction->getState() != $transactionInfo->getState()) {
             switch ($transaction->getState()) {
-                case \Wallee\Sdk\Model\Transaction::STATE_AUTHORIZED:
+                case \Wallee\Sdk\Model\TransactionState::AUTHORIZED:
                     $this->authorize($transaction, $order);
                     break;
-                case \Wallee\Sdk\Model\Transaction::STATE_DECLINE:
+                case \Wallee\Sdk\Model\TransactionState::DECLINE:
                     $this->decline($transaction, $order);
                     break;
-                case \Wallee\Sdk\Model\Transaction::STATE_FAILED:
+                case \Wallee\Sdk\Model\TransactionState::FAILED:
                     $this->failed($transaction, $order);
                     break;
-                case \Wallee\Sdk\Model\Transaction::STATE_FULFILL:
+                case \Wallee\Sdk\Model\TransactionState::FULFILL:
                     if (! $order->getWalleeAuthorized()) {
                         $this->authorize($transaction, $order);
                     }
 
                     $this->fulfill($transaction, $order);
                     break;
-                case \Wallee\Sdk\Model\Transaction::STATE_VOIDED:
+                case \Wallee\Sdk\Model\TransactionState::VOIDED:
                     $this->voided($transaction, $order);
                     break;
-                case \Wallee\Sdk\Model\Transaction::STATE_COMPLETED:
+                case \Wallee\Sdk\Model\TransactionState::COMPLETED:
                 default:
                     // Nothing to do.
                     break;
@@ -209,9 +209,9 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         }
 
         if ($customer->getGender() == null && $transaction->getBillingAddress()->getGender() != null) {
-            if ($transaction->getBillingAddress()->getGender() == \Wallee\Sdk\Model\Address::GENDER_MALE) {
+            if ($transaction->getBillingAddress()->getGender() == \Wallee\Sdk\Model\Gender::MALE) {
                 $customer->setGender(1);
-            } elseif ($transaction->getBillingAddress()->getGender() == \Wallee\Sdk\Model\Address::GENDER_FEMALE) {
+            } elseif ($transaction->getBillingAddress()->getGender() == \Wallee\Sdk\Model\Gender::FEMALE) {
                 $customer->setGender(2);
             }
         }

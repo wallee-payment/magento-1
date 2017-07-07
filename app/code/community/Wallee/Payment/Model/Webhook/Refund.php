@@ -44,11 +44,11 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
     {
         /* @var \Wallee\Sdk\Model\Refund $refund */
         switch ($refund->getState()) {
-            case \Wallee\Sdk\Model\Refund::STATE_FAILED:
+            case \Wallee\Sdk\Model\RefundState::FAILED:
                 $this->failed($refund, $order);
                 $this->deleteRefundJob($refund);
                 break;
-            case \Wallee\Sdk\Model\Refund::STATE_SUCCESSFUL:
+            case \Wallee\Sdk\Model\RefundState::SUCCESSFUL:
                 $this->refunded($refund, $order);
                 $this->deleteRefundJob($refund);
             default:

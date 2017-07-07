@@ -78,7 +78,7 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
      * This must be implemented
      *
      * @param Mage_Sales_Model_Order $order
-     * @param unknown $entity
+     * @param mixed $entity
      */
     abstract protected function processOrderRelatedInner(Mage_Sales_Model_Order $order, $entity);
 

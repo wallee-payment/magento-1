@@ -96,9 +96,9 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
     {
         if (! $this->getTransactionInfo() || ! in_array(
             $this->getTransactionInfo()->getState(), array(
-            \Wallee\Sdk\Model\Transaction::STATE_COMPLETED,
-            \Wallee\Sdk\Model\Transaction::STATE_FULFILL,
-            \Wallee\Sdk\Model\Transaction::STATE_DECLINE
+            \Wallee\Sdk\Model\TransactionState::COMPLETED,
+            \Wallee\Sdk\Model\TransactionState::FULFILL,
+            \Wallee\Sdk\Model\TransactionState::DECLINE
             )
         )) {
             return false;
@@ -134,7 +134,7 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function getDownloadPackingSlipUrl()
     {
-        if (! $this->getTransactionInfo() || $this->getTransactionInfo()->getState() != \Wallee\Sdk\Model\Transaction::STATE_FULFILL) {
+        if (! $this->getTransactionInfo() || $this->getTransactionInfo()->getState() != \Wallee\Sdk\Model\TransactionState::FULFILL) {
             return false;
         }
 
@@ -253,23 +253,23 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
         /* @var Wallee_Payment_Helper_Data $helper */
         $helper = $this->helper('wallee_payment');
         switch ($this->getTransactionInfo()->getState()) {
-            case \Wallee\Sdk\Model\Transaction::STATE_AUTHORIZED:
+            case \Wallee\Sdk\Model\TransactionState::AUTHORIZED:
                 return $helper->__('Authorized');
-            case \Wallee\Sdk\Model\Transaction::STATE_COMPLETED:
+            case \Wallee\Sdk\Model\TransactionState::COMPLETED:
                 return $helper->__('Completed');
-            case \Wallee\Sdk\Model\Transaction::STATE_CONFIRMED:
+            case \Wallee\Sdk\Model\TransactionState::CONFIRMED:
                 return $helper->__('Confirmed');
-            case \Wallee\Sdk\Model\Transaction::STATE_DECLINE:
+            case \Wallee\Sdk\Model\TransactionState::DECLINE:
                 return $helper->__('Decline');
-            case \Wallee\Sdk\Model\Transaction::STATE_FAILED:
+            case \Wallee\Sdk\Model\TransactionState::FAILED:
                 return $helper->__('Failed');
-            case \Wallee\Sdk\Model\Transaction::STATE_FULFILL:
+            case \Wallee\Sdk\Model\TransactionState::FULFILL:
                 return $helper->__('Fulfill');
-            case \Wallee\Sdk\Model\Transaction::STATE_PENDING:
+            case \Wallee\Sdk\Model\TransactionState::PENDING:
                 return $helper->__('Pending');
-            case \Wallee\Sdk\Model\Transaction::STATE_PROCESSING:
+            case \Wallee\Sdk\Model\TransactionState::PROCESSING:
                 return $helper->__('Processing');
-            case \Wallee\Sdk\Model\Transaction::STATE_VOIDED:
+            case \Wallee\Sdk\Model\TransactionState::VOIDED:
                 return $helper->__('Voided');
             default:
                 return $helper->__('Unknown State');

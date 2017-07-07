@@ -40,66 +40,66 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
     {
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1487165678181, 'Manual Task', array(
-            \Wallee\Sdk\Model\ManualTask::STATE_DONE,
-            \Wallee\Sdk\Model\ManualTask::STATE_EXPIRED,
-            \Wallee\Sdk\Model\ManualTask::STATE_OPEN
+            \Wallee\Sdk\Model\ManualTaskState::DONE,
+            \Wallee\Sdk\Model\ManualTaskState::EXPIRED,
+            \Wallee\Sdk\Model\ManualTaskState::OPEN
             )
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041857405, 'Payment Method Configuration', array(
-            \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_ACTIVE,
-            \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_DELETED,
-            \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_DELETING,
-            \Wallee\Sdk\Model\PaymentMethodConfiguration::STATE_INACTIVE
+            \Wallee\Sdk\Model\CreationEntityState::ACTIVE,
+            \Wallee\Sdk\Model\CreationEntityState::DELETED,
+            \Wallee\Sdk\Model\CreationEntityState::DELETING,
+            \Wallee\Sdk\Model\CreationEntityState::INACTIVE
             ), true
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041829003, 'Transaction', array(
-            \Wallee\Sdk\Model\Transaction::STATE_AUTHORIZED,
-            \Wallee\Sdk\Model\Transaction::STATE_DECLINE,
-            \Wallee\Sdk\Model\Transaction::STATE_FAILED,
-            \Wallee\Sdk\Model\Transaction::STATE_FULFILL,
-            \Wallee\Sdk\Model\Transaction::STATE_VOIDED,
-            \Wallee\Sdk\Model\Transaction::STATE_COMPLETED,
-            \Wallee\Sdk\Model\Transaction::STATE_PROCESSING,
-            \Wallee\Sdk\Model\Transaction::STATE_CONFIRMED
+            \Wallee\Sdk\Model\TransactionState::AUTHORIZED,
+            \Wallee\Sdk\Model\TransactionState::DECLINE,
+            \Wallee\Sdk\Model\TransactionState::FAILED,
+            \Wallee\Sdk\Model\TransactionState::FULFILL,
+            \Wallee\Sdk\Model\TransactionState::VOIDED,
+            \Wallee\Sdk\Model\TransactionState::COMPLETED,
+            \Wallee\Sdk\Model\TransactionState::PROCESSING,
+            \Wallee\Sdk\Model\TransactionState::CONFIRMED
             )
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041819799, 'Delivery Indication', array(
-            \Wallee\Sdk\Model\DeliveryIndication::STATE_MANUAL_CHECK_REQUIRED
+            \Wallee\Sdk\Model\DeliveryIndicationState::MANUAL_CHECK_REQUIRED
             )
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041816898, 'Transaction Invoice', array(
-            \Wallee\Sdk\Model\TransactionInvoice::STATE_NOT_APPLICABLE,
-            \Wallee\Sdk\Model\TransactionInvoice::STATE_PAID,
-            \Wallee\Sdk\Model\TransactionInvoice::STATE_DERECOGNIZED
+            \Wallee\Sdk\Model\TransactionInvoiceState::NOT_APPLICABLE,
+            \Wallee\Sdk\Model\TransactionInvoiceState::PAID,
+            \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED
             )
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041831364, 'Transaction Completion', array(
-            \Wallee\Sdk\Model\TransactionCompletion::STATE_FAILED
+            \Wallee\Sdk\Model\TransactionCompletionState::FAILED
             )
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041839405, 'Refund', array(
-            \Wallee\Sdk\Model\Refund::STATE_FAILED,
-            \Wallee\Sdk\Model\Refund::STATE_SUCCESSFUL
+            \Wallee\Sdk\Model\RefundState::FAILED,
+            \Wallee\Sdk\Model\RefundState::SUCCESSFUL
             )
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041806455, 'Token', array(
-            \Wallee\Sdk\Model\Token::STATE_ACTIVE,
-            \Wallee\Sdk\Model\Token::STATE_DELETED,
-            \Wallee\Sdk\Model\Token::STATE_DELETING,
-            \Wallee\Sdk\Model\Token::STATE_INACTIVE
+            \Wallee\Sdk\Model\CreationEntityState::ACTIVE,
+            \Wallee\Sdk\Model\CreationEntityState::DELETED,
+            \Wallee\Sdk\Model\CreationEntityState::DELETING,
+            \Wallee\Sdk\Model\CreationEntityState::INACTIVE
             )
         );
         $this->webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(
             1472041811051, 'Token Version', array(
-            \Wallee\Sdk\Model\TokenVersion::STATE_ACTIVE,
-            \Wallee\Sdk\Model\TokenVersion::STATE_OBSOLETE
+            \Wallee\Sdk\Model\TokenVersionState::ACTIVE,
+            \Wallee\Sdk\Model\TokenVersionState::OBSOLETE
             )
         );
     }
@@ -151,9 +151,8 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
         $webhookListener = new \Wallee\Sdk\Model\WebhookListenerCreate();
         $webhookListener->setEntity($entity->getId());
         $webhookListener->setEntityStates($entity->getStates());
-        $webhookListener->setLinkedSpaceId($spaceId);
         $webhookListener->setName('Magento ' . $entity->getName());
-        $webhookListener->setState(\Wallee\Sdk\Model\WebhookListenerCreate::STATE_ACTIVE);
+        $webhookListener->setState(\Wallee\Sdk\Model\CreationEntityState::ACTIVE);
         $webhookListener->setUrl($webhookUrl->getId());
         $webhookListener->setNotifyEveryChange($entity->isNotifyEveryChange());
         return $this->getWebhookListenerService()->create($spaceId, $webhookListener);
@@ -170,10 +169,10 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
-        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
         $filter->setChildren(
             array(
-            $this->createEntityFilter('state', \Wallee\Sdk\Model\WebhookListener::STATE_ACTIVE),
+            $this->createEntityFilter('state', \Wallee\Sdk\Model\CreationEntityState::ACTIVE),
             $this->createEntityFilter('url.id', $webhookUrl->getId())
             )
         );
@@ -190,9 +189,8 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
     protected function createWebhookUrl($spaceId)
     {
         $webhookUrl = new \Wallee\Sdk\Model\WebhookUrlCreate();
-        $webhookUrl->setLinkedSpaceId($spaceId);
         $webhookUrl->setUrl($this->getUrl());
-        $webhookUrl->setState(\Wallee\Sdk\Model\WebhookUrlCreate::STATE_ACTIVE);
+        $webhookUrl->setState(\Wallee\Sdk\Model\CreationEntityState::ACTIVE);
         $webhookUrl->setName('Magento');
         return $this->getWebhookUrlService()->create($spaceId, $webhookUrl);
     }
@@ -208,10 +206,10 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
         $query = new \Wallee\Sdk\Model\EntityQuery();
         $query->setNumberOfEntities(1);
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
-        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
         $filter->setChildren(
             array(
-                $this->createEntityFilter('state', \Wallee\Sdk\Model\WebhookUrl::STATE_ACTIVE),
+                $this->createEntityFilter('state', \Wallee\Sdk\Model\CreationEntityState::ACTIVE),
                 $this->createEntityFilter('url', $this->getUrl())
             )
             );

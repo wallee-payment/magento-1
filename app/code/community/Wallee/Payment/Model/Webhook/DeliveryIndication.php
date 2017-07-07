@@ -45,7 +45,7 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
     {
         /* @var \Wallee\Sdk\Model\DeliveryIndication $deliveryIndication */
         switch ($deliveryIndication->getState()) {
-            case \Wallee\Sdk\Model\DeliveryIndication::STATE_MANUAL_CHECK_REQUIRED:
+            case \Wallee\Sdk\Model\DeliveryIndicationState::MANUAL_CHECK_REQUIRED:
                 $this->review($order);
                 break;
             default:

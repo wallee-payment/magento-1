@@ -91,7 +91,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
                 );
             }
 
-            $lineItem->setType(\Wallee\Sdk\Model\LineItem::TYPE_SHIPPING);
+            $lineItem->setType(\Wallee\Sdk\Model\LineItemType::SHIPPING);
             $lineItem->setUniqueId('shipping');
             return $this->cleanLineItem($lineItem);
         }
@@ -184,7 +184,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             );
         }
 
-        $lineItem->setType(\Wallee\Sdk\Model\LineItem::TYPE_PRODUCT);
+        $lineItem->setType(\Wallee\Sdk\Model\LineItemType::PRODUCT);
         $uniqueId = $productItem->getId();
         if ($productItem instanceof Mage_Sales_Model_Order_Item) {
             $uniqueId = $productItem->getQuoteItemId();
@@ -193,7 +193,57 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         }
 
         $lineItem->setUniqueId($uniqueId);
+        
+        $attributes = array();
+        foreach ($this->getProductOptions($productItem) as $option) {
+            $attribute = new \Wallee\Sdk\Model\LineItemAttributeCreate();
+            $attribute->setLabel($option['label']);
+            $attribute->setValue($option['value']);
+            $attributes[$this->getAttributeKey($option)] = $attribute;
+        }
+        if (!empty($attributes)) {
+            $lineItem->setAttributes($attributes);
+        }
+        
         return $this->cleanLineItem($lineItem);
+    }
+    
+    protected function getAttributeKey($option)
+    {
+        if (isset($option['option_id']) && !empty($option['option_id'])) {
+            return 'option_' . $option['option_id'];
+        } else {
+            return preg_replace('/[^a-z0-9]/', '', strtolower($option['label']));
+        }
+    }
+    
+    /**
+     * 
+     * @param Mage_Sales_Model_Order_Item|Mage_Sales_Model_Quote_Item|Mage_Sales_Model_Order_Invoice_Item $productItem
+     */
+    protected function getProductOptions($productItem)
+    {
+        if ($productItem instanceof Mage_Sales_Model_Order_Item || $productItem instanceof Mage_Sales_Model_Order_Invoice_Item) {
+            $result = array();
+            if ($options = $productItem->getProductOptions()) {
+                if (isset($options['options'])) {
+                    $result = array_merge($result, $options['options']);
+                }
+                if (isset($options['additional_options'])) {
+                    $result = array_merge($result, $options['additional_options']);
+                }
+                if (isset($options['attributes_info'])) {
+                    $result = array_merge($result, $options['attributes_info']);
+                }
+            }
+            return $result;
+        } elseif ($productItem instanceof Mage_Sales_Model_Quote_Item) {
+            /* @var $helper Mage_Catalog_Helper_Product_Configuration */
+            $helper = Mage::helper('catalog/product_configuration');
+            return $helper->getCustomOptions($productItem);
+        } else {
+            return array();
+        }
     }
 
     /**
@@ -230,7 +280,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
                 );
             }
 
-            $lineItem->setType(\Wallee\Sdk\Model\LineItem::TYPE_DISCOUNT);
+            $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);
             $uniqueId = $productItem->getId();
             if ($productItem instanceof Mage_Sales_Model_Order_Item) {
                 $uniqueId = $productItem->getQuoteItemId();
@@ -271,7 +321,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
                 );
             }
 
-            $lineItem->setType(\Wallee\Sdk\Model\LineItem::TYPE_SHIPPING);
+            $lineItem->setType(\Wallee\Sdk\Model\LineItemType::SHIPPING);
             $lineItem->setUniqueId('shipping');
             return $this->cleanLineItem($lineItem);
         }
@@ -327,7 +377,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
                 );
             }
 
-            $lineItem->setType(\Wallee\Sdk\Model\LineItem::TYPE_FEE);
+            $lineItem->setType(\Wallee\Sdk\Model\LineItemType::FEE);
             $lineItem->setUniqueId('surcharge');
             return $this->cleanLineItem($lineItem);
         }
@@ -350,8 +400,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             $customerGroup = Mage::getModel('customer/group');
 
             $classId = $customerGroup->getTaxClassId($entity->getCustomerGroupId());
-            $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(), $classId, $entity->getStoreId());
-            $request->setStore($entity->getStore());
+            $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(), $classId, $entity->getStore());
             if ($surchargeTaxRate = $taxCalculation->getRate($request->setProductClassId($surchargeTaxClass))) {
                 /* @var Mage_Tax_Model_Class $taxClass */
                 $taxClass = Mage::getModel('tax/class')->load($surchargeTaxClass);
@@ -381,7 +430,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             );
             $lineItem->setQuantity(1);
             $lineItem->setSku('giftcard');
-            $lineItem->setType(\Wallee\Sdk\Model\LineItem::TYPE_DISCOUNT);
+            $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);
             $lineItem->setUniqueId('giftcard');
             return $this->cleanLineItem($lineItem);
         }

@@ -60,10 +60,6 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             $payment->getOrder()
             ->getWalleeTransactionId()
         );
-        $transaction->setLinkedSpaceId(
-            $payment->getOrder()
-            ->getWalleeSpaceId()
-        );
 
         $reductions = $this->getProductReductions($creditmemo);
         $shippingReduction = $this->getShippingReduction($creditmemo);
@@ -77,7 +73,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $refund->setExternalId(uniqid($creditmemo->getOrderId() . '-'));
         $refund->setReductions($reductions);
         $refund->setTransaction($transaction);
-        $refund->setType(\Wallee\Sdk\Model\RefundCreate::TYPE_MERCHANT_INITIATED_ONLINE);
+        $refund->setType(\Wallee\Sdk\Model\RefundType::MERCHANT_INITIATED_ONLINE);
         return $refund;
     }
 
@@ -93,7 +89,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      */
     protected function fixReductions(Mage_Sales_Model_Order_Creditmemo $creditmemo, \Wallee\Sdk\Model\Transaction $transaction, array $reductions)
     {
-        $baseLineItems = $this->getBaseLineItems($transaction);
+        $baseLineItems = $this->getBaseLineItems($creditmemo->getOrder()->getWalleeSpaceId(), $transaction);
 
         /* @var Wallee_Payment_Helper_LineItem $lineItemHelper */
         $lineItemHelper = Mage::helper('wallee_payment/lineItem');
@@ -186,7 +182,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      */
     public function refund($spaceId, \Wallee\Sdk\Model\RefundCreate $refund)
     {
-        return $this->getRefundService()->create($spaceId, $refund);
+        return $this->getRefundService()->refund($spaceId, $refund);
     }
 
     /**
@@ -240,7 +236,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         }
 
         $baseLineItems = array();
-        foreach ($this->getBaseLineItems($refund->getTransaction(), $refund) as $lineItem) {
+        foreach ($this->getBaseLineItems($order->getWalleeSpaceId(), $refund->getTransaction(), $refund) as $lineItem) {
             $baseLineItems[$lineItem->getUniqueId()] = $lineItem;
         }
 
@@ -254,16 +250,16 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         foreach ($refund->getReductions() as $reduction) {
             $lineItem = $lineItems[$reduction->getLineItemUniqueId()];
             switch ($lineItem->getType()) {
-                case \Wallee\Sdk\Model\LineItem::TYPE_PRODUCT:
+                case \Wallee\Sdk\Model\LineItemType::PRODUCT:
                     if ($reduction->getQuantityReduction() > 0) {
                         $refundQuantities[$orderItemMap[$reduction->getLineItemUniqueId()]->getId()] = $reduction->getQuantityReduction();
                         $creditmemoAmount += $reduction->getQuantityReduction() * $orderItemMap[$reduction->getLineItemUniqueId()]->getPriceInclTax();
                     }
                     break;
-                case \Wallee\Sdk\Model\LineItem::TYPE_FEE:
-                case \Wallee\Sdk\Model\LineItem::TYPE_DISCOUNT:
+                case \Wallee\Sdk\Model\LineItemType::FEE:
+                case \Wallee\Sdk\Model\LineItemType::DISCOUNT:
                     break;
-                case \Wallee\Sdk\Model\LineItem::TYPE_SHIPPING:
+                case \Wallee\Sdk\Model\LineItemType::SHIPPING:
                     if ($reduction->getQuantityReduction() > 0) {
                         $shippingAmount = $baseLineItems[$reduction->getLineItemUniqueId()]->getAmountIncludingTax();
                     } elseif ($reduction->getUnitPriceReduction() > 0) {
@@ -330,36 +326,38 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      *
      * This returns the line items of the latest refund if there is one or else of the transaction invoice.
      *
+     * @param int $spaceId
      * @param \Wallee\Sdk\Model\Transaction $transaction
      * @param \Wallee\Sdk\Model\Refund $refund
      * @return \Wallee\Sdk\Model\LineItem[]
      */
-    protected function getBaseLineItems(\Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
+    protected function getBaseLineItems($spaceId, \Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
     {
-        $lastSuccessfulRefund = $this->getLastSuccessfulRefund($transaction, $refund);
+        $lastSuccessfulRefund = $this->getLastSuccessfulRefund($spaceId, $transaction, $refund);
         if ($lastSuccessfulRefund) {
             return $lastSuccessfulRefund->getReducedLineItems();
         } else {
-            return $this->getTransactionInvoice($transaction)->getLineItems();
+            return $this->getTransactionInvoice($spaceId, $transaction)->getLineItems();
         }
     }
 
     /**
      * Returns the transaction invoice for the given transaction.
      *
+     * @param int $spaceId
      * @param \Wallee\Sdk\Model\Transaction $transaction
      * @throws Exception
      * @return \Wallee\Sdk\Model\TransactionInvoice
      */
-    protected function getTransactionInvoice(\Wallee\Sdk\Model\Transaction $transaction)
+    protected function getTransactionInvoice($spaceId, \Wallee\Sdk\Model\Transaction $transaction)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
 
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
-        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
         $filter->setChildren(
             array(
-            $this->createEntityFilter('state', \Wallee\Sdk\Model\TransactionInvoice::STATE_CANCELED, \Wallee\Sdk\Model\EntityQueryFilter::OPERATOR_NOT_EQUALS),
+            $this->createEntityFilter('state', \Wallee\Sdk\Model\TransactionInvoiceState::CANCELED, \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS),
             $this->createEntityFilter('completion.lineItemVersion.transaction.id', $transaction->getId())
             )
         );
@@ -368,7 +366,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $query->setNumberOfEntities(1);
 
         $invoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService($this->getHelper()->getApiClient());
-        $result = $invoiceService->search($transaction->getLinkedSpaceId(), $query);
+        $result = $invoiceService->search($spaceId, $query);
         if (! empty($result)) {
             return $result[0];
         } else {
@@ -379,22 +377,23 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
     /**
      * Returns the last successful refund of the given transaction, excluding the given refund.
      *
+     * @param int $spaceId
      * @param \Wallee\Sdk\Model\Transaction $transaction
      * @param \Wallee\Sdk\Model\Refund $refund
      * @return \Wallee\Sdk\Model\Refund
      */
-    protected function getLastSuccessfulRefund(\Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
+    protected function getLastSuccessfulRefund($spaceId, \Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
 
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
-        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilter::TYPE_AND);
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
         $filters = array(
-            $this->createEntityFilter('state', \Wallee\Sdk\Model\Refund::STATE_SUCCESSFUL),
+            $this->createEntityFilter('state', \Wallee\Sdk\Model\RefundState::SUCCESSFUL),
             $this->createEntityFilter('transaction.id', $transaction->getId())
         );
         if ($refund != null) {
-            $filters[] = $this->createEntityFilter('id', $refund->getId(), \Wallee\Sdk\Model\EntityQueryFilter::OPERATOR_NOT_EQUALS);
+            $filters[] = $this->createEntityFilter('id', $refund->getId(), \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS);
         }
 
         $filter->setChildren($filters);
@@ -402,13 +401,13 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
 
         $query->setOrderBys(
             array(
-            $this->createEntityOrderBy('createdOn', \Wallee\Sdk\Model\EntityQueryOrderBy::SORTING_DESC)
+            $this->createEntityOrderBy('createdOn', \Wallee\Sdk\Model\EntityQueryOrderByType::DESC)
             )
         );
 
         $query->setNumberOfEntities(1);
 
-        $result = $this->getRefundService()->search($transaction->getLinkedSpaceId(), $query);
+        $result = $this->getRefundService()->search($spaceId, $query);
         if (! empty($result)) {
             return $result[0];
         } else {

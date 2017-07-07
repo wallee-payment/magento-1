@@ -41,14 +41,14 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
                 $refundService = Mage::getSingleton('wallee_payment/service_refund');
                 $refund = $refundService->refund($existingRefundJob->getSpaceId(), $existingRefundJob->getRefund());
 
-                if ($refund->getState() == \Wallee\Sdk\Model\Refund::STATE_FAILED) {
+                if ($refund->getState() == \Wallee\Sdk\Model\RefundState::FAILED) {
                     $session->addError(
                         Mage::helper('wallee_payment')->translate(
                             $refund->getFailureReason()
                             ->getDescription()
                         )
                     );
-                } elseif ($refund->getState() == \Wallee\Sdk\Model\Refund::STATE_PENDING) {
+                } elseif ($refund->getState() == \Wallee\Sdk\Model\RefundState::PENDING) {
                     $session->addNotice(Mage::helper('wallee_payment')->__('The refund was requested successfully, but is still pending on the gateway.'));
                 } else {
                     $session->addSuccess('Successfully refunded.');

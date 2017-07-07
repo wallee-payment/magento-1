@@ -100,7 +100,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
     /**
      * Returns the translation in the given language.
      *
-     * @param map[string,string] $translatedString
+     * @param array[string,string] $translatedString
      * @param string $language
      * @return string
      */

@@ -43,9 +43,9 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transactionService->waitForTransactionState(
             $order, array(
-            \Wallee\Sdk\Model\Transaction::STATE_CONFIRMED,
-            \Wallee\Sdk\Model\Transaction::STATE_PENDING,
-            \Wallee\Sdk\Model\Transaction::STATE_PROCESSING
+            \Wallee\Sdk\Model\TransactionState::CONFIRMED,
+            \Wallee\Sdk\Model\TransactionState::PENDING,
+            \Wallee\Sdk\Model\TransactionState::PROCESSING
             ), 3
         );
 
