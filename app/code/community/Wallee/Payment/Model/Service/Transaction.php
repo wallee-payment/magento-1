@@ -684,7 +684,8 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         }
 
         if ($dateOfBirth !== null) {
-            return DateTime::createFromFormat('Y-m-d H:i:s', $dateOfBirth)->format(DateTime::W3C);
+            $date = new DateTime($dateOfBirth);
+            return $date->format(DateTime::W3C);
         }
     }
 
