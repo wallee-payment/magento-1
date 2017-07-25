@@ -76,10 +76,15 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         if ($invoice->getShippingAmount() > 0) {
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
             $lineItem->setAmountIncludingTax($this->roundAmount($invoice->getShippingInclTax(), $invoice->getOrderCurrencyCode()));
-            $lineItem->setName(
-                $invoice->getOrder()
-                ->getShippingDescription()
-            );
+            if (Mage::getStoreConfig('wallee_payment/line_item/overwrite_shipping_description', $invoice->getStore())) {
+                $lineItem->setName(Mage::getStoreConfig('wallee_payment/line_item/custom_shipping_description', $invoice->getStore()));
+            } else {
+                $lineItem->setName(
+                    $invoice->getOrder()
+                    ->getShippingDescription()
+                );
+            }
+
             $lineItem->setQuantity(1);
             $lineItem->setSku('shipping');
             $tax = $this->getShippingTax($invoice->getOrder());
@@ -201,6 +206,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             $attribute->setValue($option['value']);
             $attributes[$this->getAttributeKey($option)] = $attribute;
         }
+
         if (!empty($attributes)) {
             $lineItem->setAttributes($attributes);
         }
@@ -229,13 +235,16 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
                 if (isset($options['options'])) {
                     $result = array_merge($result, $options['options']);
                 }
+
                 if (isset($options['additional_options'])) {
                     $result = array_merge($result, $options['additional_options']);
                 }
+
                 if (isset($options['attributes_info'])) {
                     $result = array_merge($result, $options['attributes_info']);
                 }
             }
+
             return $result;
         } elseif ($productItem instanceof Mage_Sales_Model_Quote_Item) {
             /* @var $helper Mage_Catalog_Helper_Product_Configuration */
@@ -309,7 +318,12 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         if ($shippingInfo->getShippingAmount() > 0) {
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
             $lineItem->setAmountIncludingTax($this->roundAmount($shippingInfo->getShippingInclTax(), $this->getCurrencyCode($entity)));
-            $lineItem->setName($shippingInfo->getShippingDescription());
+            if (Mage::getStoreConfig('wallee_payment/line_item/overwrite_shipping_description', $entity->getStore())) {
+                $lineItem->setName(Mage::getStoreConfig('wallee_payment/line_item/custom_shipping_description', $entity->getStore()));
+            } else {
+                $lineItem->setName($shippingInfo->getShippingDescription());
+            }
+
             $lineItem->setQuantity(1);
             $lineItem->setSku('shipping');
             $tax = $this->getShippingTax($entity);

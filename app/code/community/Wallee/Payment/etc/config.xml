@@ -344,6 +344,10 @@
 				<customer_download_invoice>1</customer_download_invoice>
 				<customer_download_packing_slip>1</customer_download_packing_slip>
 			</document>
+			<line_item>
+				<overwrite_shipping_description>0</overwrite_shipping_description>
+				<custom_shipping_description>Shipping</custom_shipping_description>
+			</line_item>
 		</wallee_payment>
 	</default>
 </config>

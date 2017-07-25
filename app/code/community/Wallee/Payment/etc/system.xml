@@ -134,6 +134,36 @@
 						</customer_download_packing_slip>
 					</fields>
 				</document>
+				<line_item translate="label">
+					<label>Line Items</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>40</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<overwrite_shipping_description translate="label comment">
+							<label>Overwrite Shipping Description</label>
+							<frontend_type>select</frontend_type>
+							<sort_order>10</sort_order>
+							<comment>Use the custom description for the shipping line item.</comment>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</overwrite_shipping_description>
+						<custom_shipping_description translate="label comment">
+							<label>Custom Shipping Description</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>20</sort_order>
+							<comment>The description to set on the shipping line item.</comment>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<depends><overwrite_shipping_description>1</overwrite_shipping_description></depends>
+						</custom_shipping_description>
+					</fields>
+				</line_item>
 			</groups>
 		</wallee_payment>
 	</sections>

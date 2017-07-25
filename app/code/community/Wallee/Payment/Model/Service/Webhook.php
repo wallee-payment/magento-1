@@ -212,7 +212,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
                 $this->createEntityFilter('state', \Wallee\Sdk\Model\CreationEntityState::ACTIVE),
                 $this->createEntityFilter('url', $this->getUrl())
             )
-            );
+        );
         $query->setFilter($filter);
         $result = $this->getWebhookUrlService()->search($spaceId, $query);
         if (! empty($result)) {

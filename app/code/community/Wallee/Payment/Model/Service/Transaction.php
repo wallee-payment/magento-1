@@ -407,6 +407,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 ->getConfig('wallee_payment/general/store_view_id')
             );
         }
+
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
         $lineItems = Mage::getSingleton('wallee_payment/service_lineItem');
         $transaction->setLineItems($lineItems->collectLineItems($order));
@@ -577,6 +578,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 ->getConfig('wallee_payment/general/store_view_id')
             );
         }
+
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
         $lineItems = Mage::getSingleton('wallee_payment/service_lineItem');
         $transaction->setLineItems($lineItems->collectLineItems($quote));
