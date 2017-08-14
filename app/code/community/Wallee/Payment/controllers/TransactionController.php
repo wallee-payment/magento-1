@@ -107,15 +107,26 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     public function downloadInvoiceAction()
     {
         $transactionInfo = $this->loadTransactionInfo();
+        if ($transactionInfo == false) {
+            return false;
+        }
 
         if (! Mage::getStoreConfigFlag('wallee_payment/document/customer_download_invoice', $transactionInfo->getOrder()->getStore())) {
             $this->_redirect('sales/order/view/order_id/' . $transactionInfo->getOrderId());
             return false;
         }
 
-        $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
-        $document = $service->getInvoiceDocument($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
-        $this->download($document);
+        try {
+            $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
+            $document = $service->getInvoiceDocument($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
+            $this->download($document);
+        } catch(Exception $e) {
+            /* @var Mage_Core_Model_Session $session */
+            $session = Mage::getSingleton('core/session');
+            $session->addError('The invoice document cannot be downloaded.');
+            $this->_redirect('sales/order/view/order_id/' . $transactionInfo->getOrderId());
+            return false;
+        }
     }
 
     /**
@@ -124,15 +135,26 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     public function downloadPackingSlipAction()
     {
         $transactionInfo = $this->loadTransactionInfo();
+        if ($transactionInfo == false) {
+            return false;
+        }
 
         if (! Mage::getStoreConfigFlag('wallee_payment/document/customer_download_packing_slip', $transactionInfo->getOrder()->getStore())) {
             $this->_redirect('sales/order/view/order_id/' . $transactionInfo->getOrderId());
             return false;
         }
 
-        $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
-        $document = $service->getPackingSlip($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
-        $this->download($document);
+        try {
+            $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
+            $document = $service->getPackingSlip($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
+            $this->download($document);
+        } catch(Exception $e) {
+            /* @var Mage_Core_Model_Session $session */
+            $session = Mage::getSingleton('core/session');
+            $session->addError('The packing slip cannot be downloaded.');
+            $this->_redirect('sales/order/view/order_id/' . $transactionInfo->getOrderId());
+            return false;
+        }
     }
 
     /**
