@@ -24,23 +24,22 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * LineItemReductionCreate model
+ * AbstractAccountUpdate model
  *
  * @category    Class
- * @description 
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class LineItemReductionCreate  {
+class AbstractAccountUpdate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'LineItemReduction.Create';
+	private static $swaggerModelName = 'Abstract.Account.Update';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,9 +47,8 @@ class LineItemReductionCreate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'lineItemUniqueId' => 'string',
-		'quantityReduction' => 'float',
-		'unitPriceReduction' => 'float'	);
+		'name' => 'string',
+		'subaccountLimit' => 'int'	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -64,25 +62,18 @@ class LineItemReductionCreate  {
 	
 
 	/**
-	 * The unique id identifies the line item on which the reduction is applied on.
+	 * The name of the account identifies the account within the administrative interface.
 	 *
 	 * @var string
 	 */
-	private $lineItemUniqueId;
+	private $name;
 
 	/**
-	 * 
+	 * This property restricts the number of subaccounts which can be created within this account.
 	 *
-	 * @var float
+	 * @var int
 	 */
-	private $quantityReduction;
-
-	/**
-	 * 
-	 *
-	 * @var float
-	 */
-	private $unitPriceReduction;
+	private $subaccountLimit;
 
 
 	/**
@@ -91,83 +82,57 @@ class LineItemReductionCreate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['lineItemUniqueId']) && $data['lineItemUniqueId'] != null) {
-			$this->setLineItemUniqueId($data['lineItemUniqueId']);
+		if (isset($data['name']) && $data['name'] != null) {
+			$this->setName($data['name']);
 		}
-		if (isset($data['quantityReduction']) && $data['quantityReduction'] != null) {
-			$this->setQuantityReduction($data['quantityReduction']);
-		}
-		if (isset($data['unitPriceReduction']) && $data['unitPriceReduction'] != null) {
-			$this->setUnitPriceReduction($data['unitPriceReduction']);
+		if (isset($data['subaccountLimit']) && $data['subaccountLimit'] != null) {
+			$this->setSubaccountLimit($data['subaccountLimit']);
 		}
 	}
 
 
 	/**
-	 * Returns lineItemUniqueId.
+	 * Returns name.
 	 *
-	 * The unique id identifies the line item on which the reduction is applied on.
+	 * The name of the account identifies the account within the administrative interface.
 	 *
 	 * @return string
 	 */
-	public function getLineItemUniqueId() {
-		return $this->lineItemUniqueId;
+	public function getName() {
+		return $this->name;
 	}
 
 	/**
-	 * Sets lineItemUniqueId.
+	 * Sets name.
 	 *
-	 * @param string $lineItemUniqueId
-	 * @return LineItemReductionCreate
+	 * @param string $name
+	 * @return AbstractAccountUpdate
 	 */
-	public function setLineItemUniqueId($lineItemUniqueId) {
-		$this->lineItemUniqueId = $lineItemUniqueId;
+	public function setName($name) {
+		$this->name = $name;
 
 		return $this;
 	}
 
 	/**
-	 * Returns quantityReduction.
+	 * Returns subaccountLimit.
 	 *
-	 * 
+	 * This property restricts the number of subaccounts which can be created within this account.
 	 *
-	 * @return float
+	 * @return int
 	 */
-	public function getQuantityReduction() {
-		return $this->quantityReduction;
+	public function getSubaccountLimit() {
+		return $this->subaccountLimit;
 	}
 
 	/**
-	 * Sets quantityReduction.
+	 * Sets subaccountLimit.
 	 *
-	 * @param float $quantityReduction
-	 * @return LineItemReductionCreate
+	 * @param int $subaccountLimit
+	 * @return AbstractAccountUpdate
 	 */
-	public function setQuantityReduction($quantityReduction) {
-		$this->quantityReduction = $quantityReduction;
-
-		return $this;
-	}
-
-	/**
-	 * Returns unitPriceReduction.
-	 *
-	 * 
-	 *
-	 * @return float
-	 */
-	public function getUnitPriceReduction() {
-		return $this->unitPriceReduction;
-	}
-
-	/**
-	 * Sets unitPriceReduction.
-	 *
-	 * @param float $unitPriceReduction
-	 * @return LineItemReductionCreate
-	 */
-	public function setUnitPriceReduction($unitPriceReduction) {
-		$this->unitPriceReduction = $unitPriceReduction;
+	public function setSubaccountLimit($subaccountLimit) {
+		$this->subaccountLimit = $subaccountLimit;
 
 		return $this;
 	}
@@ -179,15 +144,6 @@ class LineItemReductionCreate  {
 	 */
 	public function validate() {
 
-		if ($this->getLineItemUniqueId() === null) {
-			throw new ValidationException("'lineItemUniqueId' can't be null", 'lineItemUniqueId', $this);
-		}
-		if ($this->getQuantityReduction() === null) {
-			throw new ValidationException("'quantityReduction' can't be null", 'quantityReduction', $this);
-		}
-		if ($this->getUnitPriceReduction() === null) {
-			throw new ValidationException("'unitPriceReduction' can't be null", 'unitPriceReduction', $this);
-		}
 	}
 
 	/**

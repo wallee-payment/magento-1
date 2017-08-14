@@ -68,6 +68,7 @@ class Transaction  {
 		'endOfLife' => '\DateTime',
 		'failedOn' => '\DateTime',
 		'failedUrl' => 'string',
+		'failureReason' => '\Wallee\Sdk\Model\FailureReason',
 		'group' => '\Wallee\Sdk\Model\TransactionGroup',
 		'id' => 'int',
 		'internetProtocolAddress' => 'string',
@@ -89,6 +90,7 @@ class Transaction  {
 		'successUrl' => 'string',
 		'token' => '\Wallee\Sdk\Model\Token',
 		'userAgentHeader' => 'string',
+		'userFailureMessage' => 'string',
 		'userInterfaceType' => '\Wallee\Sdk\Model\TransactionUserInterfaceType',
 		'version' => 'int'	);
 
@@ -244,6 +246,13 @@ class Transaction  {
 	private $failedUrl;
 
 	/**
+	 * The failure reason describes why the transaction failed. This is only provided when the transaction is marked as failed.
+	 *
+	 * @var \Wallee\Sdk\Model\FailureReason
+	 */
+	private $failureReason;
+
+	/**
 	 * 
 	 *
 	 * @var \Wallee\Sdk\Model\TransactionGroup
@@ -391,6 +400,13 @@ class Transaction  {
 	private $userAgentHeader;
 
 	/**
+	 * The failure message describes for an end user why the transaction is failed in the language of the user. This is only provided when the transaction is marked as failed.
+	 *
+	 * @var string
+	 */
+	private $userFailureMessage;
+
+	/**
 	 * The user interface type defines through which user interface the transaction has been processed resp. created.
 	 *
 	 * @var \Wallee\Sdk\Model\TransactionUserInterfaceType
@@ -422,6 +438,9 @@ class Transaction  {
 		}
 		if (isset($data['customersPresence']) && $data['customersPresence'] != null) {
 			$this->setCustomersPresence($data['customersPresence']);
+		}
+		if (isset($data['failureReason']) && $data['failureReason'] != null) {
+			$this->setFailureReason($data['failureReason']);
 		}
 		if (isset($data['group']) && $data['group'] != null) {
 			$this->setGroup($data['group']);
@@ -917,6 +936,29 @@ class Transaction  {
 	}
 
 	/**
+	 * Returns failureReason.
+	 *
+	 * The failure reason describes why the transaction failed. This is only provided when the transaction is marked as failed.
+	 *
+	 * @return \Wallee\Sdk\Model\FailureReason
+	 */
+	public function getFailureReason() {
+		return $this->failureReason;
+	}
+
+	/**
+	 * Sets failureReason.
+	 *
+	 * @param \Wallee\Sdk\Model\FailureReason $failureReason
+	 * @return Transaction
+	 */
+	public function setFailureReason($failureReason) {
+		$this->failureReason = $failureReason;
+
+		return $this;
+	}
+
+	/**
 	 * Returns group.
 	 *
 	 * 
@@ -1395,6 +1437,29 @@ class Transaction  {
 	 */
 	protected function setUserAgentHeader($userAgentHeader) {
 		$this->userAgentHeader = $userAgentHeader;
+
+		return $this;
+	}
+
+	/**
+	 * Returns userFailureMessage.
+	 *
+	 * The failure message describes for an end user why the transaction is failed in the language of the user. This is only provided when the transaction is marked as failed.
+	 *
+	 * @return string
+	 */
+	public function getUserFailureMessage() {
+		return $this->userFailureMessage;
+	}
+
+	/**
+	 * Sets userFailureMessage.
+	 *
+	 * @param string $userFailureMessage
+	 * @return Transaction
+	 */
+	protected function setUserFailureMessage($userFailureMessage) {
+		$this->userFailureMessage = $userFailureMessage;
 
 		return $this;
 	}

@@ -24,7 +24,7 @@ namespace Wallee\Sdk;
 use Exception;
 
 /**
- * This exception is used to inform about a failed validation.
+ * This exception is used to inform about versioning/locking problems during an API call.
  *
  * @category Class
  * @package  Wallee\Sdk
@@ -32,50 +32,6 @@ use Exception;
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link	 https://github.com/wallee-payment/wallee-php-sdk
  */
-final class ValidationException extends Exception {
-
-	/**
-	 * The name of the invalid property.
-	 *
-	 * @var string
-	 */
-	 private $property;
-
-	 /**
-	  * The instance of the validated model.
-	  *
-	  * @var object
-	  */
-	 private $model;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param string $message	the error message
-	 * @param string $property	the name of the invalid property
-	 * @param object $model		the instance of the validated model
-	 */
-	public function __construct($message = "", $property = null, $model = null) {
-		parent::__construct($message);
-		$this->property = $property;
-	}
-
-	/**
-	 * Returns the name of the invalid property.
-	 *
-	 * @return string
-	 */
-	public function getProperty() {
-		return $this->property;
-	}
-
-	/**
-	 * Returns the instance of the validated model.
-	 *
-	 * @return object
-	 */
-	public function getModel() {
-		return $this->model;
-	}
+class VersioningException extends Exception {
 
 }

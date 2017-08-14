@@ -24,23 +24,22 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * ApplicationUserCreate model
+ * AbstractSubscriptionMetricUpdate model
  *
  * @category    Class
- * @description 
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class ApplicationUserCreate extends AbstractApplicationUserUpdate  {
+class AbstractSubscriptionMetricUpdate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'ApplicationUser.Create';
+	private static $swaggerModelName = 'Abstract.SubscriptionMetric.Update';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,7 +47,8 @@ class ApplicationUserCreate extends AbstractApplicationUserUpdate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'primaryAccount' => 'int'	);
+		'description' => '\Wallee\Sdk\Model\DatabaseTranslatedStringCreate',
+		'name' => '\Wallee\Sdk\Model\DatabaseTranslatedStringCreate'	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -56,17 +56,24 @@ class ApplicationUserCreate extends AbstractApplicationUserUpdate  {
 	 * @return string[]
 	 */
 	public static function swaggerTypes() {
-		return self::$swaggerTypes + parent::swaggerTypes();
+		return self::$swaggerTypes;
 	}
 
 	
 
 	/**
-	 * The account that this user is associated with. The account owner will be able to manage this user.
+	 * 
 	 *
-	 * @var int
+	 * @var \Wallee\Sdk\Model\DatabaseTranslatedStringCreate
 	 */
-	private $primaryAccount;
+	private $description;
+
+	/**
+	 * 
+	 *
+	 * @var \Wallee\Sdk\Model\DatabaseTranslatedStringCreate
+	 */
+	private $name;
 
 
 	/**
@@ -75,33 +82,57 @@ class ApplicationUserCreate extends AbstractApplicationUserUpdate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		parent::__construct($data);
-
-		if (isset($data['primaryAccount']) && $data['primaryAccount'] != null) {
-			$this->setPrimaryAccount($data['primaryAccount']);
+		if (isset($data['description']) && $data['description'] != null) {
+			$this->setDescription($data['description']);
+		}
+		if (isset($data['name']) && $data['name'] != null) {
+			$this->setName($data['name']);
 		}
 	}
 
 
 	/**
-	 * Returns primaryAccount.
+	 * Returns description.
 	 *
-	 * The account that this user is associated with. The account owner will be able to manage this user.
+	 * 
 	 *
-	 * @return int
+	 * @return \Wallee\Sdk\Model\DatabaseTranslatedStringCreate
 	 */
-	public function getPrimaryAccount() {
-		return $this->primaryAccount;
+	public function getDescription() {
+		return $this->description;
 	}
 
 	/**
-	 * Sets primaryAccount.
+	 * Sets description.
 	 *
-	 * @param int $primaryAccount
-	 * @return ApplicationUserCreate
+	 * @param \Wallee\Sdk\Model\DatabaseTranslatedStringCreate $description
+	 * @return AbstractSubscriptionMetricUpdate
 	 */
-	public function setPrimaryAccount($primaryAccount) {
-		$this->primaryAccount = $primaryAccount;
+	public function setDescription($description) {
+		$this->description = $description;
+
+		return $this;
+	}
+
+	/**
+	 * Returns name.
+	 *
+	 * 
+	 *
+	 * @return \Wallee\Sdk\Model\DatabaseTranslatedStringCreate
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * Sets name.
+	 *
+	 * @param \Wallee\Sdk\Model\DatabaseTranslatedStringCreate $name
+	 * @return AbstractSubscriptionMetricUpdate
+	 */
+	public function setName($name) {
+		$this->name = $name;
 
 		return $this;
 	}
@@ -112,11 +143,7 @@ class ApplicationUserCreate extends AbstractApplicationUserUpdate  {
 	 * @throws ValidationException
 	 */
 	public function validate() {
-		parent::validate();
 
-		if ($this->getPrimaryAccount() === null) {
-			throw new ValidationException("'primaryAccount' can't be null", 'primaryAccount', $this);
-		}
 	}
 
 	/**

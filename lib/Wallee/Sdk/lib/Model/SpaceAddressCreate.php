@@ -24,7 +24,7 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * AddressCreate model
+ * SpaceAddressCreate model
  *
  * @category    Class
  * @description 
@@ -33,14 +33,14 @@ use Wallee\Sdk\ValidationException;
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class AddressCreate  {
+class SpaceAddressCreate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'Address.Create';
+	private static $swaggerModelName = 'SpaceAddress.Create';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -49,23 +49,16 @@ class AddressCreate  {
 	 */
 	private static $swaggerTypes = array(
 		'city' => 'string',
-		'commercialRegisterNumber' => 'string',
 		'country' => 'string',
-		'dateOfBirth' => '\DateTime',
 		'dependentLocality' => 'string',
 		'emailAddress' => 'string',
 		'familyName' => 'string',
-		'gender' => '\Wallee\Sdk\Model\Gender',
 		'givenName' => 'string',
-		'legalOrganizationForm' => 'int',
-		'mobilePhoneNumber' => 'string',
 		'organizationName' => 'string',
-		'phoneNumber' => 'string',
 		'postCode' => 'string',
 		'postalState' => 'string',
 		'salesTaxNumber' => 'string',
 		'salutation' => 'string',
-		'socialSecurityNumber' => 'string',
 		'sortingCode' => 'string',
 		'street' => 'string'	);
 
@@ -92,21 +85,7 @@ class AddressCreate  {
 	 *
 	 * @var string
 	 */
-	private $commercialRegisterNumber;
-
-	/**
-	 * 
-	 *
-	 * @var string
-	 */
 	private $country;
-
-	/**
-	 * 
-	 *
-	 * @var \DateTime
-	 */
-	private $dateOfBirth;
 
 	/**
 	 * 
@@ -116,7 +95,7 @@ class AddressCreate  {
 	private $dependentLocality;
 
 	/**
-	 * 
+	 * The email address is used within emails and as reply to address.
 	 *
 	 * @var string
 	 */
@@ -132,13 +111,6 @@ class AddressCreate  {
 	/**
 	 * 
 	 *
-	 * @var \Wallee\Sdk\Model\Gender
-	 */
-	private $gender;
-
-	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	private $givenName;
@@ -146,30 +118,9 @@ class AddressCreate  {
 	/**
 	 * 
 	 *
-	 * @var int
-	 */
-	private $legalOrganizationForm;
-
-	/**
-	 * 
-	 *
-	 * @var string
-	 */
-	private $mobilePhoneNumber;
-
-	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	private $organizationName;
-
-	/**
-	 * 
-	 *
-	 * @var string
-	 */
-	private $phoneNumber;
 
 	/**
 	 * 
@@ -200,13 +151,6 @@ class AddressCreate  {
 	private $salutation;
 
 	/**
-	 * 
-	 *
-	 * @var string
-	 */
-	private $socialSecurityNumber;
-
-	/**
 	 * The sorting code identifies the post office at which the post box is located in.
 	 *
 	 * @var string
@@ -230,14 +174,8 @@ class AddressCreate  {
 		if (isset($data['city']) && $data['city'] != null) {
 			$this->setCity($data['city']);
 		}
-		if (isset($data['commercialRegisterNumber']) && $data['commercialRegisterNumber'] != null) {
-			$this->setCommercialRegisterNumber($data['commercialRegisterNumber']);
-		}
 		if (isset($data['country']) && $data['country'] != null) {
 			$this->setCountry($data['country']);
-		}
-		if (isset($data['dateOfBirth']) && $data['dateOfBirth'] != null) {
-			$this->setDateOfBirth($data['dateOfBirth']);
 		}
 		if (isset($data['dependentLocality']) && $data['dependentLocality'] != null) {
 			$this->setDependentLocality($data['dependentLocality']);
@@ -248,23 +186,11 @@ class AddressCreate  {
 		if (isset($data['familyName']) && $data['familyName'] != null) {
 			$this->setFamilyName($data['familyName']);
 		}
-		if (isset($data['gender']) && $data['gender'] != null) {
-			$this->setGender($data['gender']);
-		}
 		if (isset($data['givenName']) && $data['givenName'] != null) {
 			$this->setGivenName($data['givenName']);
 		}
-		if (isset($data['legalOrganizationForm']) && $data['legalOrganizationForm'] != null) {
-			$this->setLegalOrganizationForm($data['legalOrganizationForm']);
-		}
-		if (isset($data['mobilePhoneNumber']) && $data['mobilePhoneNumber'] != null) {
-			$this->setMobilePhoneNumber($data['mobilePhoneNumber']);
-		}
 		if (isset($data['organizationName']) && $data['organizationName'] != null) {
 			$this->setOrganizationName($data['organizationName']);
-		}
-		if (isset($data['phoneNumber']) && $data['phoneNumber'] != null) {
-			$this->setPhoneNumber($data['phoneNumber']);
 		}
 		if (isset($data['postCode']) && $data['postCode'] != null) {
 			$this->setPostCode($data['postCode']);
@@ -277,9 +203,6 @@ class AddressCreate  {
 		}
 		if (isset($data['salutation']) && $data['salutation'] != null) {
 			$this->setSalutation($data['salutation']);
-		}
-		if (isset($data['socialSecurityNumber']) && $data['socialSecurityNumber'] != null) {
-			$this->setSocialSecurityNumber($data['socialSecurityNumber']);
 		}
 		if (isset($data['sortingCode']) && $data['sortingCode'] != null) {
 			$this->setSortingCode($data['sortingCode']);
@@ -305,33 +228,10 @@ class AddressCreate  {
 	 * Sets city.
 	 *
 	 * @param string $city
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setCity($city) {
 		$this->city = $city;
-
-		return $this;
-	}
-
-	/**
-	 * Returns commercialRegisterNumber.
-	 *
-	 * 
-	 *
-	 * @return string
-	 */
-	public function getCommercialRegisterNumber() {
-		return $this->commercialRegisterNumber;
-	}
-
-	/**
-	 * Sets commercialRegisterNumber.
-	 *
-	 * @param string $commercialRegisterNumber
-	 * @return AddressCreate
-	 */
-	public function setCommercialRegisterNumber($commercialRegisterNumber) {
-		$this->commercialRegisterNumber = $commercialRegisterNumber;
 
 		return $this;
 	}
@@ -351,33 +251,10 @@ class AddressCreate  {
 	 * Sets country.
 	 *
 	 * @param string $country
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setCountry($country) {
 		$this->country = $country;
-
-		return $this;
-	}
-
-	/**
-	 * Returns dateOfBirth.
-	 *
-	 * 
-	 *
-	 * @return \DateTime
-	 */
-	public function getDateOfBirth() {
-		return $this->dateOfBirth;
-	}
-
-	/**
-	 * Sets dateOfBirth.
-	 *
-	 * @param \DateTime $dateOfBirth
-	 * @return AddressCreate
-	 */
-	public function setDateOfBirth($dateOfBirth) {
-		$this->dateOfBirth = $dateOfBirth;
 
 		return $this;
 	}
@@ -397,7 +274,7 @@ class AddressCreate  {
 	 * Sets dependentLocality.
 	 *
 	 * @param string $dependentLocality
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setDependentLocality($dependentLocality) {
 		$this->dependentLocality = $dependentLocality;
@@ -408,7 +285,7 @@ class AddressCreate  {
 	/**
 	 * Returns emailAddress.
 	 *
-	 * 
+	 * The email address is used within emails and as reply to address.
 	 *
 	 * @return string
 	 */
@@ -420,7 +297,7 @@ class AddressCreate  {
 	 * Sets emailAddress.
 	 *
 	 * @param string $emailAddress
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setEmailAddress($emailAddress) {
 		$this->emailAddress = $emailAddress;
@@ -443,33 +320,10 @@ class AddressCreate  {
 	 * Sets familyName.
 	 *
 	 * @param string $familyName
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setFamilyName($familyName) {
 		$this->familyName = $familyName;
-
-		return $this;
-	}
-
-	/**
-	 * Returns gender.
-	 *
-	 * 
-	 *
-	 * @return \Wallee\Sdk\Model\Gender
-	 */
-	public function getGender() {
-		return $this->gender;
-	}
-
-	/**
-	 * Sets gender.
-	 *
-	 * @param \Wallee\Sdk\Model\Gender $gender
-	 * @return AddressCreate
-	 */
-	public function setGender($gender) {
-		$this->gender = $gender;
 
 		return $this;
 	}
@@ -489,56 +343,10 @@ class AddressCreate  {
 	 * Sets givenName.
 	 *
 	 * @param string $givenName
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setGivenName($givenName) {
 		$this->givenName = $givenName;
-
-		return $this;
-	}
-
-	/**
-	 * Returns legalOrganizationForm.
-	 *
-	 * 
-	 *
-	 * @return int
-	 */
-	public function getLegalOrganizationForm() {
-		return $this->legalOrganizationForm;
-	}
-
-	/**
-	 * Sets legalOrganizationForm.
-	 *
-	 * @param int $legalOrganizationForm
-	 * @return AddressCreate
-	 */
-	public function setLegalOrganizationForm($legalOrganizationForm) {
-		$this->legalOrganizationForm = $legalOrganizationForm;
-
-		return $this;
-	}
-
-	/**
-	 * Returns mobilePhoneNumber.
-	 *
-	 * 
-	 *
-	 * @return string
-	 */
-	public function getMobilePhoneNumber() {
-		return $this->mobilePhoneNumber;
-	}
-
-	/**
-	 * Sets mobilePhoneNumber.
-	 *
-	 * @param string $mobilePhoneNumber
-	 * @return AddressCreate
-	 */
-	public function setMobilePhoneNumber($mobilePhoneNumber) {
-		$this->mobilePhoneNumber = $mobilePhoneNumber;
 
 		return $this;
 	}
@@ -558,33 +366,10 @@ class AddressCreate  {
 	 * Sets organizationName.
 	 *
 	 * @param string $organizationName
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setOrganizationName($organizationName) {
 		$this->organizationName = $organizationName;
-
-		return $this;
-	}
-
-	/**
-	 * Returns phoneNumber.
-	 *
-	 * 
-	 *
-	 * @return string
-	 */
-	public function getPhoneNumber() {
-		return $this->phoneNumber;
-	}
-
-	/**
-	 * Sets phoneNumber.
-	 *
-	 * @param string $phoneNumber
-	 * @return AddressCreate
-	 */
-	public function setPhoneNumber($phoneNumber) {
-		$this->phoneNumber = $phoneNumber;
 
 		return $this;
 	}
@@ -604,7 +389,7 @@ class AddressCreate  {
 	 * Sets postCode.
 	 *
 	 * @param string $postCode
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setPostCode($postCode) {
 		$this->postCode = $postCode;
@@ -627,7 +412,7 @@ class AddressCreate  {
 	 * Sets postalState.
 	 *
 	 * @param string $postalState
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setPostalState($postalState) {
 		$this->postalState = $postalState;
@@ -650,7 +435,7 @@ class AddressCreate  {
 	 * Sets salesTaxNumber.
 	 *
 	 * @param string $salesTaxNumber
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setSalesTaxNumber($salesTaxNumber) {
 		$this->salesTaxNumber = $salesTaxNumber;
@@ -673,33 +458,10 @@ class AddressCreate  {
 	 * Sets salutation.
 	 *
 	 * @param string $salutation
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setSalutation($salutation) {
 		$this->salutation = $salutation;
-
-		return $this;
-	}
-
-	/**
-	 * Returns socialSecurityNumber.
-	 *
-	 * 
-	 *
-	 * @return string
-	 */
-	public function getSocialSecurityNumber() {
-		return $this->socialSecurityNumber;
-	}
-
-	/**
-	 * Sets socialSecurityNumber.
-	 *
-	 * @param string $socialSecurityNumber
-	 * @return AddressCreate
-	 */
-	public function setSocialSecurityNumber($socialSecurityNumber) {
-		$this->socialSecurityNumber = $socialSecurityNumber;
 
 		return $this;
 	}
@@ -719,7 +481,7 @@ class AddressCreate  {
 	 * Sets sortingCode.
 	 *
 	 * @param string $sortingCode
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setSortingCode($sortingCode) {
 		$this->sortingCode = $sortingCode;
@@ -742,7 +504,7 @@ class AddressCreate  {
 	 * Sets street.
 	 *
 	 * @param string $street
-	 * @return AddressCreate
+	 * @return SpaceAddressCreate
 	 */
 	public function setStreet($street) {
 		$this->street = $street;

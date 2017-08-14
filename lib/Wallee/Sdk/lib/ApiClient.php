@@ -454,6 +454,10 @@ final class ApiClient {
 				$data = $response->getBody();
 			}
 		} else {
+			if ($response->getStatusCode() == 409) {
+				throw new VersioningException();
+			}
+		
 			$data = json_decode($response->getBody());
 			if (json_last_error() > 0) { // if response is a string
 				$data = $response->getBody();

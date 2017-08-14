@@ -24,23 +24,22 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * SubscriberUpdate model
+ * AbstractSubscriberUpdate model
  *
  * @category    Class
- * @description A subscriber represents everyone who is subscribed to a product.
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class SubscriberUpdate  {
+class AbstractSubscriberUpdate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'Subscriber.Update';
+	private static $swaggerModelName = 'Abstract.Subscriber.Update';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,8 +47,6 @@ class SubscriberUpdate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'id' => 'int',
-		'version' => 'int',
 		'additionalAllowedPaymentMethodConfigurations' => 'int[]',
 		'billingAddress' => '\Wallee\Sdk\Model\AddressCreate',
 		'description' => 'string',
@@ -69,20 +66,6 @@ class SubscriberUpdate  {
 	}
 
 	
-
-	/**
-	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
-	 *
-	 * @var int
-	 */
-	private $id;
-
-	/**
-	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
-	 *
-	 * @var int
-	 */
-	private $version;
 
 	/**
 	 * Those payment methods which are allowed additionally will be available even when the product does not allow those methods.
@@ -147,12 +130,6 @@ class SubscriberUpdate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['id']) && $data['id'] != null) {
-			$this->setId($data['id']);
-		}
-		if (isset($data['version']) && $data['version'] != null) {
-			$this->setVersion($data['version']);
-		}
 		if (isset($data['additionalAllowedPaymentMethodConfigurations']) && $data['additionalAllowedPaymentMethodConfigurations'] != null) {
 			$this->setAdditionalAllowedPaymentMethodConfigurations($data['additionalAllowedPaymentMethodConfigurations']);
 		}
@@ -181,52 +158,6 @@ class SubscriberUpdate  {
 
 
 	/**
-	 * Returns id.
-	 *
-	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
-	 *
-	 * @return int
-	 */
-	public function getId() {
-		return $this->id;
-	}
-
-	/**
-	 * Sets id.
-	 *
-	 * @param int $id
-	 * @return SubscriberUpdate
-	 */
-	public function setId($id) {
-		$this->id = $id;
-
-		return $this;
-	}
-
-	/**
-	 * Returns version.
-	 *
-	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
-	 *
-	 * @return int
-	 */
-	public function getVersion() {
-		return $this->version;
-	}
-
-	/**
-	 * Sets version.
-	 *
-	 * @param int $version
-	 * @return SubscriberUpdate
-	 */
-	public function setVersion($version) {
-		$this->version = $version;
-
-		return $this;
-	}
-
-	/**
 	 * Returns additionalAllowedPaymentMethodConfigurations.
 	 *
 	 * Those payment methods which are allowed additionally will be available even when the product does not allow those methods.
@@ -241,7 +172,7 @@ class SubscriberUpdate  {
 	 * Sets additionalAllowedPaymentMethodConfigurations.
 	 *
 	 * @param int[] $additionalAllowedPaymentMethodConfigurations
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setAdditionalAllowedPaymentMethodConfigurations($additionalAllowedPaymentMethodConfigurations) {
 		$this->additionalAllowedPaymentMethodConfigurations = $additionalAllowedPaymentMethodConfigurations;
@@ -264,7 +195,7 @@ class SubscriberUpdate  {
 	 * Sets billingAddress.
 	 *
 	 * @param \Wallee\Sdk\Model\AddressCreate $billingAddress
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setBillingAddress($billingAddress) {
 		$this->billingAddress = $billingAddress;
@@ -287,7 +218,7 @@ class SubscriberUpdate  {
 	 * Sets description.
 	 *
 	 * @param string $description
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setDescription($description) {
 		$this->description = $description;
@@ -310,7 +241,7 @@ class SubscriberUpdate  {
 	 * Sets disallowedPaymentMethodConfigurations.
 	 *
 	 * @param int[] $disallowedPaymentMethodConfigurations
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setDisallowedPaymentMethodConfigurations($disallowedPaymentMethodConfigurations) {
 		$this->disallowedPaymentMethodConfigurations = $disallowedPaymentMethodConfigurations;
@@ -333,7 +264,7 @@ class SubscriberUpdate  {
 	 * Sets emailAddress.
 	 *
 	 * @param string $emailAddress
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setEmailAddress($emailAddress) {
 		$this->emailAddress = $emailAddress;
@@ -356,7 +287,7 @@ class SubscriberUpdate  {
 	 * Sets language.
 	 *
 	 * @param string $language
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setLanguage($language) {
 		$this->language = $language;
@@ -379,7 +310,7 @@ class SubscriberUpdate  {
 	 * Sets reference.
 	 *
 	 * @param string $reference
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setReference($reference) {
 		$this->reference = $reference;
@@ -402,7 +333,7 @@ class SubscriberUpdate  {
 	 * Sets shippingAddress.
 	 *
 	 * @param \Wallee\Sdk\Model\AddressCreate $shippingAddress
-	 * @return SubscriberUpdate
+	 * @return AbstractSubscriberUpdate
 	 */
 	public function setShippingAddress($shippingAddress) {
 		$this->shippingAddress = $shippingAddress;
@@ -417,12 +348,6 @@ class SubscriberUpdate  {
 	 */
 	public function validate() {
 
-		if ($this->getId() === null) {
-			throw new ValidationException("'id' can't be null", 'id', $this);
-		}
-		if ($this->getVersion() === null) {
-			throw new ValidationException("'version' can't be null", 'version', $this);
-		}
 	}
 
 	/**

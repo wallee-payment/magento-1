@@ -185,13 +185,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $info->setImage($this->getPaymentMethodImage($transaction, $order));
         $info->setLabels($this->getTransactionLabels($transaction));
         if ($transaction->getState() == \Wallee\Sdk\Model\TransactionState::FAILED || $transaction->getState() == \Wallee\Sdk\Model\TransactionState::DECLINE) {
-            $failedChargeAttempt = $this->getFailedChargeAttempt($transaction->getLinkedSpaceId(), $transaction->getId());
-            if ($failedChargeAttempt != null && $failedChargeAttempt->getFailureReason() != null) {
-                $info->setFailureReason(
-                    $failedChargeAttempt->getFailureReason()
-                    ->getDescription()
-                );
-            }
+            $info->setFailureReason($transaction->getFailureReason() instanceof \Wallee\Sdk\Model\FailureReason ? $transaction->getFailureReason()->getDescription() : null);
         }
 
         $info->save();
@@ -332,20 +326,27 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     public function updateTransaction($transactionId, $spaceId, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
     {
-        $transaction = $this->getTransactionService()->read($spaceId, $transactionId);
-        if (!($transaction instanceof \Wallee\Sdk\Model\Transaction) || $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING) {
-            return $this->createTransactionByOrder($order);
+        for ($i = 0; $i < 5; $i++) {
+            try {
+                $transaction = $this->getTransactionService()->read($spaceId, $transactionId);
+                if (!($transaction instanceof \Wallee\Sdk\Model\Transaction) || $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING) {
+                    return $this->createTransactionByOrder($order);
+                }
+                
+                $pendingTransaction = new \Wallee\Sdk\Model\TransactionPending();
+                $pendingTransaction->setId($transaction->getId());
+                $pendingTransaction->setVersion($transaction->getVersion());
+                $this->assembleOrderTransactionData($order, $invoice, $pendingTransaction, $chargeFlow);
+                if ($token != null) {
+                    $pendingTransaction->setToken($token->getId());
+                }
+                
+                return $this->getTransactionService()->update($spaceId, $pendingTransaction);
+            } catch (\Wallee\Sdk\VersioningException $e) {
+                // Try to update the transaction again, if a versioning exception occurred.
+            }
         }
-
-        $pendingTransaction = new \Wallee\Sdk\Model\TransactionPending();
-        $pendingTransaction->setId($transaction->getId());
-        $pendingTransaction->setVersion($transaction->getVersion());
-        $this->assembleOrderTransactionData($order, $invoice, $pendingTransaction, $chargeFlow);
-        if ($token != null) {
-            $pendingTransaction->setToken($token->getId());
-        }
-
-        return $this->getTransactionService()->update($spaceId, $pendingTransaction);
+        throw new \Wallee\Sdk\VersioningException();
     }
 
     /**
@@ -534,16 +535,23 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     protected function loadAndUpdateTransaction(Mage_Sales_Model_Quote $quote)
     {
-        $transaction = $this->getTransactionService()->read($quote->getWalleeSpaceId(), $quote->getWalleeTransactionId());
-        if (!($transaction instanceof \Wallee\Sdk\Model\Transaction) || $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING) {
-            return $this->createTransactionByQuote($quote);
+        for ($i = 0; $i < 5; $i++) {
+            try {
+                $transaction = $this->getTransactionService()->read($quote->getWalleeSpaceId(), $quote->getWalleeTransactionId());
+                if (!($transaction instanceof \Wallee\Sdk\Model\Transaction) || $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING) {
+                    return $this->createTransactionByQuote($quote);
+                }
+        
+                $pendingTransaction = new \Wallee\Sdk\Model\TransactionPending();
+                $pendingTransaction->setId($transaction->getId());
+                $pendingTransaction->setVersion($transaction->getVersion());
+                $this->assembleQuoteTransactionData($quote, $pendingTransaction);
+                return $this->getTransactionService()->update($quote->getWalleeSpaceId(), $pendingTransaction);
+            } catch (\Wallee\Sdk\VersioningException $e) {
+                // Try to update the transaction again, if a versioning exception occurred.
+            }
         }
-
-        $pendingTransaction = new \Wallee\Sdk\Model\TransactionPending();
-        $pendingTransaction->setId($transaction->getId());
-        $pendingTransaction->setVersion($transaction->getVersion());
-        $this->assembleQuoteTransactionData($quote, $pendingTransaction);
-        return $this->getTransactionService()->update($quote->getWalleeSpaceId(), $pendingTransaction);
+        throw new \Wallee\Sdk\VersioningException();
     }
 
     /**

@@ -24,23 +24,22 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * LineItemReductionCreate model
+ * AbstractWebhookUrlUpdate model
  *
  * @category    Class
- * @description 
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class LineItemReductionCreate  {
+class AbstractWebhookUrlUpdate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'LineItemReduction.Create';
+	private static $swaggerModelName = 'Abstract.WebhookUrl.Update';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,9 +47,9 @@ class LineItemReductionCreate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'lineItemUniqueId' => 'string',
-		'quantityReduction' => 'float',
-		'unitPriceReduction' => 'float'	);
+		'name' => 'string',
+		'state' => '\Wallee\Sdk\Model\CreationEntityState',
+		'url' => 'string'	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -64,25 +63,25 @@ class LineItemReductionCreate  {
 	
 
 	/**
-	 * The unique id identifies the line item on which the reduction is applied on.
+	 * The URL name is used internally to identify the URL in administrative interfaces. For example it is used within search fields and hence it should be distinct and descriptive.
 	 *
 	 * @var string
 	 */
-	private $lineItemUniqueId;
+	private $name;
 
 	/**
 	 * 
 	 *
-	 * @var float
+	 * @var \Wallee\Sdk\Model\CreationEntityState
 	 */
-	private $quantityReduction;
+	private $state;
 
 	/**
-	 * 
+	 * The URL to which the HTTP requests are sent to. An example URL could look like https://www.example.com/some/path?some-query-parameter=value.
 	 *
-	 * @var float
+	 * @var string
 	 */
-	private $unitPriceReduction;
+	private $url;
 
 
 	/**
@@ -91,83 +90,83 @@ class LineItemReductionCreate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['lineItemUniqueId']) && $data['lineItemUniqueId'] != null) {
-			$this->setLineItemUniqueId($data['lineItemUniqueId']);
+		if (isset($data['name']) && $data['name'] != null) {
+			$this->setName($data['name']);
 		}
-		if (isset($data['quantityReduction']) && $data['quantityReduction'] != null) {
-			$this->setQuantityReduction($data['quantityReduction']);
+		if (isset($data['state']) && $data['state'] != null) {
+			$this->setState($data['state']);
 		}
-		if (isset($data['unitPriceReduction']) && $data['unitPriceReduction'] != null) {
-			$this->setUnitPriceReduction($data['unitPriceReduction']);
+		if (isset($data['url']) && $data['url'] != null) {
+			$this->setUrl($data['url']);
 		}
 	}
 
 
 	/**
-	 * Returns lineItemUniqueId.
+	 * Returns name.
 	 *
-	 * The unique id identifies the line item on which the reduction is applied on.
+	 * The URL name is used internally to identify the URL in administrative interfaces. For example it is used within search fields and hence it should be distinct and descriptive.
 	 *
 	 * @return string
 	 */
-	public function getLineItemUniqueId() {
-		return $this->lineItemUniqueId;
+	public function getName() {
+		return $this->name;
 	}
 
 	/**
-	 * Sets lineItemUniqueId.
+	 * Sets name.
 	 *
-	 * @param string $lineItemUniqueId
-	 * @return LineItemReductionCreate
+	 * @param string $name
+	 * @return AbstractWebhookUrlUpdate
 	 */
-	public function setLineItemUniqueId($lineItemUniqueId) {
-		$this->lineItemUniqueId = $lineItemUniqueId;
+	public function setName($name) {
+		$this->name = $name;
 
 		return $this;
 	}
 
 	/**
-	 * Returns quantityReduction.
+	 * Returns state.
 	 *
 	 * 
 	 *
-	 * @return float
+	 * @return \Wallee\Sdk\Model\CreationEntityState
 	 */
-	public function getQuantityReduction() {
-		return $this->quantityReduction;
+	public function getState() {
+		return $this->state;
 	}
 
 	/**
-	 * Sets quantityReduction.
+	 * Sets state.
 	 *
-	 * @param float $quantityReduction
-	 * @return LineItemReductionCreate
+	 * @param \Wallee\Sdk\Model\CreationEntityState $state
+	 * @return AbstractWebhookUrlUpdate
 	 */
-	public function setQuantityReduction($quantityReduction) {
-		$this->quantityReduction = $quantityReduction;
+	public function setState($state) {
+		$this->state = $state;
 
 		return $this;
 	}
 
 	/**
-	 * Returns unitPriceReduction.
+	 * Returns url.
 	 *
-	 * 
+	 * The URL to which the HTTP requests are sent to. An example URL could look like https://www.example.com/some/path?some-query-parameter=value.
 	 *
-	 * @return float
+	 * @return string
 	 */
-	public function getUnitPriceReduction() {
-		return $this->unitPriceReduction;
+	public function getUrl() {
+		return $this->url;
 	}
 
 	/**
-	 * Sets unitPriceReduction.
+	 * Sets url.
 	 *
-	 * @param float $unitPriceReduction
-	 * @return LineItemReductionCreate
+	 * @param string $url
+	 * @return AbstractWebhookUrlUpdate
 	 */
-	public function setUnitPriceReduction($unitPriceReduction) {
-		$this->unitPriceReduction = $unitPriceReduction;
+	public function setUrl($url) {
+		$this->url = $url;
 
 		return $this;
 	}
@@ -179,15 +178,6 @@ class LineItemReductionCreate  {
 	 */
 	public function validate() {
 
-		if ($this->getLineItemUniqueId() === null) {
-			throw new ValidationException("'lineItemUniqueId' can't be null", 'lineItemUniqueId', $this);
-		}
-		if ($this->getQuantityReduction() === null) {
-			throw new ValidationException("'quantityReduction' can't be null", 'quantityReduction', $this);
-		}
-		if ($this->getUnitPriceReduction() === null) {
-			throw new ValidationException("'unitPriceReduction' can't be null", 'unitPriceReduction', $this);
-		}
 	}
 
 	/**

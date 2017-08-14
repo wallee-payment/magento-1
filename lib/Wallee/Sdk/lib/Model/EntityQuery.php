@@ -110,17 +110,8 @@ class EntityQuery  {
 		if (isset($data['filter']) && $data['filter'] != null) {
 			$this->setFilter($data['filter']);
 		}
-		if (isset($data['language']) && $data['language'] != null) {
-			$this->setLanguage($data['language']);
-		}
-		if (isset($data['numberOfEntities']) && $data['numberOfEntities'] != null) {
-			$this->setNumberOfEntities($data['numberOfEntities']);
-		}
 		if (isset($data['orderBys']) && $data['orderBys'] != null) {
 			$this->setOrderBys($data['orderBys']);
-		}
-		if (isset($data['startingEntity']) && $data['startingEntity'] != null) {
-			$this->setStartingEntity($data['startingEntity']);
 		}
 	}
 
@@ -165,7 +156,7 @@ class EntityQuery  {
 	 * @param string $language
 	 * @return EntityQuery
 	 */
-	public function setLanguage($language) {
+	protected function setLanguage($language) {
 		$this->language = $language;
 
 		return $this;
@@ -234,7 +225,7 @@ class EntityQuery  {
 	 * @param int $startingEntity
 	 * @return EntityQuery
 	 */
-	public function setStartingEntity($startingEntity) {
+	protected function setStartingEntity($startingEntity) {
 		$this->startingEntity = $startingEntity;
 
 		return $this;

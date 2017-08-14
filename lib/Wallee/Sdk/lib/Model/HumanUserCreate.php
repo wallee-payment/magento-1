@@ -33,7 +33,7 @@ use Wallee\Sdk\ValidationException;
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class HumanUserCreate extends HumanUserUpdate  {
+class HumanUserCreate extends AbstractHumanUserUpdate  {
 
 	/**
 	 * The original name of the model.

@@ -271,6 +271,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
     {
         parent::denyPayment($payment);
         Mage::getSingleton('wallee_payment/service_deliveryIndication')->markAsNotSuitable($payment);
+        $payment->getOrder()->setWalleePaymentInvoiceAllowManipulation(true);
         return true;
     }
 
@@ -524,12 +525,15 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         $coreSession = Mage::getSingleton('core/session');
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
-        $failedChargeAttempt = $transactionService->getFailedChargeAttempt($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
-        if ($failedChargeAttempt != null && $failedChargeAttempt->getUserFailureMessage() != null) {
-            $coreSession->addError($failedChargeAttempt->getUserFailureMessage());
-        } else {
-            $coreSession->addError($this->getHelper()->__('The payment process could not have been finished successfully.'));
+        try {
+            $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
+            if ($transaction instanceof \Wallee\Sdk\Model\Transaction && $transaction->getUserFailureMessage() != null) {
+                $coreSession->addError($transaction->getUserFailureMessage());
+                return;
+            }
+        } catch (Exception $e) {
         }
+        $coreSession->addError($this->getHelper()->__('The payment process could not have been finished successfully.'));
     }
 
     /**

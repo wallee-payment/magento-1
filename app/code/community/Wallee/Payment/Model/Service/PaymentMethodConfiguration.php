@@ -25,8 +25,8 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         $model->loadByConfigurationId($configuration->getLinkedSpaceId(), $configuration->getId());
         if ($model->getId() && $this->hasChanged($configuration, $model)) {
             $model->setConfigurationName($configuration->getName());
-            $model->setTitle($this->getTranslationsArray($configuration->getTitle()));
-            $model->setDescription($this->getTranslationsArray($configuration->getDescription()));
+            $model->setTitle($configuration->getResolvedTitle());
+            $model->setDescription($configuration->getResolvedDescription());
             $model->setImage(
                 $configuration->getImageResourcePath() != null ? $configuration->getImageResourcePath()
                 ->getPath() : $this->getPaymentMethod($configuration->getPaymentMethod())
@@ -43,11 +43,11 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
             return true;
         }
 
-        if ($this->getTranslationsArray($configuration->getTitle()) != $model->getTitleArray()) {
+        if ($configuration->getResolvedTitle() != $model->getTitleArray()) {
             return true;
         }
 
-        if ($this->getTranslationsArray($configuration->getDescription()) != $model->getDescriptionArray()) {
+        if ($configuration->getResolvedDescription() != $model->getDescriptionArray()) {
             return true;
         }
 
@@ -103,8 +103,8 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
                     $method->setConfigurationId($configuration->getId());
                     $method->setConfigurationName($configuration->getName());
                     $method->setState($this->getConfigurationState($configuration));
-                    $method->setTitle($this->getTranslationsArray($configuration->getTitle()));
-                    $method->setDescription($this->getTranslationsArray($configuration->getDescription()));
+                    $method->setTitle($configuration->getResolvedTitle());
+                    $method->setDescription($configuration->getResolvedDescription());
                     $method->setImage(
                         $configuration->getImageResourcePath() != null ? $configuration->getImageResourcePath()
                         ->getPath() : $this->getPaymentMethod($configuration->getPaymentMethod())
@@ -139,25 +139,6 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         /* @var Wallee_Payment_Model_Provider_PaymentMethod $methodProvider */
         $methodProvider = Mage::getSingleton('wallee_payment/provider_paymentMethod');
         return $methodProvider->find($id);
-    }
-
-    /**
-     * Converts a DatabaseTranslatedString into a serializable array.
-     *
-     * @param \Wallee\Sdk\Model\DatabaseTranslatedString $translatedString
-     * @return string[]
-     */
-    protected function getTranslationsArray(\Wallee\Sdk\Model\DatabaseTranslatedString $translatedString)
-    {
-        $translations = array();
-        foreach ($translatedString->getItems() as $item) {
-            $translation = $item->getTranslation();
-            if (! empty($translation)) {
-                $translations[$item->getLanguage()] = $item->getTranslation();
-            }
-        }
-
-        return $translations;
     }
 
     /**
