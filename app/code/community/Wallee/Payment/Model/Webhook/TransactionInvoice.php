@@ -59,7 +59,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
                     $this->capture(
                         $transactionInvoice->getCompletion()
                         ->getLineItemVersion()
-                        ->getTransaction(), $order, $invoice, $transactionInvoice->getAmount()
+                        ->getTransaction(), $order, $transactionInvoice->getAmount(), $invoice
                     );
                     break;
                 case \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED:
@@ -75,7 +75,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         }
     }
 
-    protected function capture(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $amount)
+    protected function capture(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, $amount, Mage_Sales_Model_Order_Invoice $invoice = null)
     {
         $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
 
@@ -101,7 +101,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         $order->save();
     }
 
-    protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice)
+    protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice = null)
     {
         if ($invoice && Mage_Sales_Model_Order_Invoice::STATE_OPEN == $invoice->getState()) {
             $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
@@ -150,7 +150,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -164,6 +164,7 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
     protected function createInvoice($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         $invoice = $order->prepareInvoice();
+        $invoice->setWalleeAllowCreation(true);
         $invoice->register();
         $invoice->setTransactionId($spaceId . '_' . $transactionId);
         $invoice->save();

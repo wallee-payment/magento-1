@@ -379,10 +379,10 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      *
      * @param Mage_Sales_Model_Order $order
      * @param Mage_Sales_Model_Order_Invoice $invoice
-     * @param \Wallee\Sdk\Model\TransactionPending $transaction
+     * @param \Wallee\Sdk\Model\AbstractTransactionPending $transaction
      * @param bool $chargeFlow
      */
-    protected function assembleOrderTransactionData(Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, \Wallee\Sdk\Model\TransactionPending $transaction, $chargeFlow = false)
+    protected function assembleOrderTransactionData(Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, \Wallee\Sdk\Model\AbstractTransactionPending $transaction, $chargeFlow = false)
     {
         $transaction->setCurrency($order->getOrderCurrencyCode());
         $transaction->setBillingAddress($this->getOrderBillingAddress($order));
@@ -558,9 +558,9 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * Assemble the transaction data for the given quote.
      *
      * @param Mage_Sales_Model_Quote $quote
-     * @param \Wallee\Sdk\Model\TransactionPending $transaction
+     * @param \Wallee\Sdk\Model\AbstractTransactionPending $transaction
      */
-    protected function assembleQuoteTransactionData(Mage_Sales_Model_Quote $quote, \Wallee\Sdk\Model\TransactionPending $transaction)
+    protected function assembleQuoteTransactionData(Mage_Sales_Model_Quote $quote, \Wallee\Sdk\Model\AbstractTransactionPending $transaction)
     {
         $transaction->setCurrency($quote->getQuoteCurrencyCode());
         $transaction->setBillingAddress($this->getQuoteBillingAddress($quote));

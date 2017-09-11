@@ -25,6 +25,26 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
     private $transactionInvoiceService;
 
     /**
+     * Returns the transaction invoice for the given transaction.
+     *
+     * @param int $spaceId
+     * @param int $transactionId
+     * @return \Wallee\Sdk\Model\TransactionInvoice
+     */
+    public function getTransactionInvoiceByTransaction($spaceId, $transactionId)
+    {
+        $query = new \Wallee\Sdk\Model\EntityQuery();
+        $query->setNumberOfEntities(1);
+        $query->setFilter($this->createEntityFilter('completion.lineItemVersion.transaction.id', $transactionId));
+        $result = $this->getTransactionInvoiceService()->search($spaceId, $query);
+        if ($result != null && ! empty($result)) {
+            return current($result);
+        } else {
+            Mage::throwException('The transaction invoice could not be found.');
+        }
+    }
+
+    /**
      * Returns the transaction invoice for the given complication.
      *
      * @param int $spaceId
