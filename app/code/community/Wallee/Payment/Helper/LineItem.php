@@ -97,8 +97,10 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
     public function cleanupLineItems(array $lineItems, $expectedSum, $currency)
     {
         $effectiveSum = $this->roundAmount($this->getTotalAmountIncludingTax($lineItems), $currency);
-        $diff = $effectiveSum - $this->roundAmount($expectedSum, $currency);
+        $diff = $this->roundAmount($expectedSum, $currency) - $effectiveSum;
         if ($diff != 0) {
+            throw new \Exception('The line item total amount of ' . $effectiveSum . ' does not match the order\'s invoice amount of ' . $expectedSum . '.');
+            
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
             $lineItem->setAmountIncludingTax($this->roundAmount($diff, $currency));
             $lineItem->setName(Mage::helper('wallee_payment')->__('Rounding Adjustment'));
