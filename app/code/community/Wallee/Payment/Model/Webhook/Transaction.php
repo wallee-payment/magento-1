@@ -88,7 +88,11 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, 'processing_wallee', Mage::helper('wallee_payment')->__('The order should not be fulfilled yet, as the payment is not guaranteed.'));
         $order->setWalleeAuthorized(true);
         $order->save();
-        $this->updateShopCustomer($transaction, $order);
+        try {
+            $this->updateShopCustomer($transaction, $order);
+        } catch (Exception $e) {
+            // Try to update the customer, ignore if it fails.
+        }
     }
 
     protected function decline(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
