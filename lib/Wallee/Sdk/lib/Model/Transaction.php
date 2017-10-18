@@ -52,7 +52,9 @@ class Transaction  {
 		'allowedPaymentMethodBrands' => '\Wallee\Sdk\Model\PaymentMethodBrand[]',
 		'allowedPaymentMethodConfigurations' => 'int[]',
 		'authorizationAmount' => 'float',
+		'authorizationTimeoutOn' => '\DateTime',
 		'authorizedOn' => '\DateTime',
+		'autoConfirmationEnabled' => 'bool',
 		'billingAddress' => '\Wallee\Sdk\Model\Address',
 		'chargeRetryEnabled' => 'bool',
 		'completedOn' => '\DateTime',
@@ -88,6 +90,7 @@ class Transaction  {
 		'spaceViewId' => 'int',
 		'state' => '\Wallee\Sdk\Model\TransactionState',
 		'successUrl' => 'string',
+		'timeZone' => 'string',
 		'token' => '\Wallee\Sdk\Model\Token',
 		'userAgentHeader' => 'string',
 		'userFailureMessage' => 'string',
@@ -134,11 +137,25 @@ class Transaction  {
 	private $authorizationAmount;
 
 	/**
+	 * This is the time on which the transaction will be timed out when it is not at least authorized. The timeout time may change over time.
+	 *
+	 * @var \DateTime
+	 */
+	private $authorizationTimeoutOn;
+
+	/**
 	 * 
 	 *
 	 * @var \DateTime
 	 */
 	private $authorizedOn;
+
+	/**
+	 * When auto confirmation is enabled the transaction can be confirmed by the user and does not require an explicit confirmation through the web service API.
+	 *
+	 * @var bool
+	 */
+	private $autoConfirmationEnabled;
 
 	/**
 	 * 
@@ -204,7 +221,7 @@ class Transaction  {
 	private $currency;
 
 	/**
-	 * The customer email address is the email address of the customer. If no email address is used provided on the shipping or billing address this address is used.
+	 * The customer email address is the email address of the customer. If no email address is provided on the shipping or billing address this address is used.
 	 *
 	 * @var string
 	 */
@@ -218,7 +235,7 @@ class Transaction  {
 	private $customerId;
 
 	/**
-	 * 
+	 * The customer's presence indicates what kind of authentication methods can be used during the authorization of the transaction. If no value is provided, 'Virtually Present' is used by default.
 	 *
 	 * @var \Wallee\Sdk\Model\CustomersPresence
 	 */
@@ -384,6 +401,13 @@ class Transaction  {
 	 * @var string
 	 */
 	private $successUrl;
+
+	/**
+	 * The time zone defines in which time zone the customer is located in. The time zone may affects how dates are formatted when interacting with the customer.
+	 *
+	 * @var string
+	 */
+	private $timeZone;
 
 	/**
 	 * 
@@ -568,6 +592,29 @@ class Transaction  {
 	}
 
 	/**
+	 * Returns authorizationTimeoutOn.
+	 *
+	 * This is the time on which the transaction will be timed out when it is not at least authorized. The timeout time may change over time.
+	 *
+	 * @return \DateTime
+	 */
+	public function getAuthorizationTimeoutOn() {
+		return $this->authorizationTimeoutOn;
+	}
+
+	/**
+	 * Sets authorizationTimeoutOn.
+	 *
+	 * @param \DateTime $authorizationTimeoutOn
+	 * @return Transaction
+	 */
+	protected function setAuthorizationTimeoutOn($authorizationTimeoutOn) {
+		$this->authorizationTimeoutOn = $authorizationTimeoutOn;
+
+		return $this;
+	}
+
+	/**
 	 * Returns authorizedOn.
 	 *
 	 * 
@@ -586,6 +633,29 @@ class Transaction  {
 	 */
 	protected function setAuthorizedOn($authorizedOn) {
 		$this->authorizedOn = $authorizedOn;
+
+		return $this;
+	}
+
+	/**
+	 * Returns autoConfirmationEnabled.
+	 *
+	 * When auto confirmation is enabled the transaction can be confirmed by the user and does not require an explicit confirmation through the web service API.
+	 *
+	 * @return bool
+	 */
+	public function getAutoConfirmationEnabled() {
+		return $this->autoConfirmationEnabled;
+	}
+
+	/**
+	 * Sets autoConfirmationEnabled.
+	 *
+	 * @param bool $autoConfirmationEnabled
+	 * @return Transaction
+	 */
+	protected function setAutoConfirmationEnabled($autoConfirmationEnabled) {
+		$this->autoConfirmationEnabled = $autoConfirmationEnabled;
 
 		return $this;
 	}
@@ -800,7 +870,7 @@ class Transaction  {
 	/**
 	 * Returns customerEmailAddress.
 	 *
-	 * The customer email address is the email address of the customer. If no email address is used provided on the shipping or billing address this address is used.
+	 * The customer email address is the email address of the customer. If no email address is provided on the shipping or billing address this address is used.
 	 *
 	 * @return string
 	 */
@@ -846,7 +916,7 @@ class Transaction  {
 	/**
 	 * Returns customersPresence.
 	 *
-	 * 
+	 * The customer's presence indicates what kind of authentication methods can be used during the authorization of the transaction. If no value is provided, 'Virtually Present' is used by default.
 	 *
 	 * @return \Wallee\Sdk\Model\CustomersPresence
 	 */
@@ -1391,6 +1461,29 @@ class Transaction  {
 	 */
 	protected function setSuccessUrl($successUrl) {
 		$this->successUrl = $successUrl;
+
+		return $this;
+	}
+
+	/**
+	 * Returns timeZone.
+	 *
+	 * The time zone defines in which time zone the customer is located in. The time zone may affects how dates are formatted when interacting with the customer.
+	 *
+	 * @return string
+	 */
+	public function getTimeZone() {
+		return $this->timeZone;
+	}
+
+	/**
+	 * Sets timeZone.
+	 *
+	 * @param string $timeZone
+	 * @return Transaction
+	 */
+	protected function setTimeZone($timeZone) {
+		$this->timeZone = $timeZone;
 
 		return $this;
 	}

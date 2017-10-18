@@ -80,7 +80,7 @@ class EntityQuery  {
 	private $language;
 
 	/**
-	 * The number of entities defines how many entities should be returned. There is a maximum of 500 entities.
+	 * The number of entities defines how many entities should be returned. There is a maximum of 100 entities.
 	 *
 	 * @var int
 	 */
@@ -165,7 +165,7 @@ class EntityQuery  {
 	/**
 	 * Returns numberOfEntities.
 	 *
-	 * The number of entities defines how many entities should be returned. There is a maximum of 500 entities.
+	 * The number of entities defines how many entities should be returned. There is a maximum of 100 entities.
 	 *
 	 * @return int
 	 */

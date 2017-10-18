@@ -62,6 +62,7 @@ class AbstractTransactionPending  {
 		'shippingAddress' => '\Wallee\Sdk\Model\AddressCreate',
 		'shippingMethod' => 'string',
 		'successUrl' => 'string',
+		'timeZone' => 'string',
 		'token' => 'int'	);
 
 	/**
@@ -104,7 +105,7 @@ class AbstractTransactionPending  {
 	private $currency;
 
 	/**
-	 * The customer email address is the email address of the customer. If no email address is used provided on the shipping or billing address this address is used.
+	 * The customer email address is the email address of the customer. If no email address is provided on the shipping or billing address this address is used.
 	 *
 	 * @var string
 	 */
@@ -181,6 +182,13 @@ class AbstractTransactionPending  {
 	private $successUrl;
 
 	/**
+	 * The time zone defines in which time zone the customer is located in. The time zone may affects how dates are formatted when interacting with the customer.
+	 *
+	 * @var string
+	 */
+	private $timeZone;
+
+	/**
 	 * 
 	 *
 	 * @var int
@@ -238,6 +246,9 @@ class AbstractTransactionPending  {
 		}
 		if (isset($data['successUrl']) && $data['successUrl'] != null) {
 			$this->setSuccessUrl($data['successUrl']);
+		}
+		if (isset($data['timeZone']) && $data['timeZone'] != null) {
+			$this->setTimeZone($data['timeZone']);
 		}
 		if (isset($data['token']) && $data['token'] != null) {
 			$this->setToken($data['token']);
@@ -340,7 +351,7 @@ class AbstractTransactionPending  {
 	/**
 	 * Returns customerEmailAddress.
 	 *
-	 * The customer email address is the email address of the customer. If no email address is used provided on the shipping or billing address this address is used.
+	 * The customer email address is the email address of the customer. If no email address is provided on the shipping or billing address this address is used.
 	 *
 	 * @return string
 	 */
@@ -586,6 +597,29 @@ class AbstractTransactionPending  {
 	 */
 	public function setSuccessUrl($successUrl) {
 		$this->successUrl = $successUrl;
+
+		return $this;
+	}
+
+	/**
+	 * Returns timeZone.
+	 *
+	 * The time zone defines in which time zone the customer is located in. The time zone may affects how dates are formatted when interacting with the customer.
+	 *
+	 * @return string
+	 */
+	public function getTimeZone() {
+		return $this->timeZone;
+	}
+
+	/**
+	 * Sets timeZone.
+	 *
+	 * @param string $timeZone
+	 * @return AbstractTransactionPending
+	 */
+	public function setTimeZone($timeZone) {
+		$this->timeZone = $timeZone;
 
 		return $this;
 	}

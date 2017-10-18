@@ -432,7 +432,7 @@ final class ApiClient {
 	 * @return mixed
 	 */
 	public function callApi($resourcePath, $method, $queryParams, $postData, $headerParams, $responseType = null, $endpointPath = null) {
-		$request = new HttpRequest($this->getSerializer(), $this->buildRequestUrl($resourcePath, $queryParams), $method);
+		$request = new HttpRequest($this->getSerializer(), $this->buildRequestUrl($resourcePath, $queryParams), $method, $this->generateUniqueToken());
 		$request->setUserAgent($this->getUserAgent());
 		$request->addHeaders(array_merge(
 			(array)$this->defaultHeaders,
@@ -464,7 +464,8 @@ final class ApiClient {
 			}
 
 			throw new ApiException(
-				"[".$response->getStatusCode()."] Error connecting to the API (".$request->getUrl().")",
+				$request->getLogToken(),
+				'Error ' . $response->getStatusCode() . ' connecting to the API (' . $request->getUrl() . ')',
 				$response->getStatusCode(),
 				$response->getHeaders(),
 				$data
@@ -517,6 +518,20 @@ final class ApiClient {
 	private function calculateHmac($securedData) {
 		$decodedSecret = base64_decode($this->applicationKey);
 		return base64_encode(hash_hmac("sha512", $securedData, $decodedSecret, true));
+	}
+	
+	/**
+	 * Generates a unique token to assign to the request.
+	 *
+	 * @return string
+	 */
+	private function generateUniqueToken() {
+		$s = strtoupper(md5(uniqid(rand(),true))); 
+    	return substr($s,0,8) . '-' . 
+	        substr($s,8,4) . '-' . 
+	        substr($s,12,4). '-' . 
+	        substr($s,16,4). '-' . 
+	        substr($s,20); 
 	}
 
 }

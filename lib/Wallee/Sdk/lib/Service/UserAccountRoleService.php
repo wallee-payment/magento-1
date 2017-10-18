@@ -27,7 +27,7 @@ use Wallee\Sdk\ApiResponse;
 use Wallee\Sdk\Http\HttpRequest;
 
 /**
- * InstallmentPaymentSliceService service
+ * UserAccountRoleService service
  *
  * @category Class
  * @package  Wallee\Sdk
@@ -35,7 +35,7 @@ use Wallee\Sdk\Http\HttpRequest;
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link	 https://github.com/wallee-payment/wallee-php-sdk
  */
-class InstallmentPaymentSliceService {
+class UserAccountRoleService {
 
 	/**
 	 * The API client instance.
@@ -68,41 +68,49 @@ class InstallmentPaymentSliceService {
 
 
 	/**
-	 * Operation count
+	 * Operation addRole
 	 *
-	 * Count
+	 * Add Role
 	 *
-	 * @param int $spaceId  (required)
-	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the installment payment slices which are used to calculate the count. (required)
+	 * @param int $userId The id of the user to whom the role is assigned. (required)
+	 * @param int $accountId The account to which the role is mapped. (required)
+	 * @param int $roleId The role which is mapped to the user and account. (required)
+	 * @param bool $appliesOnSubaccount Whether the role applies only on subaccount. (optional)
 	 * @throws \Wallee\Sdk\ApiException
-	 * @return int
+	 * @return \Wallee\Sdk\Model\UserAccountRole
 	 */
-	public function count($spaceId, $filter) {
-		return $this->countWithHttpInfo($spaceId, $filter)->getData();
+	public function addRole($userId, $accountId, $roleId, $appliesOnSubaccount = null) {
+		return $this->addRoleWithHttpInfo($userId, $accountId, $roleId, $appliesOnSubaccount)->getData();
 	}
 
 	/**
-	 * Operation countWithHttpInfo
+	 * Operation addRoleWithHttpInfo
 	 *
-	 * Count
+	 * Add Role
 	 *
-	 * @param int $spaceId  (required)
-	 * @param \Wallee\Sdk\Model\EntityQueryFilter $filter The filter which restricts the installment payment slices which are used to calculate the count. (required)
+	 * @param int $userId The id of the user to whom the role is assigned. (required)
+	 * @param int $accountId The account to which the role is mapped. (required)
+	 * @param int $roleId The role which is mapped to the user and account. (required)
+	 * @param bool $appliesOnSubaccount Whether the role applies only on subaccount. (optional)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function countWithHttpInfo($spaceId, $filter) {
-		// verify the required parameter 'spaceId' is set
-		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling count');
+	public function addRoleWithHttpInfo($userId, $accountId, $roleId, $appliesOnSubaccount = null) {
+		// verify the required parameter 'userId' is set
+		if ($userId === null) {
+			throw new \InvalidArgumentException('Missing the required parameter $userId when calling addRole');
 		}
-		// verify the required parameter 'filter' is set
-		if ($filter === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $filter when calling count');
+		// verify the required parameter 'accountId' is set
+		if ($accountId === null) {
+			throw new \InvalidArgumentException('Missing the required parameter $accountId when calling addRole');
+		}
+		// verify the required parameter 'roleId' is set
+		if ($roleId === null) {
+			throw new \InvalidArgumentException('Missing the required parameter $roleId when calling addRole');
 		}
 		// header params
 		$headerParams = array();
-		$headerAccept = $this->apiClient->selectHeaderAccept(array('application/json;charset=utf-8'));
+		$headerAccept = $this->apiClient->selectHeaderAccept(array());
 		if (!is_null($headerAccept)) {
 			$headerParams[HttpRequest::HEADER_KEY_ACCEPT] = $headerAccept;
 		}
@@ -110,114 +118,21 @@ class InstallmentPaymentSliceService {
 
 		// query params
 		$queryParams = array();
-		if ($spaceId !== null) {
-			$queryParams['spaceId'] = $this->apiClient->getSerializer()->toQueryValue($spaceId);
+		if ($userId !== null) {
+			$queryParams['userId'] = $this->apiClient->getSerializer()->toQueryValue($userId);
+		}
+		if ($accountId !== null) {
+			$queryParams['accountId'] = $this->apiClient->getSerializer()->toQueryValue($accountId);
+		}
+		if ($roleId !== null) {
+			$queryParams['roleId'] = $this->apiClient->getSerializer()->toQueryValue($roleId);
+		}
+		if ($appliesOnSubaccount !== null) {
+			$queryParams['appliesOnSubaccount'] = $this->apiClient->getSerializer()->toQueryValue($appliesOnSubaccount);
 		}
 
 		// path params
-		$resourcePath = "/installment-payment-slice/count";
-		// default format to json
-		$resourcePath = str_replace("{format}", "json", $resourcePath);
-
-		// form params
-		$formParams = array();
-		// body params
-		$tempBody = null;
-		if (isset($filter)) {
-			$tempBody = $filter;
-		}
-
-		// for model (json/xml)
-		$httpBody = '';
-		if (isset($tempBody)) {
-			$httpBody = $tempBody; // $tempBody is the method argument, if present
-		} elseif (count($formParams) > 0) {
-			$httpBody = $formParams; // for HTTP post (form)
-		}
-		// make the API Call
-		try {
-			$response = $this->apiClient->callApi(
-				$resourcePath,
-				'POST',
-				$queryParams,
-				$httpBody,
-				$headerParams,
-				'int',
-				'/installment-payment-slice/count'
-			);
-			return new ApiResponse($response->getStatusCode(), $response->getHeaders(), $this->apiClient->getSerializer()->deserialize($response->getData(), 'int', $response->getHeaders()));
-		} catch (ApiException $e) {
-			switch ($e->getCode()) {
-				case 200:
-					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), 'int', $e->getResponseHeaders());
-					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
-					break;
-				case 442:
-					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
-					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
-					break;
-				case 542:
-					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ServerError', $e->getResponseHeaders());
-					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
-					break;
-			}
-
-			throw $e;
-		}
-	}
-
-	/**
-	 * Operation read
-	 *
-	 * Read
-	 *
-	 * @param int $spaceId  (required)
-	 * @param int $id The id of the installment payment slice which should be returned. (required)
-	 * @throws \Wallee\Sdk\ApiException
-	 * @return \Wallee\Sdk\Model\InstallmentPaymentSlice
-	 */
-	public function read($spaceId, $id) {
-		return $this->readWithHttpInfo($spaceId, $id)->getData();
-	}
-
-	/**
-	 * Operation readWithHttpInfo
-	 *
-	 * Read
-	 *
-	 * @param int $spaceId  (required)
-	 * @param int $id The id of the installment payment slice which should be returned. (required)
-	 * @throws \Wallee\Sdk\ApiException
-	 * @return ApiResponse
-	 */
-	public function readWithHttpInfo($spaceId, $id) {
-		// verify the required parameter 'spaceId' is set
-		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling read');
-		}
-		// verify the required parameter 'id' is set
-		if ($id === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $id when calling read');
-		}
-		// header params
-		$headerParams = array();
-		$headerAccept = $this->apiClient->selectHeaderAccept(array('*/*'));
-		if (!is_null($headerAccept)) {
-			$headerParams[HttpRequest::HEADER_KEY_ACCEPT] = $headerAccept;
-		}
-		$headerParams[HttpRequest::HEADER_KEY_CONTENT_TYPE] = $this->apiClient->selectHeaderContentType(array('application/json;charset=utf-8'));
-
-		// query params
-		$queryParams = array();
-		if ($spaceId !== null) {
-			$queryParams['spaceId'] = $this->apiClient->getSerializer()->toQueryValue($spaceId);
-		}
-		if ($id !== null) {
-			$queryParams['id'] = $this->apiClient->getSerializer()->toQueryValue($id);
-		}
-
-		// path params
-		$resourcePath = "/installment-payment-slice/read";
+		$resourcePath = "/user-account-role/addRole";
 		// default format to json
 		$resourcePath = str_replace("{format}", "json", $resourcePath);
 
@@ -235,18 +150,18 @@ class InstallmentPaymentSliceService {
 		try {
 			$response = $this->apiClient->callApi(
 				$resourcePath,
-				'GET',
+				'POST',
 				$queryParams,
 				$httpBody,
 				$headerParams,
-				'\Wallee\Sdk\Model\InstallmentPaymentSlice',
-				'/installment-payment-slice/read'
+				'\Wallee\Sdk\Model\UserAccountRole',
+				'/user-account-role/addRole'
 			);
-			return new ApiResponse($response->getStatusCode(), $response->getHeaders(), $this->apiClient->getSerializer()->deserialize($response->getData(), '\Wallee\Sdk\Model\InstallmentPaymentSlice', $response->getHeaders()));
+			return new ApiResponse($response->getStatusCode(), $response->getHeaders(), $this->apiClient->getSerializer()->deserialize($response->getData(), '\Wallee\Sdk\Model\UserAccountRole', $response->getHeaders()));
 		} catch (ApiException $e) {
 			switch ($e->getCode()) {
 				case 200:
-					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\InstallmentPaymentSlice', $e->getResponseHeaders());
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\UserAccountRole', $e->getResponseHeaders());
 					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
 					break;
 				case 442:
@@ -264,41 +179,41 @@ class InstallmentPaymentSliceService {
 	}
 
 	/**
-	 * Operation search
+	 * Operation callList
 	 *
-	 * Search
+	 * List Roles
 	 *
-	 * @param int $spaceId  (required)
-	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the installment payment slices which are returned by the search. (required)
+	 * @param int $userId The id of the user to whom the role is assigned. (required)
+	 * @param int $accountId The account to which the role is mapped. (required)
 	 * @throws \Wallee\Sdk\ApiException
-	 * @return \Wallee\Sdk\Model\InstallmentPaymentSlice[]
+	 * @return \Wallee\Sdk\Model\UserAccountRole[]
 	 */
-	public function search($spaceId, $query) {
-		return $this->searchWithHttpInfo($spaceId, $query)->getData();
+	public function callList($userId, $accountId) {
+		return $this->callListWithHttpInfo($userId, $accountId)->getData();
 	}
 
 	/**
-	 * Operation searchWithHttpInfo
+	 * Operation callListWithHttpInfo
 	 *
-	 * Search
+	 * List Roles
 	 *
-	 * @param int $spaceId  (required)
-	 * @param \Wallee\Sdk\Model\EntityQuery $query The query restricts the installment payment slices which are returned by the search. (required)
+	 * @param int $userId The id of the user to whom the role is assigned. (required)
+	 * @param int $accountId The account to which the role is mapped. (required)
 	 * @throws \Wallee\Sdk\ApiException
 	 * @return ApiResponse
 	 */
-	public function searchWithHttpInfo($spaceId, $query) {
-		// verify the required parameter 'spaceId' is set
-		if ($spaceId === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $spaceId when calling search');
+	public function callListWithHttpInfo($userId, $accountId) {
+		// verify the required parameter 'userId' is set
+		if ($userId === null) {
+			throw new \InvalidArgumentException('Missing the required parameter $userId when calling callList');
 		}
-		// verify the required parameter 'query' is set
-		if ($query === null) {
-			throw new \InvalidArgumentException('Missing the required parameter $query when calling search');
+		// verify the required parameter 'accountId' is set
+		if ($accountId === null) {
+			throw new \InvalidArgumentException('Missing the required parameter $accountId when calling callList');
 		}
 		// header params
 		$headerParams = array();
-		$headerAccept = $this->apiClient->selectHeaderAccept(array('application/json;charset=utf-8'));
+		$headerAccept = $this->apiClient->selectHeaderAccept(array());
 		if (!is_null($headerAccept)) {
 			$headerParams[HttpRequest::HEADER_KEY_ACCEPT] = $headerAccept;
 		}
@@ -306,23 +221,21 @@ class InstallmentPaymentSliceService {
 
 		// query params
 		$queryParams = array();
-		if ($spaceId !== null) {
-			$queryParams['spaceId'] = $this->apiClient->getSerializer()->toQueryValue($spaceId);
+		if ($userId !== null) {
+			$queryParams['userId'] = $this->apiClient->getSerializer()->toQueryValue($userId);
+		}
+		if ($accountId !== null) {
+			$queryParams['accountId'] = $this->apiClient->getSerializer()->toQueryValue($accountId);
 		}
 
 		// path params
-		$resourcePath = "/installment-payment-slice/search";
+		$resourcePath = "/user-account-role/list";
 		// default format to json
 		$resourcePath = str_replace("{format}", "json", $resourcePath);
 
 		// form params
 		$formParams = array();
-		// body params
-		$tempBody = null;
-		if (isset($query)) {
-			$tempBody = $query;
-		}
-
+		
 		// for model (json/xml)
 		$httpBody = '';
 		if (isset($tempBody)) {
@@ -338,16 +251,100 @@ class InstallmentPaymentSliceService {
 				$queryParams,
 				$httpBody,
 				$headerParams,
-				'\Wallee\Sdk\Model\InstallmentPaymentSlice[]',
-				'/installment-payment-slice/search'
+				'\Wallee\Sdk\Model\UserAccountRole[]',
+				'/user-account-role/list'
 			);
-			return new ApiResponse($response->getStatusCode(), $response->getHeaders(), $this->apiClient->getSerializer()->deserialize($response->getData(), '\Wallee\Sdk\Model\InstallmentPaymentSlice[]', $response->getHeaders()));
+			return new ApiResponse($response->getStatusCode(), $response->getHeaders(), $this->apiClient->getSerializer()->deserialize($response->getData(), '\Wallee\Sdk\Model\UserAccountRole[]', $response->getHeaders()));
 		} catch (ApiException $e) {
 			switch ($e->getCode()) {
 				case 200:
-					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\InstallmentPaymentSlice[]', $e->getResponseHeaders());
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\UserAccountRole[]', $e->getResponseHeaders());
 					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
 					break;
+				case 442:
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
+					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
+					break;
+				case 542:
+					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ServerError', $e->getResponseHeaders());
+					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);
+					break;
+			}
+
+			throw $e;
+		}
+	}
+
+	/**
+	 * Operation removeRole
+	 *
+	 * Remove Role
+	 *
+	 * @param int $id The id of user account role which should be removed (required)
+	 * @throws \Wallee\Sdk\ApiException
+	 * @return void
+	 */
+	public function removeRole($id) {
+		return $this->removeRoleWithHttpInfo($id)->getData();
+	}
+
+	/**
+	 * Operation removeRoleWithHttpInfo
+	 *
+	 * Remove Role
+	 *
+	 * @param int $id The id of user account role which should be removed (required)
+	 * @throws \Wallee\Sdk\ApiException
+	 * @return ApiResponse
+	 */
+	public function removeRoleWithHttpInfo($id) {
+		// verify the required parameter 'id' is set
+		if ($id === null) {
+			throw new \InvalidArgumentException('Missing the required parameter $id when calling removeRole');
+		}
+		// header params
+		$headerParams = array();
+		$headerAccept = $this->apiClient->selectHeaderAccept(array());
+		if (!is_null($headerAccept)) {
+			$headerParams[HttpRequest::HEADER_KEY_ACCEPT] = $headerAccept;
+		}
+		$headerParams[HttpRequest::HEADER_KEY_CONTENT_TYPE] = $this->apiClient->selectHeaderContentType(array('application/json;charset=utf-8'));
+
+		// query params
+		$queryParams = array();
+		if ($id !== null) {
+			$queryParams['id'] = $this->apiClient->getSerializer()->toQueryValue($id);
+		}
+
+		// path params
+		$resourcePath = "/user-account-role/removeRole";
+		// default format to json
+		$resourcePath = str_replace("{format}", "json", $resourcePath);
+
+		// form params
+		$formParams = array();
+		
+		// for model (json/xml)
+		$httpBody = '';
+		if (isset($tempBody)) {
+			$httpBody = $tempBody; // $tempBody is the method argument, if present
+		} elseif (count($formParams) > 0) {
+			$httpBody = $formParams; // for HTTP post (form)
+		}
+		// make the API Call
+		try {
+			$response = $this->apiClient->callApi(
+				$resourcePath,
+				'POST',
+				$queryParams,
+				$httpBody,
+				$headerParams,
+				null,
+				'/user-account-role/removeRole'
+			);
+			return new ApiResponse($response->getStatusCode(), $response->getHeaders());
+		} catch (ApiException $e) {
+			switch ($e->getCode()) {
 				case 442:
 					$responseObject = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Wallee\Sdk\Model\ClientError', $e->getResponseHeaders());
 					$e = new ApiException($e->getLogToken(), $responseObject->getMessage(), $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody(), $responseObject);

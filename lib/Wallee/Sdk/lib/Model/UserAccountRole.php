@@ -24,7 +24,7 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * WebhookListenerEntity model
+ * UserAccountRole model
  *
  * @category    Class
  * @description 
@@ -33,14 +33,14 @@ use Wallee\Sdk\ValidationException;
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class WebhookListenerEntity  {
+class UserAccountRole  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'WebhookListenerEntity';
+	private static $swaggerModelName = 'UserAccountRole';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,10 +48,12 @@ class WebhookListenerEntity  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'displayName' => 'string',
+		'account' => 'int',
+		'appliesOnSubAccount' => 'bool',
 		'id' => 'int',
-		'name' => 'map[string,string]',
-		'technicalName' => 'string'	);
+		'role' => 'int',
+		'user' => 'int',
+		'version' => 'int'	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -67,9 +69,16 @@ class WebhookListenerEntity  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var int
 	 */
-	private $displayName;
+	private $account;
+
+	/**
+	 * 
+	 *
+	 * @var bool
+	 */
+	private $appliesOnSubAccount;
 
 	/**
 	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
@@ -81,16 +90,23 @@ class WebhookListenerEntity  {
 	/**
 	 * 
 	 *
-	 * @var map[string,string]
+	 * @var int
 	 */
-	private $name;
+	private $role;
 
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var int
 	 */
-	private $technicalName;
+	private $user;
+
+	/**
+	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
+	 *
+	 * @var int
+	 */
+	private $version;
 
 
 	/**
@@ -99,31 +115,57 @@ class WebhookListenerEntity  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['name']) && $data['name'] != null) {
-			$this->setName($data['name']);
+		if (isset($data['id']) && $data['id'] != null) {
+			$this->setId($data['id']);
+		}
+		if (isset($data['version']) && $data['version'] != null) {
+			$this->setVersion($data['version']);
 		}
 	}
 
 
 	/**
-	 * Returns displayName.
+	 * Returns account.
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return int
 	 */
-	public function getDisplayName() {
-		return $this->displayName;
+	public function getAccount() {
+		return $this->account;
 	}
 
 	/**
-	 * Sets displayName.
+	 * Sets account.
 	 *
-	 * @param string $displayName
-	 * @return WebhookListenerEntity
+	 * @param int $account
+	 * @return UserAccountRole
 	 */
-	protected function setDisplayName($displayName) {
-		$this->displayName = $displayName;
+	protected function setAccount($account) {
+		$this->account = $account;
+
+		return $this;
+	}
+
+	/**
+	 * Returns appliesOnSubAccount.
+	 *
+	 * 
+	 *
+	 * @return bool
+	 */
+	public function getAppliesOnSubAccount() {
+		return $this->appliesOnSubAccount;
+	}
+
+	/**
+	 * Sets appliesOnSubAccount.
+	 *
+	 * @param bool $appliesOnSubAccount
+	 * @return UserAccountRole
+	 */
+	protected function setAppliesOnSubAccount($appliesOnSubAccount) {
+		$this->appliesOnSubAccount = $appliesOnSubAccount;
 
 		return $this;
 	}
@@ -143,56 +185,79 @@ class WebhookListenerEntity  {
 	 * Sets id.
 	 *
 	 * @param int $id
-	 * @return WebhookListenerEntity
+	 * @return UserAccountRole
 	 */
-	protected function setId($id) {
+	public function setId($id) {
 		$this->id = $id;
 
 		return $this;
 	}
 
 	/**
-	 * Returns name.
+	 * Returns role.
 	 *
 	 * 
 	 *
-	 * @return map[string,string]
+	 * @return int
 	 */
-	public function getName() {
-		return $this->name;
+	public function getRole() {
+		return $this->role;
 	}
 
 	/**
-	 * Sets name.
+	 * Sets role.
 	 *
-	 * @param map[string,string] $name
-	 * @return WebhookListenerEntity
+	 * @param int $role
+	 * @return UserAccountRole
 	 */
-	public function setName($name) {
-		$this->name = $name;
+	protected function setRole($role) {
+		$this->role = $role;
 
 		return $this;
 	}
 
 	/**
-	 * Returns technicalName.
+	 * Returns user.
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return int
 	 */
-	public function getTechnicalName() {
-		return $this->technicalName;
+	public function getUser() {
+		return $this->user;
 	}
 
 	/**
-	 * Sets technicalName.
+	 * Sets user.
 	 *
-	 * @param string $technicalName
-	 * @return WebhookListenerEntity
+	 * @param int $user
+	 * @return UserAccountRole
 	 */
-	protected function setTechnicalName($technicalName) {
-		$this->technicalName = $technicalName;
+	protected function setUser($user) {
+		$this->user = $user;
+
+		return $this;
+	}
+
+	/**
+	 * Returns version.
+	 *
+	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
+	 *
+	 * @return int
+	 */
+	public function getVersion() {
+		return $this->version;
+	}
+
+	/**
+	 * Sets version.
+	 *
+	 * @param int $version
+	 * @return UserAccountRole
+	 */
+	public function setVersion($version) {
+		$this->version = $version;
 
 		return $this;
 	}

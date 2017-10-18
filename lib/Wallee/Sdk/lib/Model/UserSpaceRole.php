@@ -24,7 +24,7 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * LineItemAttributeCreate model
+ * UserSpaceRole model
  *
  * @category    Class
  * @description 
@@ -33,14 +33,14 @@ use Wallee\Sdk\ValidationException;
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class LineItemAttributeCreate  {
+class UserSpaceRole  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'LineItemAttribute.Create';
+	private static $swaggerModelName = 'UserSpaceRole';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,8 +48,11 @@ class LineItemAttributeCreate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'label' => 'string',
-		'value' => 'string'	);
+		'id' => 'int',
+		'role' => 'int',
+		'space' => 'int',
+		'user' => 'int',
+		'version' => 'int'	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -63,18 +66,39 @@ class LineItemAttributeCreate  {
 	
 
 	/**
-	 * 
+	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
 	 *
-	 * @var string
+	 * @var int
 	 */
-	private $label;
+	private $id;
 
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var int
 	 */
-	private $value;
+	private $role;
+
+	/**
+	 * 
+	 *
+	 * @var int
+	 */
+	private $space;
+
+	/**
+	 * 
+	 *
+	 * @var int
+	 */
+	private $user;
+
+	/**
+	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
+	 *
+	 * @var int
+	 */
+	private $version;
 
 
 	/**
@@ -83,57 +107,126 @@ class LineItemAttributeCreate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['label']) && $data['label'] != null) {
-			$this->setLabel($data['label']);
+		if (isset($data['id']) && $data['id'] != null) {
+			$this->setId($data['id']);
 		}
-		if (isset($data['value']) && $data['value'] != null) {
-			$this->setValue($data['value']);
+		if (isset($data['version']) && $data['version'] != null) {
+			$this->setVersion($data['version']);
 		}
 	}
 
 
 	/**
-	 * Returns label.
+	 * Returns id.
 	 *
-	 * 
+	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
 	 *
-	 * @return string
+	 * @return int
 	 */
-	public function getLabel() {
-		return $this->label;
+	public function getId() {
+		return $this->id;
 	}
 
 	/**
-	 * Sets label.
+	 * Sets id.
 	 *
-	 * @param string $label
-	 * @return LineItemAttributeCreate
+	 * @param int $id
+	 * @return UserSpaceRole
 	 */
-	public function setLabel($label) {
-		$this->label = $label;
+	public function setId($id) {
+		$this->id = $id;
 
 		return $this;
 	}
 
 	/**
-	 * Returns value.
+	 * Returns role.
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return int
 	 */
-	public function getValue() {
-		return $this->value;
+	public function getRole() {
+		return $this->role;
 	}
 
 	/**
-	 * Sets value.
+	 * Sets role.
 	 *
-	 * @param string $value
-	 * @return LineItemAttributeCreate
+	 * @param int $role
+	 * @return UserSpaceRole
 	 */
-	public function setValue($value) {
-		$this->value = $value;
+	protected function setRole($role) {
+		$this->role = $role;
+
+		return $this;
+	}
+
+	/**
+	 * Returns space.
+	 *
+	 * 
+	 *
+	 * @return int
+	 */
+	public function getSpace() {
+		return $this->space;
+	}
+
+	/**
+	 * Sets space.
+	 *
+	 * @param int $space
+	 * @return UserSpaceRole
+	 */
+	protected function setSpace($space) {
+		$this->space = $space;
+
+		return $this;
+	}
+
+	/**
+	 * Returns user.
+	 *
+	 * 
+	 *
+	 * @return int
+	 */
+	public function getUser() {
+		return $this->user;
+	}
+
+	/**
+	 * Sets user.
+	 *
+	 * @param int $user
+	 * @return UserSpaceRole
+	 */
+	protected function setUser($user) {
+		$this->user = $user;
+
+		return $this;
+	}
+
+	/**
+	 * Returns version.
+	 *
+	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
+	 *
+	 * @return int
+	 */
+	public function getVersion() {
+		return $this->version;
+	}
+
+	/**
+	 * Sets version.
+	 *
+	 * @param int $version
+	 * @return UserSpaceRole
+	 */
+	public function setVersion($version) {
+		$this->version = $version;
 
 		return $this;
 	}
@@ -145,12 +238,6 @@ class LineItemAttributeCreate  {
 	 */
 	public function validate() {
 
-		if ($this->getLabel() === null) {
-			throw new ValidationException("'label' can't be null", 'label', $this);
-		}
-		if ($this->getValue() === null) {
-			throw new ValidationException("'value' can't be null", 'value', $this);
-		}
 	}
 
 	/**

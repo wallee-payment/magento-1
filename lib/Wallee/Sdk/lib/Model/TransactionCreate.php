@@ -48,6 +48,7 @@ class TransactionCreate extends AbstractTransactionPending  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
+		'autoConfirmationEnabled' => 'bool',
 		'chargeRetryEnabled' => 'bool',
 		'customersPresence' => '\Wallee\Sdk\Model\CustomersPresence',
 		'spaceViewId' => 'int',
@@ -65,6 +66,13 @@ class TransactionCreate extends AbstractTransactionPending  {
 	
 
 	/**
+	 * When auto confirmation is enabled the transaction can be confirmed by the user and does not require an explicit confirmation through the web service API.
+	 *
+	 * @var bool
+	 */
+	private $autoConfirmationEnabled;
+
+	/**
 	 * When the charging of the customer fails we can retry the charging. This implies that we redirect the user back to the payment page which allows the customer to retry. By default we will retry.
 	 *
 	 * @var bool
@@ -72,7 +80,7 @@ class TransactionCreate extends AbstractTransactionPending  {
 	private $chargeRetryEnabled;
 
 	/**
-	 * 
+	 * The customer's presence indicates what kind of authentication methods can be used during the authorization of the transaction. If no value is provided, 'Virtually Present' is used by default.
 	 *
 	 * @var \Wallee\Sdk\Model\CustomersPresence
 	 */
@@ -94,6 +102,9 @@ class TransactionCreate extends AbstractTransactionPending  {
 	public function __construct(array $data = null) {
 		parent::__construct($data);
 
+		if (isset($data['autoConfirmationEnabled']) && $data['autoConfirmationEnabled'] != null) {
+			$this->setAutoConfirmationEnabled($data['autoConfirmationEnabled']);
+		}
 		if (isset($data['billingAddress']) && $data['billingAddress'] != null) {
 			$this->setBillingAddress($data['billingAddress']);
 		}
@@ -117,6 +128,29 @@ class TransactionCreate extends AbstractTransactionPending  {
 		}
 	}
 
+
+	/**
+	 * Returns autoConfirmationEnabled.
+	 *
+	 * When auto confirmation is enabled the transaction can be confirmed by the user and does not require an explicit confirmation through the web service API.
+	 *
+	 * @return bool
+	 */
+	public function getAutoConfirmationEnabled() {
+		return $this->autoConfirmationEnabled;
+	}
+
+	/**
+	 * Sets autoConfirmationEnabled.
+	 *
+	 * @param bool $autoConfirmationEnabled
+	 * @return TransactionCreate
+	 */
+	public function setAutoConfirmationEnabled($autoConfirmationEnabled) {
+		$this->autoConfirmationEnabled = $autoConfirmationEnabled;
+
+		return $this;
+	}
 
 	/**
 	 * Returns billingAddress.
@@ -165,7 +199,7 @@ class TransactionCreate extends AbstractTransactionPending  {
 	/**
 	 * Returns customersPresence.
 	 *
-	 * 
+	 * The customer's presence indicates what kind of authentication methods can be used during the authorization of the transaction. If no value is provided, 'Virtually Present' is used by default.
 	 *
 	 * @return \Wallee\Sdk\Model\CustomersPresence
 	 */

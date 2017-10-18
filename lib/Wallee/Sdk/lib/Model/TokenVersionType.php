@@ -24,7 +24,7 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * LineItemAttributeCreate model
+ * TokenVersionType model
  *
  * @category    Class
  * @description 
@@ -33,14 +33,14 @@ use Wallee\Sdk\ValidationException;
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  * @link        https://github.com/wallee-payment/wallee-php-sdk
  */
-class LineItemAttributeCreate  {
+class TokenVersionType  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'LineItemAttribute.Create';
+	private static $swaggerModelName = 'TokenVersionType';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -48,8 +48,10 @@ class LineItemAttributeCreate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'label' => 'string',
-		'value' => 'string'	);
+		'description' => 'map[string,string]',
+		'feature' => '\Wallee\Sdk\Model\Feature',
+		'id' => 'int',
+		'name' => 'map[string,string]'	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -65,16 +67,30 @@ class LineItemAttributeCreate  {
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var map[string,string]
 	 */
-	private $label;
+	private $description;
 
 	/**
 	 * 
 	 *
-	 * @var string
+	 * @var \Wallee\Sdk\Model\Feature
 	 */
-	private $value;
+	private $feature;
+
+	/**
+	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
+	 *
+	 * @var int
+	 */
+	private $id;
+
+	/**
+	 * 
+	 *
+	 * @var map[string,string]
+	 */
+	private $name;
 
 
 	/**
@@ -83,57 +99,106 @@ class LineItemAttributeCreate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['label']) && $data['label'] != null) {
-			$this->setLabel($data['label']);
+		if (isset($data['description']) && $data['description'] != null) {
+			$this->setDescription($data['description']);
 		}
-		if (isset($data['value']) && $data['value'] != null) {
-			$this->setValue($data['value']);
+		if (isset($data['feature']) && $data['feature'] != null) {
+			$this->setFeature($data['feature']);
+		}
+		if (isset($data['name']) && $data['name'] != null) {
+			$this->setName($data['name']);
 		}
 	}
 
 
 	/**
-	 * Returns label.
+	 * Returns description.
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return map[string,string]
 	 */
-	public function getLabel() {
-		return $this->label;
+	public function getDescription() {
+		return $this->description;
 	}
 
 	/**
-	 * Sets label.
+	 * Sets description.
 	 *
-	 * @param string $label
-	 * @return LineItemAttributeCreate
+	 * @param map[string,string] $description
+	 * @return TokenVersionType
 	 */
-	public function setLabel($label) {
-		$this->label = $label;
+	public function setDescription($description) {
+		$this->description = $description;
 
 		return $this;
 	}
 
 	/**
-	 * Returns value.
+	 * Returns feature.
 	 *
 	 * 
 	 *
-	 * @return string
+	 * @return \Wallee\Sdk\Model\Feature
 	 */
-	public function getValue() {
-		return $this->value;
+	public function getFeature() {
+		return $this->feature;
 	}
 
 	/**
-	 * Sets value.
+	 * Sets feature.
 	 *
-	 * @param string $value
-	 * @return LineItemAttributeCreate
+	 * @param \Wallee\Sdk\Model\Feature $feature
+	 * @return TokenVersionType
 	 */
-	public function setValue($value) {
-		$this->value = $value;
+	public function setFeature($feature) {
+		$this->feature = $feature;
+
+		return $this;
+	}
+
+	/**
+	 * Returns id.
+	 *
+	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
+	 *
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
+	}
+
+	/**
+	 * Sets id.
+	 *
+	 * @param int $id
+	 * @return TokenVersionType
+	 */
+	protected function setId($id) {
+		$this->id = $id;
+
+		return $this;
+	}
+
+	/**
+	 * Returns name.
+	 *
+	 * 
+	 *
+	 * @return map[string,string]
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * Sets name.
+	 *
+	 * @param map[string,string] $name
+	 * @return TokenVersionType
+	 */
+	public function setName($name) {
+		$this->name = $name;
 
 		return $this;
 	}
@@ -145,12 +210,6 @@ class LineItemAttributeCreate  {
 	 */
 	public function validate() {
 
-		if ($this->getLabel() === null) {
-			throw new ValidationException("'label' can't be null", 'label', $this);
-		}
-		if ($this->getValue() === null) {
-			throw new ValidationException("'value' can't be null", 'value', $this);
-		}
 	}
 
 	/**

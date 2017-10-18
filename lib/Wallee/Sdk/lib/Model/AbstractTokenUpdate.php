@@ -51,6 +51,7 @@ class AbstractTokenUpdate  {
 		'customerId' => 'string',
 		'enabledForOneClickPayment' => 'bool',
 		'language' => 'string',
+		'timeZone' => 'string',
 		'tokenReference' => 'string'	);
 
 	/**
@@ -93,6 +94,13 @@ class AbstractTokenUpdate  {
 	private $language;
 
 	/**
+	 * The time zone defines in which time zone the customer is located in. The time zone may affects how dates are formatted when interacting with the customer.
+	 *
+	 * @var string
+	 */
+	private $timeZone;
+
+	/**
 	 * Use something that it is easy to identify and may help you find the token (e.g. customer id, email address).
 	 *
 	 * @var string
@@ -117,6 +125,9 @@ class AbstractTokenUpdate  {
 		}
 		if (isset($data['language']) && $data['language'] != null) {
 			$this->setLanguage($data['language']);
+		}
+		if (isset($data['timeZone']) && $data['timeZone'] != null) {
+			$this->setTimeZone($data['timeZone']);
 		}
 		if (isset($data['tokenReference']) && $data['tokenReference'] != null) {
 			$this->setTokenReference($data['tokenReference']);
@@ -212,6 +223,29 @@ class AbstractTokenUpdate  {
 	 */
 	public function setLanguage($language) {
 		$this->language = $language;
+
+		return $this;
+	}
+
+	/**
+	 * Returns timeZone.
+	 *
+	 * The time zone defines in which time zone the customer is located in. The time zone may affects how dates are formatted when interacting with the customer.
+	 *
+	 * @return string
+	 */
+	public function getTimeZone() {
+		return $this->timeZone;
+	}
+
+	/**
+	 * Sets timeZone.
+	 *
+	 * @param string $timeZone
+	 * @return AbstractTokenUpdate
+	 */
+	public function setTimeZone($timeZone) {
+		$this->timeZone = $timeZone;
 
 		return $this;
 	}

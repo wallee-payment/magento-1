@@ -53,6 +53,7 @@ class AbstractSubscriberUpdate  {
 		'disallowedPaymentMethodConfigurations' => 'int[]',
 		'emailAddress' => 'string',
 		'language' => 'string',
+		'metaData' => 'map[string,string]',
 		'reference' => 'string',
 		'shippingAddress' => '\Wallee\Sdk\Model\AddressCreate'	);
 
@@ -110,6 +111,13 @@ class AbstractSubscriberUpdate  {
 	private $language;
 
 	/**
+	 * Meta data allow to store additional data along the object.
+	 *
+	 * @var map[string,string]
+	 */
+	private $metaData;
+
+	/**
 	 * The subscriber reference identifies the subscriber in administrative interfaces (e.g. customer id).
 	 *
 	 * @var string
@@ -147,6 +155,9 @@ class AbstractSubscriberUpdate  {
 		}
 		if (isset($data['language']) && $data['language'] != null) {
 			$this->setLanguage($data['language']);
+		}
+		if (isset($data['metaData']) && $data['metaData'] != null) {
+			$this->setMetaData($data['metaData']);
 		}
 		if (isset($data['reference']) && $data['reference'] != null) {
 			$this->setReference($data['reference']);
@@ -291,6 +302,29 @@ class AbstractSubscriberUpdate  {
 	 */
 	public function setLanguage($language) {
 		$this->language = $language;
+
+		return $this;
+	}
+
+	/**
+	 * Returns metaData.
+	 *
+	 * Meta data allow to store additional data along the object.
+	 *
+	 * @return map[string,string]
+	 */
+	public function getMetaData() {
+		return $this->metaData;
+	}
+
+	/**
+	 * Sets metaData.
+	 *
+	 * @param map[string,string] $metaData
+	 * @return AbstractSubscriberUpdate
+	 */
+	public function setMetaData($metaData) {
+		$this->metaData = $metaData;
 
 		return $this;
 	}

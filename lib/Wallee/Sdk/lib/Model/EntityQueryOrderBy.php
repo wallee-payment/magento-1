@@ -142,6 +142,12 @@ class EntityQueryOrderBy  {
 	 */
 	public function validate() {
 
+		if ($this->getFieldName() === null) {
+			throw new ValidationException("'fieldName' can't be null", 'fieldName', $this);
+		}
+		if ($this->getSorting() === null) {
+			throw new ValidationException("'sorting' can't be null", 'sorting', $this);
+		}
 	}
 
 	/**
