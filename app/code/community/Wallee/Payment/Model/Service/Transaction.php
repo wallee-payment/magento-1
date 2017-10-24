@@ -396,10 +396,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         );
         if ($order->getShippingAddress()) {
             $transaction->setShippingMethod(
-                $this->fixLength(
-                    $order->getShippingAddress()
-                    ->getShippingDescription(), 200
-                )
+                $this->fixLength($this->getFirstLine($order->getShippingAddress()->getShippingDescription()), 200)
             );
         }
 
@@ -575,10 +572,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         );
         if ($quote->getShippingAddress()) {
             $transaction->setShippingMethod(
-                $this->fixLength(
-                    $quote->getShippingAddress()
-                    ->getShippingDescription(), 200
-                )
+                $this->fixLength($this->getFirstLine($quote->getShippingAddress()->getShippingDescription()), 200)
             );
         }
 
@@ -725,15 +719,15 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     protected function getAddress(Mage_Customer_Model_Address_Abstract $customerAddress)
     {
         $address = new \Wallee\Sdk\Model\AddressCreate();
-        $address->setSalutation($this->fixLength($customerAddress->getPrefix(), 20));
-        $address->setCity($this->fixLength($customerAddress->getCity(), 100));
+        $address->setSalutation($this->fixLength($this->removeLinebreaks($customerAddress->getPrefix()), 20));
+        $address->setCity($this->fixLength($this->removeLinebreaks($customerAddress->getCity()), 100));
         $address->setCountry($customerAddress->getCountryId());
-        $address->setFamilyName($this->fixLength($customerAddress->getLastname(), 100));
-        $address->setGivenName($this->fixLength($customerAddress->getFirstname(), 100));
-        $address->setOrganizationName($this->fixLength($customerAddress->getCompany(), 100));
+        $address->setFamilyName($this->fixLength($this->removeLinebreaks($customerAddress->getLastname()), 100));
+        $address->setGivenName($this->fixLength($this->removeLinebreaks($customerAddress->getFirstname()), 100));
+        $address->setOrganizationName($this->fixLength($this->removeLinebreaks($customerAddress->getCompany()), 100));
         $address->setPhoneNumber($customerAddress->getTelephone());
         $address->setPostalState($customerAddress->getRegionCode());
-        $address->setPostCode($this->fixLength($customerAddress->getPostcode(), 40));
+        $address->setPostCode($this->fixLength($this->removeLinebreaks($customerAddress->getPostcode()), 40));
         $address->setStreet($this->fixLength($customerAddress->getStreetFull(), 300));
         return $address;
     }

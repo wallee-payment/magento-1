@@ -94,4 +94,27 @@ class Wallee_Payment_Model_Service_Abstract
     {
         return mb_substr($string, 0, $maxLength, 'UTF-8');
     }
+    
+    /**
+     * Removes all line breaks in the given string and replaces them with a whitespace character.
+     * 
+     * @param string $string
+     * @return string
+     */
+    protected function removeLinebreaks($string)
+    {
+        return preg_replace('/\r|\n/', ' ', $string);
+    }
+    
+    /**
+     * Returns the first line of the given string only.
+     * 
+     * @param string $string
+     * @return string
+     */
+    protected function getFirstLine($string)
+    {
+        return rtrim(strtok($string, "\n"));
+    }
+    
 }
