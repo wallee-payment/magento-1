@@ -324,7 +324,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param bool $chargeFlow
      * @return \Wallee\Sdk\Model\Transaction
      */
-    public function updateTransaction($transactionId, $spaceId, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
+    public function confirmTransaction($transactionId, $spaceId, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
     {
         for ($i = 0; $i < 5; $i++) {
             try {
@@ -341,7 +341,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                     $pendingTransaction->setToken($token->getId());
                 }
                 
-                return $this->getTransactionService()->update($spaceId, $pendingTransaction);
+                return $this->getTransactionService()->confirm($spaceId, $pendingTransaction);
             } catch (\Wallee\Sdk\VersioningException $e) {
                 // Try to update the transaction again, if a versioning exception occurred.
             }
@@ -361,6 +361,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     {
         $createTransaction = new \Wallee\Sdk\Model\TransactionCreate();
         $createTransaction->setCustomersPresence(\Wallee\Sdk\Model\CustomersPresence::VIRTUAL_PRESENT);
+        $createTransaction->setAutoConfirmationEnabled(false);
         $this->assembleOrderTransactionData($order, $invoice, $createTransaction, $chargeFlow);
         if ($token != null) {
             $createTransaction->setToken($token->getId());
@@ -517,6 +518,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $spaceId = $quote->getStore()->getConfig('wallee_payment/general/space_id');
         $createTransaction = new \Wallee\Sdk\Model\TransactionCreate();
         $createTransaction->setCustomersPresence(\Wallee\Sdk\Model\CustomersPresence::VIRTUAL_PRESENT);
+        $createTransaction->setAutoConfirmationEnabled(false);
         $this->assembleQuoteTransactionData($quote, $createTransaction);
         $transaction = $this->getTransactionService()->create($spaceId, $createTransaction);
         $quote->setWalleeSpaceId($transaction->getLinkedSpaceId());

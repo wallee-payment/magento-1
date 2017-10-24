@@ -209,7 +209,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
 
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
-        $transaction = $transactionService->updateTransaction(
+        $transaction = $transactionService->confirmTransaction(
             $quote->getWalleeTransactionId(), $quote->getWalleeSpaceId(), $order, $invoice, Mage::app()->getStore()
             ->isAdmin(), $token
         );
