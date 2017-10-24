@@ -103,7 +103,7 @@ class Wallee_Payment_Model_Service_Abstract
      */
     protected function removeLinebreaks($string)
     {
-        return preg_replace('/\r|\n/', ' ', $string);
+        return preg_replace("/\r|\n/", ' ', $string);
     }
     
     /**
