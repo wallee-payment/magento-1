@@ -533,6 +533,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
             }
         } catch (Exception $e) {
         }
+
         $coreSession->addError($this->getHelper()->__('The payment process could not have been finished successfully.'));
     }
 

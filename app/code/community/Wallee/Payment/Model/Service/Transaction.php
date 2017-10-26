@@ -346,6 +346,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 // Try to update the transaction again, if a versioning exception occurred.
             }
         }
+
         throw new \Wallee\Sdk\VersioningException();
     }
 
@@ -550,6 +551,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 // Try to update the transaction again, if a versioning exception occurred.
             }
         }
+
         throw new \Wallee\Sdk\VersioningException();
     }
 
