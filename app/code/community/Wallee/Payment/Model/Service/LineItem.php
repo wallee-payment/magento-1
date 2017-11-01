@@ -61,6 +61,11 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         if ($mx2gGiftCard) {
             $lineItems[] = $mx2gGiftCard;
         }
+        
+        $awGiftCards = $this->getAWGiftCardLineItems($invoice);
+        if (!empty($awGiftCards)) {
+            $lineItems = array_merge($lineItems, $awGiftCards);
+        }
 
         return $this->getLineItemHelper()->getItemsByReductionAmount($lineItems, $amount);
     }
@@ -125,6 +130,11 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         $mx2gGiftCard = $this->getMX2GiftCardLineItem($entity);
         if ($mx2gGiftCard) {
             $lineItems[] = $mx2gGiftCard;
+        }
+        
+        $awGiftCards = $this->getAWGiftCardLineItems($entity);
+        if (!empty($awGiftCards)) {
+            $lineItems = array_merge($lineItems, $awGiftCards);
         }
 
         return $this->getLineItemHelper()->cleanupLineItems($lineItems, $entity->getGrandTotal(), $this->getCurrencyCode($entity));
@@ -447,6 +457,42 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);
             $lineItem->setUniqueId('giftcard');
             return $this->cleanLineItem($lineItem);
+        }
+    }
+    
+    /**
+     * Returns the line item for the AW giftcards.
+     *
+     * @param Mage_Sales_Model_Order|Mage_Sales_Model_Quote|Mage_Sales_Model_Order_Invoice $entity
+     * @return \Wallee\Sdk\Model\LineItemCreate[]
+     */
+    protected function getAWGiftCardLineItems($entity)
+    {
+        if (Mage::helper('core')->isModuleEnabled('AW_Giftcard')) {
+            $giftcards = array();
+            if ($entity instanceof Mage_Sales_Model_Order) {
+                $giftcards = Mage::helper('aw_giftcard/totals')->getInvoicedGiftCardsByOrderId($entity->getId());
+            } elseif ($entity instanceof Mage_Sales_Model_Quote) {
+                $giftcards = Mage::helper('aw_giftcard/totals')->getQuoteGiftCards($entity->getId());
+            } elseif ($entity instanceof Mage_Sales_Model_Order_Invoice) {
+                $giftcards = Mage::helper('aw_giftcard/totals')->getInvoiceGiftCards($entity->getId());
+            }
+            $lineItems = array();
+            foreach ($giftcards as $giftcard) {
+                $giftcardModel = Mage::getModel('aw_giftcard/giftcard')->load($giftcard->getGiftcardId());
+                $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
+                $lineItem->setAmountIncludingTax($this->roundAmount(-1 * $giftcard->getGiftcardAmount(), $this->getCurrencyCode($entity)));
+                $lineItem->setName(
+                    $this->getHelper()
+                    ->__('Giftcard (%s)', $giftcardModel->getCode())
+                    );
+                $lineItem->setQuantity(1);
+                $lineItem->setSku('giftcard_' . $giftcard->getGiftcardId());
+                $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);
+                $lineItem->setUniqueId('aw_giftcard_' . $giftcard->getGiftcardId());
+                $lineItems[] = $this->cleanLineItem($lineItem);
+            }
+            return $lineItems;
         }
     }
 
