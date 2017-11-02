@@ -524,8 +524,8 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
      */
     protected function cleanLineItem(\Wallee\Sdk\Model\LineItemCreate $lineItem)
     {
-        $lineItem->setSku($this->fixLength($lineItem->getSku(), 200));
-        $lineItem->setName($this->fixLength($lineItem->getName(), 40));
+        $lineItem->setSku($this->fixLength($this->removeLinebreaks($lineItem->getSku()), 200));
+        $lineItem->setName($this->fixLength($this->removeLinebreaks($lineItem->getName()), 40));
         return $lineItem;
     }
 
