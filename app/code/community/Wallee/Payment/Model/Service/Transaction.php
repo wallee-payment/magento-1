@@ -390,7 +390,10 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $transaction->setBillingAddress($this->getOrderBillingAddress($order));
         $transaction->setShippingAddress($this->getOrderShippingAddress($order));
         $transaction->setCustomerEmailAddress($this->getCustomerEmailAddress($order->getCustomerEmail(), $order->getCustomerId()));
-        $transaction->setCustomerId($order->getCustomerId());
+        $customerId = $order->getCustomerId();
+        if (!empty($customerId)) {
+            $transaction->setCustomerId($customerId);
+        }
         $transaction->setLanguage(
             $order->getStore()
             ->getConfig('general/locale/code')
@@ -567,7 +570,10 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $transaction->setBillingAddress($this->getQuoteBillingAddress($quote));
         $transaction->setShippingAddress($this->getQuoteShippingAddress($quote));
         $transaction->setCustomerEmailAddress($this->getCustomerEmailAddress($quote->getCustomerEmail(), $quote->getCustomerId()));
-        $transaction->setCustomerId($quote->getCustomerId());
+        $customerId = $quote->getCustomerId();
+        if (!empty($customerId)) {
+            $transaction->setCustomerId($customerId);
+        }
         $transaction->setLanguage(
             $quote->getStore()
             ->getConfig('general/locale/code')
