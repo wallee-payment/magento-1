@@ -22,7 +22,8 @@ We do provide special integrations for the following one step checkouts:
 
 ## Documentation
 
-[Getting Started](https://github.com/wallee-payment/magento/wiki/Getting-Started)
+* [Getting Started](https://github.com/wallee-payment/magento/wiki/Getting-Started)
+* For Magento 1.6.x you need to install the [Magento compatibility module](https://github.com/wallee-payment/magento-fix-1.6)
 
 ## License
 
