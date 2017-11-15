@@ -22,7 +22,7 @@ We do provide special integrations for the following one step checkouts:
 
 ## Documentation
 
-https://github.com/wallee-payment/magento/wiki
+[Getting Started](https://github.com/wallee-payment/magento/wiki/Getting-Started)
 
 ## License
 
