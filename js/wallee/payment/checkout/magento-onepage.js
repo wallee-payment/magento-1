@@ -97,6 +97,7 @@ MageWallee.Checkout.Type.MagentoOnePage = Class.create(
                 if (response.error_messages) {
                     alert(this.formatErrorMessages(response.error_messages));
                 }
+                checkout.setLoadWaiting(false);
             }
 
             if (response.update_section) {
