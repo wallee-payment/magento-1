@@ -57,92 +57,50 @@ class Wallee_Payment_Model_System_Config
             return;
         }
 
-        if ($this->isCacheExpired()) {
-            if (Mage::app()->useCache('config')) {
-                Mage::getConfig()->reinit();
-            }
+        $websiteMap = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $websiteMap[$website->getConfig('wallee_payment/general/space_id')][] = $website;
+        }
 
-            $websiteMap = array();
-            foreach (Mage::app()->getWebsites() as $website) {
-                $websiteMap[$website->getConfig('wallee_payment/general/space_id')][] = $website;
-            }
+        /* @var Wallee_Payment_Model_Resource_PaymentMethodConfiguration_Collection $collection */
+        $collection = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->getCollection();
+        foreach ($collection->addStateFilter() as $paymentMethod) {
+            /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $paymentMethod */
+            if (isset($websiteMap[$paymentMethod->getSpaceId()])) {
+                $basePath = '/payment/wallee_payment_' . $paymentMethod->getId() . '/';
+                $active = $paymentMethod->getState() == Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE ? 1 : 0;
+                $model = 'wallee_payment/paymentMethod' . $paymentMethod->getId();
+                $action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE;
 
-            /* @var Wallee_Payment_Model_Resource_PaymentMethodConfiguration_Collection $collection */
-            $collection = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->getCollection();
-            foreach ($collection->addStateFilter() as $paymentMethod) {
-                /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $paymentMethod */
-                if (isset($websiteMap[$paymentMethod->getSpaceId()])) {
-                    $basePath = '/payment/wallee_payment_' . $paymentMethod->getId() . '/';
-                    $active = $paymentMethod->getState() == Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE ? 1 : 0;
-                    $model = 'wallee_payment/paymentMethod' . $paymentMethod->getId();
-                    $action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE;
+                $this->setConfigValue('stores/admin' . $basePath . 'active', $active);
+                $this->setConfigValue('stores/admin' . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, 'en-US'));
+                $this->setConfigValue('stores/admin' . $basePath . 'model', $model);
+                $this->setConfigValue('stores/admin' . $basePath . 'payment_action', $action);
 
-                    $this->setConfigValue('stores/admin' . $basePath . 'active', $active);
-                    $this->setConfigValue('stores/admin' . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, 'en-US'));
-                    $this->setConfigValue('stores/admin' . $basePath . 'model', $model);
-                    $this->setConfigValue('stores/admin' . $basePath . 'payment_action', $action);
+                foreach ($websiteMap[$paymentMethod->getSpaceId()] as $website) {
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'active', $active);
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, $website->getConfig('general/locale/code')));
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'description', $paymentMethod->getDescription($website->getConfig('general/locale/code')));
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'sort_order', $paymentMethod->getSortOrder());
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'show_description', 1);
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'show_image', 1);
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'model', $model);
+                    $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'payment_action', $action);
 
-                    foreach ($websiteMap[$paymentMethod->getSpaceId()] as $website) {
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'active', $active);
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, $website->getConfig('general/locale/code')));
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'description', $paymentMethod->getDescription($website->getConfig('general/locale/code')));
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'sort_order', $paymentMethod->getSortOrder());
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'show_description', 1);
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'show_image', 1);
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'model', $model);
-                        $this->setConfigValue('websites/' . $website->getCode() . $basePath . 'payment_action', $action);
-
-                        foreach ($website->getStores() as $store) {
-                            /* @var Mage_Core_Model_Store $store */
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'active', $active);
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, $store->getConfig('general/locale/code')));
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'description', $paymentMethod->getDescription($store->getConfig('general/locale/code')));
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'sort_order', $paymentMethod->getSortOrder());
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'show_description', 1);
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'show_image', 1);
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'model', $model);
-                            $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'payment_action', $action);
-                        }
+                    foreach ($website->getStores() as $store) {
+                        /* @var Mage_Core_Model_Store $store */
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'active', $active);
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'title', $this->getPaymentMethodTitle($paymentMethod, $store->getConfig('general/locale/code')));
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'description', $paymentMethod->getDescription($store->getConfig('general/locale/code')));
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'sort_order', $paymentMethod->getSortOrder());
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'show_description', 1);
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'show_image', 1);
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'model', $model);
+                        $this->setConfigValue('stores/' . $store->getCode() . $basePath . 'payment_action', $action);
                     }
                 }
             }
-
-            $this->setConfigValue('stores/admin/wallee_payment/config/cached_on', date("Y-m-d H:i:s"));
-            Mage::getConfig()->saveCache();
         }
-    }
-
-    /**
-     * Returns whether the dynamic payment method config values have to be updated.
-     *
-     * @return boolean
-     */
-    private function isCacheExpired()
-    {
-        if (! Mage::app()->useCache('config')) {
-            return true;
-        }
-
-        /* @var Mage_Core_Model_Resource $resource */
-        $resource = Mage::getSingleton('core/resource');
-        $select = $resource->getConnection('core_read')
-            ->select()
-            ->from($resource->getTableName('wallee_payment/payment_method_configuration'), 'updated_at')
-            ->order('updated_at DESC')
-            ->limit(1);
-        $latestUpdateDate = $resource->getConnection('core_read')->fetchOne($select);
-        if ($latestUpdateDate == null) {
-            return true;
-        }
-
-        $cachedOn = Mage::getConfig()->getNode('stores/admin/wallee_payment/config/cached_on');
-        if ($cachedOn === false) {
-            return true;
-        }
-
-        $dateObject1 = new DateTime($latestUpdateDate);
-        $dateObject2 = new DateTime($cachedOn);
-        return $dateObject1 > $dateObject2;
     }
 
     /**
