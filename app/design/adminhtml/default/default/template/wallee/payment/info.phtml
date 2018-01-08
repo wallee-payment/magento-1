@@ -51,6 +51,15 @@ $labelsByGroup = $block->getGroupedChargeAttemptLabels();
     <?php endif; ?>
 <?php endif; ?>
 
+<?php if (false && ! $block->isCreditmemo() && ! $block->isInvoice() && ! $block->isShipment()) : ?>
+	<?php $transactionUpdateUrl = $block->getUpdateTransactionUrl(); ?>
+    <?php if ($transactionUpdateUrl) : ?>
+        <button title="<?php echo $helper->__('Update') ?>" type="button" class="scalable" onclick="setLocation('<?php echo $transactionUpdateUrl ?>')" style="float: right;">
+        	<span><span><span><?php echo $helper->__('Update') ?></span></span></span>
+        </button>
+    <?php endif; ?>
+<?php endif; ?>
+
 <table class="form-list" style="margin-bottom: 20px;">
 	<tbody>
 		<tr>

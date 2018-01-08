@@ -86,6 +86,28 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
                 ->getStore()
             );
     }
+    
+    /**
+     * Returns the URL to update the transaction's information.
+     *
+     * @return string
+     */
+    public function getUpdateTransactionUrl()
+    {
+        if ($this->getTransactionInfo() && Mage::app()->getStore()->isAdmin()) {
+            /* @var Mage_Adminhtml_Helper_Data $adminHelper */
+            $adminHelper = Mage::helper('adminhtml');
+            return $adminHelper->getUrl(
+                'adminhtml/wallee_transaction/update', array(
+                    'transaction_id' => $this->getTransactionInfo()
+                    ->getTransactionId(),
+                    'space_id' => $this->getTransactionInfo()
+                    ->getSpaceId(),
+                    '_secure' => true
+                )
+            );
+        }
+    }
 
     /**
      * Returns the URL to download the transaction's invoice PDF document.

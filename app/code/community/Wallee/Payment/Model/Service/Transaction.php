@@ -271,23 +271,25 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             ->getPaymentMethod()
         ) : null;
 
-        if ($connector != null && $connector->getPaymentMethodBrand() != null) {
-            return $connector->getPaymentMethodBrand()->getImagePath();
-        } elseif ($transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null && $transaction->getPaymentConnectorConfiguration()
-            ->getPaymentMethodConfiguration()
-            ->getImageResourcePath() != null) {
-            return $transaction->getPaymentConnectorConfiguration()
+        if ($transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null) {
+            return $this->getImagePath($transaction->getPaymentConnectorConfiguration()
                 ->getPaymentMethodConfiguration()
-                ->getImageResourcePath()
-                ->getPath();
-        } elseif ($method != null) {
-            return $method->getImagePath();
+                ->getResolvedImageUrl());
         } else {
             return $order->getPayment()
                 ->getMethodInstance()
                 ->getPaymentMethodConfiguration()
                 ->getImage();
         }
+    }
+    
+    /**
+     * @param string $resolvedImageUrl
+     * @return string
+     */
+    protected function getImagePath($resolvedImageUrl) {
+        $index = strpos($resolvedImageUrl, 'resource/');
+        return substr($resolvedImageUrl, $index + strlen('resource/'));
     }
 
     /**

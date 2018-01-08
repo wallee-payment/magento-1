@@ -21,6 +21,30 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/order');
     }
+    
+    /**
+     * Update the transaction info from the gateway.
+     */
+    public function updateAction(){
+        $service = Mage::getSingleton('wallee_payment/service_transaction');
+        
+        $spaceId = $this->getRequest()->getParam('space_id');
+        $transactionId = $this->getRequest()->getParam('transaction_id');
+        $transaction = $service->getTransaction($spaceId, $transactionId);
+        
+        $order = Mage::getModel('sales/order')->loadByIncrementId($transaction->getMerchantReference());
+        
+        $service->updateTransactionInfo($transaction, $order);
+        
+        $session = Mage::getSingleton('core/session');
+        $session->addSuccess('The transaction has been updated.');
+        
+        $this->_redirect(
+            'adminhtml/sales_order/view', array(
+                'order_id' => $order->getId()
+            )
+        );
+    }
 
     /**
      * Sends a refund request to the gateway.
