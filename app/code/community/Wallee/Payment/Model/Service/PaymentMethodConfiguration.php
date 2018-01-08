@@ -27,11 +27,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
             $model->setConfigurationName($configuration->getName());
             $model->setTitle($configuration->getResolvedTitle());
             $model->setDescription($configuration->getResolvedDescription());
-            $model->setImage(
-                $configuration->getImageResourcePath() != null ? $configuration->getImageResourcePath()
-                ->getPath() : $this->getPaymentMethod($configuration->getPaymentMethod())
-                ->getImagePath()
-            );
+            $model->setImage($this->getImagePath($configuration->getResolvedImageUrl()));
             $model->setSortOrder($configuration->getSortOrder());
             $model->save();
         }
@@ -51,9 +47,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
             return true;
         }
 
-        $image = $configuration->getImageResourcePath() != null ? $configuration->getImageResourcePath()->getPath() : $this->getPaymentMethod($configuration->getPaymentMethod())
-            ->getImagePath();
-        if ($image != $model->getImage()) {
+        if ($this->getImagePath($configuration->getResolvedImageUrl()) != $model->getImage()) {
             return true;
         }
 
@@ -105,11 +99,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
                     $method->setState($this->getConfigurationState($configuration));
                     $method->setTitle($configuration->getResolvedTitle());
                     $method->setDescription($configuration->getResolvedDescription());
-                    $method->setImage(
-                        $configuration->getImageResourcePath() != null ? $configuration->getImageResourcePath()
-                        ->getPath() : $this->getPaymentMethod($configuration->getPaymentMethod())
-                        ->getImagePath()
-                    );
+                    $method->setImage($this->getImagePath($configuration->getResolvedImageUrl()));
                     $method->setSortOrder($configuration->getSortOrder());
                     $method->save();
                 }
@@ -126,6 +116,15 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         }
 
         $this->createPaymentMethodModelClasses();
+    }
+
+    /**
+     * @param string $resolvedImageUrl
+     * @return string
+     */
+    protected function getImagePath($resolvedImageUrl) {
+        $index = strpos($resolvedImageUrl, 'resource/');
+        return substr($resolvedImageUrl, $index + strlen('resource/'));
     }
 
     /**
