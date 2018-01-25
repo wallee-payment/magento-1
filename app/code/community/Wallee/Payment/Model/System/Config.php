@@ -64,7 +64,7 @@ class Wallee_Payment_Model_System_Config
 
         /* @var Wallee_Payment_Model_Resource_PaymentMethodConfiguration_Collection $collection */
         $collection = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->getCollection();
-        foreach ($collection->addStateFilter() as $paymentMethod) {
+        foreach ($collection as $paymentMethod) {
             /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $paymentMethod */
             if (isset($websiteMap[$paymentMethod->getSpaceId()])) {
                 $basePath = '/payment/wallee_payment_' . $paymentMethod->getId() . '/';
