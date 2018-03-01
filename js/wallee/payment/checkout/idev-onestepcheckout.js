@@ -59,13 +59,17 @@ MageWallee.Checkout.Type.IdevOneStepCheckout = Class.create(
      * Validates the payment information when the customer submits the order.
      */
     validate : function (callOriginal, form) {
+        if (!callOriginal()) {
+            return false;
+        }
+
         if (form.identify() == 'onestepcheckout-form' && this.isSupportedPaymentMethod(payment.currentMethod)) {
             this.disableSubmitButton();
             this.getPaymentMethod(payment.currentMethod).handler.validate();
             return false;
         }
 
-        return callOriginal();
+        return true;
     },
 
     createOrder : function () {
@@ -91,7 +95,7 @@ MageWallee.Checkout.Type.IdevOneStepCheckout = Class.create(
     },
 
     onOrderCreated : function (response) {
-        if (response && response.status == 200 && response.transport.responseURL.include('/checkout/onepage/success/')) {
+        if (response && response.status == 200 && response.transport.responseURL.include('/checkout/onepage/success')) {
             this.getPaymentMethod(payment.currentMethod).handler.submit();
         } else {
             document.open('text/html');
