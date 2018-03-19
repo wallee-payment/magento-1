@@ -191,10 +191,12 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         $lineItem->setQuantity($productItem->getQty() ? $productItem->getQty() : $productItem->getQtyOrdered());
         $lineItem->setShippingRequired(! $productItem->getIsVirtual());
         $lineItem->setSku($productItem->getSku());
-        if ($productItem->getTaxPercent() > 0) {
+        
+        $orderItem = ($productItem instanceof Mage_Sales_Model_Order_Invoice_Item) ? $productItem->getOrderItem() : $productItem;
+        if ($orderItem->getTaxPercent() > 0) {
             $lineItem->setTaxes(
                 array(
-                $this->getTax($productItem)
+                    $this->getTax($orderItem)
                 )
             );
         }
