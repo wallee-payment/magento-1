@@ -93,7 +93,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
 
         /* @var Wallee_Payment_Helper_LineItem $lineItemHelper */
         $lineItemHelper = Mage::helper('wallee_payment/lineItem');
-        $reductionAmount = $lineItemHelper->getReductionAmount($baseLineItems, $reductions);
+        $reductionAmount = $lineItemHelper->getReductionAmount($baseLineItems, $reductions, $creditmemo->getOrderCurrencyCode());
 
         if ($reductionAmount != $creditmemo->getGrandTotal()) {
             $fixedReductions = array();
@@ -104,7 +104,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
                 $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
                 $reduction->setLineItemUniqueId($lineItem->getUniqueId());
                 $reduction->setQuantityReduction(0);
-                $reduction->setUnitPriceReduction($this->roundAmount($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity(), $creditmemo->getOrderCurrencyCode()));
+                $reduction->setUnitPriceReduction($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity());
                 $fixedReductions[] = $reduction;
             }
 
@@ -134,15 +134,23 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
                 continue;
             }
 
-            /* @var Mage_Sales_Model_Order_Creditmemo_Item $item */
             $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
             $reduction->setLineItemUniqueId(
-                $item->getOrderItem()
-                ->getQuoteItemId()
+                $orderItem->getQuoteItemId()
             );
             $reduction->setQuantityReduction($item->getQty());
             $reduction->setUnitPriceReduction(0);
             $reductions[] = $reduction;
+            
+            if ($orderItem->getDiscountAmount() != 0) {
+                $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
+                $reduction->setLineItemUniqueId(
+                    $orderItem->getQuoteItemId() . '-discount'
+                );
+                $reduction->setQuantityReduction($item->getQty());
+                $reduction->setUnitPriceReduction(0);
+                $reductions[] = $reduction;
+            }
         }
 
         return $reductions;
