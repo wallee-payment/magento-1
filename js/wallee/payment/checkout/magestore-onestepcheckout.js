@@ -102,7 +102,7 @@ MageWallee.Checkout.Type.MageStoreOneStepCheckout = Class.create(
     },
 
     onOrderCreated : function (response) {
-        if (response && response.status == 200 && response.transport.responseURL.include('/checkout/onepage/success/')) {
+        if (response && response.status == 200 && response.transport.responseURL.include('/checkout/onepage/success')) {
             this.getPaymentMethod(this.getPaymentMethodCode()).handler.submit();
         } else if (response.responseText) {
             document.open('text/html');

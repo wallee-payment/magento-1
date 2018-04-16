@@ -249,29 +249,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     protected function getPaymentMethodImage(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
-        if ($transaction->getPaymentConnectorConfiguration() == null) {
-            return $order->getPayment()
-                ->getMethodInstance()
-                ->getPaymentMethodConfiguration()
-                ->getImage();
-        }
-
-        /* @var Wallee_Payment_Model_Provider_PaymentConnector $connectorProvider */
-        $connectorProvider = Mage::getSingleton('wallee_payment/provider_paymentConnector');
-        $connector = $connectorProvider->find(
-            $transaction->getPaymentConnectorConfiguration()
-            ->getConnector()
-        );
-
-        /* @var Wallee_Payment_Model_Provider_PaymentMethod $methodProvider */
-        $methodProvider = Mage::getSingleton('wallee_payment/provider_paymentMethod');
-        $method = $transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null ? $methodProvider->find(
-            $transaction->getPaymentConnectorConfiguration()
-            ->getPaymentMethodConfiguration()
-            ->getPaymentMethod()
-        ) : null;
-
-        if ($transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null) {
+        if ($transaction->getPaymentConnectorConfiguration() != null && $transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null) {
             return $this->getImagePath($transaction->getPaymentConnectorConfiguration()
                 ->getPaymentMethodConfiguration()
                 ->getResolvedImageUrl());
@@ -332,7 +310,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             try {
                 $transaction = $this->getTransactionService()->read($spaceId, $transactionId);
                 if (!($transaction instanceof \Wallee\Sdk\Model\Transaction) || $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING) {
-                    return $this->createTransactionByOrder($order);
+                    return $this->createTransactionByOrder($spaceId, $order, $invoice, $chargeFlow);
                 }
                 
                 $pendingTransaction = new \Wallee\Sdk\Model\TransactionPending();
