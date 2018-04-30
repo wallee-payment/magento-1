@@ -3,16 +3,15 @@
 /**
  * Wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://wallee.com/).
+ * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
- * @link https://github.com/wallee-payment/magento
  */
 
 /**
- * This service provides functions to deal with Wallee transactions.
+ * This service provides functions to deal with wallee transactions.
  */
 class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Service_Abstract
 {
@@ -80,7 +79,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     }
 
     /**
-     * Returns the URL to Wallee's JavaScript library that is necessary to display the payment form.
+     * Returns the URL to wallee's JavaScript library that is necessary to display the payment form.
      *
      * @param Mage_Sales_Model_Quote $quote
      * @return string
@@ -699,7 +698,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     }
 
     /**
-     * Converts the Magento address model to a Wallee API address model.
+     * Converts the Magento address model to a wallee API address model.
      *
      * @param Mage_Customer_Model_Address_Abstract $customerAddress
      * @return \Wallee\Sdk\Model\AddressCreate

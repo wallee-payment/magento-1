@@ -1,7 +1,7 @@
-# Wallee Magento
-This repository contains the Magento extension that enables to process payments with [Wallee](https://wallee.com/).
+# wallee Magento
+This repository contains the Magento extension that enables to process payments with [wallee](https://www.wallee.com/).
 
-###### To use this extension, a [Wallee](https://wallee.com/) account is required.
+###### To use this extension, a [wallee](https://www.wallee.com/) account is required.
 
 ## Requirements
 
@@ -20,10 +20,9 @@ We do provide special integrations for the following one step checkouts:
 * MageStore OneStepCheckout
 * TM FireCheckout
 
-## Documentation
+## Magento 1.6.x
 
-* [Getting Started](https://github.com/wallee-payment/magento/wiki/Getting-Started)
-* For Magento 1.6.x you need to install the [Magento compatibility module](https://github.com/wallee-payment/magento-fix-1.6)
+For Magento 1.6.x you need to install the [Magento compatibility module](https://github.com/wallee-payment/magento-fix-1.6)
 
 ## License
 

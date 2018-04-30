@@ -3,16 +3,15 @@
 /**
  * Wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://wallee.com/).
+ * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
- * @link https://github.com/wallee-payment/magento
  */
 
 /**
- * This entity holds data about a Wallee payment method.
+ * This entity holds data about a wallee payment method.
  *
  * @method string getState()
  * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setState(string state)

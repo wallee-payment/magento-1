@@ -3,22 +3,21 @@
 /**
  * Wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://wallee.com/).
+ * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
- * @link https://github.com/wallee-payment/magento
  */
 
 /**
- * This controller accepts webhook requests from Wallee and redirects them to the suitable processor.
+ * This controller accepts webhook requests from wallee and redirects them to the suitable processor.
  */
 class Wallee_Payment_WebhookController extends Mage_Core_Controller_Front_Action
 {
 
     /**
-     * Accepts webhook requests from Wallee and redirects them to the suitable processor.
+     * Accepts webhook requests from wallee and redirects them to the suitable processor.
      */
     public function indexAction()
     {

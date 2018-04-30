@@ -3,7 +3,7 @@
 		<payment>
 			<groups>
 				<wallee_payment_{id}>
-					<label>Wallee Payment - {name}</label>
+					<label>wallee Payment - {name}</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>1</sort_order>
 					<show_in_default>1</show_in_default>

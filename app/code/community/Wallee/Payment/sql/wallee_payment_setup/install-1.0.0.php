@@ -3,12 +3,11 @@
 /**
  * Wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://wallee.com/).
+ * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
- * @link https://github.com/wallee-payment/magento
  */
 
 $installer = $this;
@@ -23,14 +22,14 @@ $installer->getConnection()->addColumn(
     $installer->getTable('sales/quote'), 'wallee_space_id', array(
     'type' => Varien_Db_Ddl_Table::TYPE_BIGINT,
     'unsigned' => true,
-    'comment' => 'Wallee Space Id'
+    'comment' => 'wallee Space Id'
     )
 );
 $installer->getConnection()->addColumn(
     $installer->getTable('sales/quote'), 'wallee_transaction_id', array(
     'type' => Varien_Db_Ddl_Table::TYPE_BIGINT,
     'unsigned' => true,
-    'comment' => 'Wallee Transaction Id'
+    'comment' => 'wallee Transaction Id'
     )
 );
 $installer->getConnection()->addIndex(
@@ -52,21 +51,21 @@ $installer->getConnection()->addColumn(
     $installer->getTable('sales/order'), 'wallee_space_id', array(
     'type' => Varien_Db_Ddl_Table::TYPE_BIGINT,
     'unsigned' => true,
-    'comment' => 'Wallee Space Id'
+    'comment' => 'wallee Space Id'
     )
 );
 $installer->getConnection()->addColumn(
     $installer->getTable('sales/order'), 'wallee_transaction_id', array(
     'type' => Varien_Db_Ddl_Table::TYPE_BIGINT,
     'unsigned' => true,
-    'comment' => 'Wallee Transaction Id'
+    'comment' => 'wallee Transaction Id'
     )
 );
 $installer->getConnection()->addColumn(
     $installer->getTable('sales/order'), 'wallee_authorized', array(
     'type' => Varien_Db_Ddl_Table::TYPE_SMALLINT,
     'default' => '0',
-    'comment' => 'Wallee Authorized'
+    'comment' => 'wallee Authorized'
     )
 );
 $installer->getConnection()->addIndex(
@@ -89,7 +88,7 @@ $installer->getConnection()->addColumn(
     'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
     'length' => 10,
     'unsigned' => true,
-    'comment' => 'Wallee Token'
+    'comment' => 'wallee Token'
     )
 );
 
@@ -100,19 +99,19 @@ $installer->getConnection()->addColumn(
     $installer->getTable('sales/invoice'), 'wallee_capture_pending', array(
     'type' => Varien_Db_Ddl_Table::TYPE_SMALLINT,
     'default' => '0',
-    'comment' => 'Wallee Capture Pending'
+    'comment' => 'wallee Capture Pending'
     )
 );
 
 /**
- * Add a new column to the sales/creditmemo table that stores the external id of the refund in Wallee representing this creditmemo.
+ * Add a new column to the sales/creditmemo table that stores the external id of the refund in wallee representing this creditmemo.
  */
 $installer->getConnection()->addColumn(
     $installer->getTable('sales/creditmemo'), 'wallee_external_id', array(
     'type' => Varien_Db_Ddl_Table::TYPE_TEXT,
     'length' => 100,
     'nullable' => true,
-    'comment' => 'Wallee External Id'
+    'comment' => 'wallee External Id'
     )
 );
 $installer->getConnection()->addIndex(
@@ -413,7 +412,7 @@ $table = $installer->getConnection()
         'type' => Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
         )
     )
-    ->setComment('Wallee Payment Method Configuration');
+    ->setComment('wallee Payment Method Configuration');
 $installer->getConnection()->createTable($table);
 
 /**
@@ -472,37 +471,7 @@ $table = $installer->getConnection()
         'type' => Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
         )
     )
-    ->setComment('Wallee Payment Refund Job');
-$installer->getConnection()->createTable($table);
-
-/**
- * Create table 'wallee_payment/lock'
- */
-$table = $installer->getConnection()
-    ->newTable($installer->getTable('wallee_payment/lock'))
-    ->addColumn(
-        'lock_type', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-        'unsigned' => true,
-        'nullable' => false
-        ), 'Lock Type'
-    )
-    ->addColumn(
-        'locked_at', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
-        'nullable' => true
-        ), 'Locked At'
-    )
-    ->addIndex(
-        $installer->getIdxName(
-            'wallee_payment/lock', array(
-            'lock_type'
-            ), Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
-        ), array(
-        'lock_type'
-        ), array(
-        'type' => Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
-        )
-    )
-    ->setComment('Wallee Payment Lock');
+    ->setComment('wallee Payment Refund Job');
 $installer->getConnection()->createTable($table);
 
 $installer->endSetup();

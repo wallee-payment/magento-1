@@ -3,12 +3,11 @@
 /**
  * Wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://wallee.com/).
+ * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
- * @link https://github.com/wallee-payment/magento
  */
 
 /**
@@ -26,11 +25,11 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
      */
     public function getBaseGatewayUrl()
     {
-        return Mage::getStoreConfig('wallee_payment/general/base_gateway_url');
+        return rtrim(Mage::getStoreConfig('wallee_payment/general/base_gateway_url'), '/');
     }
 
     /**
-     * Returns an instance of Wallee's API client.
+     * Returns an instance of wallee's API client.
      *
      * @param boolean $gracefully
      * @param boolean $singleton
@@ -52,7 +51,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
             } else if ($gracefully) {
                 return false;
             } else {
-                Mage::throwException('The Wallee API user data are incomplete.');
+                Mage::throwException('The wallee API user data are incomplete.');
             }
         }
 
@@ -60,7 +59,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
     }
 
     /**
-     * Returns the URL to a resource on Wallee in the given context (space, space view, language).
+     * Returns the URL to a resource on wallee in the given context (space, space view, language).
      *
      * @param string $path
      * @param string $language

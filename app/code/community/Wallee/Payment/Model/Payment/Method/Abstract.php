@@ -3,16 +3,15 @@
 /**
  * Wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://wallee.com/).
+ * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
- * @link https://github.com/wallee-payment/magento
  */
 
 /**
- * Abstract model for Wallee payment methods.
+ * Abstract model for wallee payment methods.
  */
 class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Method_Abstract
 {
@@ -123,7 +122,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
     /**
      * Returns whether this payment method can be used with the given quote.
      *
-     * It will perform an online check on Wallee.
+     * It will perform an online check on wallee.
      *
      * @see Mage_Payment_Model_Method_Abstract::isAvailable()
      */

@@ -1,9 +1,9 @@
 <?php
 /**
- * Wallee SDK
+ * wallee SDK
  *
- * This library allows to interact with the Wallee payment service.
- * Wallee SDK: 1.0.0
+ * This library allows to interact with the wallee payment service.
+ * wallee SDK: 1.0.0
  * 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,4 +57,4 @@ spl_autoload_register(function ($class) {
 	if (file_exists($file)) {
 		require $file;
 	}
-});
+}, true, true);

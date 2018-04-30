@@ -1,12 +1,11 @@
 /**
  * Wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://wallee.com/).
+ * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
- * @link https://github.com/wallee-payment/magento
  */
 
 MageWallee.Checkout.Type.MagentoOnePage = Class.create(
@@ -55,7 +54,7 @@ MageWallee.Checkout.Type.MagentoOnePage = Class.create(
     },
 
     /**
-     * Sends the payment information to Wallee after the customer submitted the order.
+     * Sends the payment information to wallee after the customer submitted the order.
      */
     placeOrder : function (callOriginal) {
         if (this.isSupportedPaymentMethod(payment.currentMethod)) {
