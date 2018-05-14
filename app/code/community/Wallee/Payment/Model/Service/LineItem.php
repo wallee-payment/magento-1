@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Wallee Magento
+ * wallee Magento
  *
- * This Magento extension enables to process payments with Wallee (https://www.wallee.com/).
+ * This Magento extension enables to process payments with wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
  * @author customweb GmbH (http://www.customweb.com/)
@@ -531,7 +531,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
     protected function cleanLineItem(\Wallee\Sdk\Model\LineItemCreate $lineItem)
     {
         $lineItem->setSku($this->fixLength($this->removeLinebreaks($lineItem->getSku()), 200));
-        $lineItem->setName($this->fixLength($this->removeLinebreaks($lineItem->getName()), 40));
+        $lineItem->setName($this->fixLength($this->removeLinebreaks($lineItem->getName()), 150));
         return $lineItem;
     }
 
