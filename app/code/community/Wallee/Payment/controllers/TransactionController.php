@@ -21,7 +21,7 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
      */
     public function redirectAction()
     {
-        echo 'OK';
+        die('OK');
     }
 
     /**
