@@ -157,6 +157,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                         return false;
                     }
                 } catch (Exception $e) {
+                    Mage::log('The payment method ' . $this->getTitle() . ' is not available because of an exception: ' . $e->getMessage(), null, 'wallee.log');
                     return false;
                 }
             } else {

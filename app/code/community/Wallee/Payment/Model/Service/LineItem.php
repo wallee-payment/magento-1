@@ -283,7 +283,8 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         /* @var Mage_Tax_Helper_Data $taxHelper */
         $taxHelper = Mage::helper('tax');
         if ($productItem->getDiscountAmount() != 0) {
-            if ($taxHelper->priceIncludesTax() || ! $taxHelper->applyTaxAfterDiscount()) {
+            if ($taxHelper->priceIncludesTax($productItem->getStore())
+                || ! $taxHelper->applyTaxAfterDiscount($productItem->getStore())) {
                 $amountIncludingTax = -1 * $productItem->getDiscountAmount();
             } else {
                 $amountIncludingTax = -1 * $productItem->getDiscountAmount() * ($productItem->getTaxPercent() / 100 + 1);
@@ -297,7 +298,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             );
             $lineItem->setQuantity($productItem->getQty() ? $productItem->getQty() : $productItem->getQtyOrdered());
             $lineItem->setSku($productItem->getSku() . '-discount');
-            if ($taxHelper->applyTaxAfterDiscount() && $productItem->getTaxPercent() > 0) {
+            if ($taxHelper->applyTaxAfterDiscount($productItem->getStore()) && $productItem->getTaxPercent() > 0) {
                 $lineItem->setTaxes(
                     array(
                     $this->getTax($productItem)
