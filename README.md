@@ -26,7 +26,7 @@ For Magento 1.6.x you need to install the [Magento compatibility module](https:/
 
 ## Documentation
 
-* [Documentation](https://cdn.rawgit.com/wallee-payment//magento/1.0.12/docs/en/documentation.html)
+* [Documentation](https://plugin-documentation.wallee.com/wallee-payment/magento/1.0.12/docs/en/documentation.html)
 
 ## License
 
