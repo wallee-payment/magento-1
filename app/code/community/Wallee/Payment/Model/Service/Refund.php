@@ -99,12 +99,14 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             $baseAmount = $lineItemHelper->getTotalAmountIncludingTax($baseLineItems);
             $rate = $creditmemo->getGrandTotal() / $baseAmount;
             foreach ($baseLineItems as $lineItem) {
-                /* @var Mage_Sales_Model_Order_Creditmemo_Item $item */
-                $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
-                $reduction->setLineItemUniqueId($lineItem->getUniqueId());
-                $reduction->setQuantityReduction(0);
-                $reduction->setUnitPriceReduction($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity());
-                $fixedReductions[] = $reduction;
+                if ($lineItem->getQuantity() > 0) {
+                    /* @var Mage_Sales_Model_Order_Creditmemo_Item $item */
+                    $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
+                    $reduction->setLineItemUniqueId($lineItem->getUniqueId());
+                    $reduction->setQuantityReduction(0);
+                    $reduction->setUnitPriceReduction($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity());
+                    $fixedReductions[] = $reduction;
+                }
             }
 
             return $fixedReductions;

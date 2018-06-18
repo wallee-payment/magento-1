@@ -22,8 +22,12 @@ We do provide special integrations for the following one step checkouts:
 
 ## Magento 1.6.x
 
-For Magento 1.6.x you need to install the [Magento compatibility module](https://github.com/wallee-payment/magento-fix-1.6)
+For Magento 1.6.x you need to install the [Magento compatibility module](https://github.com/customweb/magento-fix-1.6)
+
+## Documentation
+
+* [Documentation](https://cdn.rawgit.com/wallee-payment//magento/1.0.12/docs/en/documentation.html)
 
 ## License
 
-Please see the [license file](https://github.com/wallee-payment/magento/blob/master/LICENSE) for more information.
+Please see the [license file](https://github.com/wallee-payment/magento/blob/1.0.12/LICENSE) for more information.

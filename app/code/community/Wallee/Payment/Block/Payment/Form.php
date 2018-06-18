@@ -36,10 +36,9 @@ class Wallee_Payment_Block_Payment_Form extends Mage_Payment_Block_Form
         $language = Mage::getStoreConfig('general/locale/code');
         /* @var Wallee_Payment_Helper_Data $helper */
         $helper = $this->helper('wallee_payment');
-        return $helper->getResourceUrl(
-            $methodInstance->getPaymentMethodConfiguration()
-            ->getImage(), $language, $spaceId, $spaceViewId
-        );
+        return $helper->getResourceUrl($methodInstance->getPaymentMethodConfiguration()
+            ->getResourceDomain(), $methodInstance->getPaymentMethodConfiguration()
+            ->getImage(), $language, $spaceId, $spaceViewId);
     }
 
     /**
@@ -51,11 +50,11 @@ class Wallee_Payment_Block_Payment_Form extends Mage_Payment_Block_Form
     {
         /* @var Mage_Sales_Model_Quote $quote */
         $quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
-
+        
         /* @var Wallee_Payment_Model_Payment_Method_Abstract $methodInstance */
         $methodInstance = $this->getMethod();
         $spaceId = $methodInstance->getPaymentMethodConfiguration()->getSpaceId();
-
+        
         /* @var Wallee_Payment_Model_Resource_TokenInfo_Collection $collection */
         $collection = Mage::getModel('wallee_payment/entity_tokenInfo')->getCollection();
         $collection->addCustomerFilter($quote->getCustomerId());

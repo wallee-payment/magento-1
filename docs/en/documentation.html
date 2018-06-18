@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<meta name="keywords" value="wallee, Magento 1, Magento Extension, Payment, Payment Integration, Documentation"><meta name="description" value="The documentation for the Magento extension that enables processing payments with wallee.">		<link rel="canonical" href="https://plugin-documentation.wallee.com/wallee-payment/magento/master/docs/en/documentation.html" />
+		<title>Magento Documentation</title>
+		<link href="assets/base.css" rel="stylesheet" /> 
+	</head>
+	<body class="documentation">
+		<div class="layout-wrapper">
+							<div class="layout-title">
+					<h1>Magento Documentation</h1>
+				</div>
+										<div class="layout-navigation">
+					<ul class="nav">
+	<li>
+		<a href="https://app-wallee.com/user/signup">
+			Sign Up
+		</a>
+	</li>
+	<li>
+		<a href="https://github.com/wallee-payment/magento/tree/1.0.12/">
+			Download
+		</a>
+	</li>
+</ul>				</div>
+										<div class="layout-content">
+												<div class="col-body">
+							<div class="col-body-wrapper">
+																	<div class="body-container">
+																						<div class="chapter" id="_prerequisites">
+	<div class="chapter-title">
+		<h1>
+			<span class="title-number">1</span>Prerequisites					</h1>
+	</div>
+	<div class="chapter-body">
+					<div class="paragraph">
+<p>If you don&#8217;t already have one, create a <a href="https://www.wallee.com/">wallee</a> account and set up a space.</p>
+</div><div class="paragraph">
+<p>We recommend to use the wallee setup assistant for configuration. If you prefer to do the setup manually, follow these steps:</p>
+</div><div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an application user that is allowed to access the space you want to link the Magento store to. Navigate to your wallee account &#8594; application user and create your application user. The user ID and the authentication key will be shown. Make sure to write this information down.</p>
+</li>
+<li>
+<p>Make sure that you grant the application user the necessary rights (Account Admin) in order for the Magento plugin to be able to set up the necessary webhooks, payment methods etc.</p>
+</li>
+<li>
+<p>Set up at least one processor, one payment method and a connector configuration. More Information about the processor concept can be found in the <a href="https://app-wallee.com/doc/payment/processor-concept">wallee documentation</a>.</p>
+</li>
+</ol>
+</div><div class="paragraph">
+<p>If your are using Magento 1.6.x you need to install the <a href="https://github.com/customweb/magento-fix-1.6">Magento compatibility module</a>.</p>
+</div>					</div>
+</div>	<div class="chapter" id="_installation">
+	<div class="chapter-title">
+		<h1>
+			<span class="title-number">2</span>Installation					</h1>
+	</div>
+	<div class="chapter-body">
+					<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Upload the extension files to your store&#8217;s root directory using FTP/SSH.</p>
+</li>
+<li>
+<p>Login to the backend of your Magento store.</p>
+</li>
+<li>
+<p>Clear the cache in System &#8594; Cache Management.</p>
+</li>
+<li>
+<p>Log out of the backend, and log back in again.</p>
+</li>
+</ol>
+</div>					</div>
+</div>	<div class="chapter" id="_configuration">
+	<div class="chapter-title">
+		<h1>
+			<span class="title-number">3</span>Configuration					</h1>
+	</div>
+	<div class="chapter-body">
+					<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Navigate to System &#8594; Configuration &#8594; wallee Payment in your Magento store&#8217;s backend and enter the wallee application user&#8217;s access information that you created before.</p>
+</li>
+</ol>
+</div><div class="imageblock">
+<div class="content">
+<img src="resource/application-user-configuration.png" alt="application user configuration"/>
+</div>
+</div><div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>You need to switch the configuration scope to <strong>Main Website</strong> to enter the space id.</p>
+</li>
+</ol>
+</div><div class="imageblock">
+<div class="content">
+<img src="resource/space-configuration.png" alt="space configuration"/>
+</div>
+</div><div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>After saving the configuration, the payment methods are created in the Magento store and the necessary webhooks are set up.</p>
+</li>
+</ol>
+</div>					</div>
+</div>	<div class="chapter" id="_payment_method_configuration">
+	<div class="chapter-title">
+		<h1>
+			<span class="title-number">4</span>Payment Method Configuration					</h1>
+	</div>
+	<div class="chapter-body">
+					<div class="paragraph">
+<p>Most of the payment method configuration is done in wallee. After following the steps of the previous steps, the wallee payment method configurations will be synchronized automatically into the Magento store. There are just a few payment method settings in the Magento store in System &#8594; Configuration &#8594; Payment Methods. To see the wallee payment methods, you need to switch the configuration scope to <strong>Main Website</strong>.</p>
+</div><div class="imageblock">
+<div class="content">
+<img src="resource/payment-method-configuration.png" alt="payment method configuration"/>
+</div>
+</div>					</div>
+</div>	<div class="chapter" id="_third_party_support">
+	<div class="chapter-title">
+		<h1>
+			<span class="title-number">5</span>Third party support					</h1>
+	</div>
+	<div class="chapter-body">
+					<div class="paragraph">
+<p>These third party checkout extensions are supported by the wallee Magento extension:</p>
+</div><div class="ulist">
+<ul>
+<li>
+<p><a href="https://marketplace.magento.com/aheadworks-onestepcheckout.html">Aheadworks One Step Checkout</a></p>
+</li>
+<li>
+<p><a href="https://www.gomage.com/gomage-lightcheckout.html">GoMage LightCheckout</a></p>
+</li>
+<li>
+<p><a href="https://marketplace.magento.com/onestepcheckout-idev-onestepcheckout.html">OneStepCheckout</a></p>
+</li>
+<li>
+<p><a href="https://marketplace.magento.com/iwd-1213.html">IWD Checkout Suite</a></p>
+</li>
+<li>
+<p><a href="https://marketplace.magento.com/iwd-opc.html">IWD One Page / Step Checkout</a></p>
+</li>
+<li>
+<p><a href="https://marketplace.magento.com/magestore-magestore-onestepcheckout.html">Magestore One Step Checkout</a></p>
+</li>
+<li>
+<p><a href="http://templates-master.com/magento-one-page-checkout.html">TemplatesMaster One Page Checkout</a></p>
+</li>
+</ul>
+</div>					</div>
+</div>	<div class="chapter" id="_faq">
+	<div class="chapter-title">
+		<h1>
+			<span class="title-number">6</span>FAQ					</h1>
+	</div>
+	<div class="chapter-body">
+							<div class="section" id="_the_payment_methods_are_not_showing_up">
+	<div class="section-title">
+		<h2>
+			<span class="title-number">6.1</span>The payment methods are not showing up.					</h2>
+	</div>
+	<div class="section-body">
+					<div class="paragraph">
+<p>Make sure that you followed configuration step 2 by stating your wallee space ID in the Magento backend. By saving the configuration form the synchronization of the payment methods and the set up of the webhooks are initiated.</p>
+</div><div class="paragraph">
+<p>If this does not solve the problem, it could be that you use a special fee or coupon module that we do not support. Try to disable this plugin and see if it helps.
+The payment methods are only displayed if the plugin&#8217;s total calculation matches the actual order total.</p>
+</div>					</div>
+</div>					<div class="section" id="_how_can_i_change_the_look_and_feel_payment_method_name_emails_etc">
+	<div class="section-title">
+		<h2>
+			<span class="title-number">6.2</span>How can I change the look and feel, payment method name, emails etc.?					</h2>
+	</div>
+	<div class="section-body">
+					<div class="paragraph">
+<p>All those configurations are done directly in wallee. For more information have a look at the <a href="https://www.wallee.com/">wallee documentation</a>.</p>
+</div>					</div>
+</div>			</div>
+</div>	<div class="chapter" id="_support">
+	<div class="chapter-title">
+		<h1>
+			<span class="title-number">7</span>Support					</h1>
+	</div>
+	<div class="chapter-body">
+					<div class="paragraph">
+<p>If you have questions use the support form in your space.</p>
+</div>					</div>
+</div>																			</div>
+															</div>
+						</div>
+						<div class="col-right">
+		<div class="col-right-wrapper">
+							<div class="table-of-contents">
+	<ul class="nav">
+					<li class="nav-level-1">
+	<a href="#_prerequisites">
+		<span class="item-number">1</span>
+		<span class="item-title">Prerequisites</span>
+			</a>
+    </li>					<li class="nav-level-1">
+	<a href="#_installation">
+		<span class="item-number">2</span>
+		<span class="item-title">Installation</span>
+			</a>
+    </li>					<li class="nav-level-1">
+	<a href="#_configuration">
+		<span class="item-number">3</span>
+		<span class="item-title">Configuration</span>
+			</a>
+    </li>					<li class="nav-level-1">
+	<a href="#_payment_method_configuration">
+		<span class="item-number">4</span>
+		<span class="item-title">Payment Method Configuration</span>
+			</a>
+    </li>					<li class="nav-level-1">
+	<a href="#_third_party_support">
+		<span class="item-number">5</span>
+		<span class="item-title">Third party support</span>
+			</a>
+    </li>					<li class="nav-level-1">
+	<a href="#_faq">
+		<span class="item-number">6</span>
+		<span class="item-title">FAQ</span>
+			</a>
+        	<ul  class="nav">
+    		    			<li class="nav-level-2">
+	<a href="#_the_payment_methods_are_not_showing_up">
+		<span class="item-number">6.1</span>
+		<span class="item-title">The payment methods are not showing up.</span>
+			</a>
+    </li>    		    			<li class="nav-level-2">
+	<a href="#_how_can_i_change_the_look_and_feel_payment_method_name_emails_etc">
+		<span class="item-number">6.2</span>
+		<span class="item-title">How can I change the look and feel, payment method name, emails etc.?</span>
+			</a>
+    </li>    		    	</ul>
+    </li>					<li class="nav-level-1">
+	<a href="#_support">
+		<span class="item-number">7</span>
+		<span class="item-title">Support</span>
+			</a>
+    </li>			</ul>
+</div>					</div>
+	</div>
+				</div>
+					</div>
+		
+		<script type="text/javascript" src="assets/jquery.js"></script>
+		<script type="text/javascript" src="assets/scrollspy.js"></script>
+		<script type="text/javascript" src="assets/sticky-kit.js"></script>
+		<script type="text/javascript" src="assets/base.js"></script>
+	</body>
+</html>

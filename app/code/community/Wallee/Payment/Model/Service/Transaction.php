@@ -181,6 +181,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             ->getPaymentMethodConfiguration()
             ->getPaymentMethod() : null
         );
+        $info->setResourceDomain($this->getPaymentMethodResourceDomain($transaction, $order));
         $info->setImage($this->getPaymentMethodImage($transaction, $order));
         $info->setLabels($this->getTransactionLabels($transaction));
         if ($transaction->getState() == \Wallee\Sdk\Model\TransactionState::FAILED || $transaction->getState() == \Wallee\Sdk\Model\TransactionState::DECLINE) {
@@ -238,6 +239,27 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             return null;
         }
     }
+    
+    /**
+     * Returns the payment method's resource domain.
+     *
+     * @param \Wallee\Sdk\Model\Transaction $transaction
+     * @param Mage_Sales_Model_Order $order
+     * @return string
+     */
+    protected function getPaymentMethodResourceDomain(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    {
+        if ($transaction->getPaymentConnectorConfiguration() != null && $transaction->getPaymentConnectorConfiguration()->getPaymentMethodConfiguration() != null) {
+            return $this->getResourceDomain($transaction->getPaymentConnectorConfiguration()
+                ->getPaymentMethodConfiguration()
+                ->getResolvedImageUrl());
+        } else {
+            return $order->getPayment()
+            ->getMethodInstance()
+            ->getPaymentMethodConfiguration()
+            ->getResourceDomain();
+        }
+    }
 
     /**
      * Returns the payment method's image.
@@ -257,6 +279,21 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 ->getMethodInstance()
                 ->getPaymentMethodConfiguration()
                 ->getImage();
+        }
+    }
+    
+    /**
+     *
+     * @param string $resolvedImageUrl
+     * @return string
+     */
+    protected function getResourceDomain($resolvedImageUrl) {
+        $matches = array();
+        preg_match("/([a-z]+:\/\/[^\/]+\/)/", $resolvedImageUrl, $matches);
+        if (!empty($matches)) {
+            return $matches[0];
+        } else {
+            return null;
         }
     }
     

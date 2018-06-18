@@ -71,7 +71,7 @@ $labelsByGroup = $block->getGroupedChargeAttemptLabels();
             <tr>
             	<td class="label"></td>
             	<td class="value">
-					<img src="<?php echo $helper->getResourceUrl($transactionInfo->getImage(), $transactionInfo->getLanguage(), $transactionInfo->getSpaceId(), $transactionInfo->getSpaceViewId()) ?>" width="50" /><br/>
+					<img src="<?php echo $helper->getResourceUrl($transactionInfo->getResourceDomain(), $transactionInfo->getImage(), $transactionInfo->getLanguage(), $transactionInfo->getSpaceId(), $transactionInfo->getSpaceViewId()) ?>" width="50" /><br/>
     			</td>
             </tr>
         <?php endif; ?>
