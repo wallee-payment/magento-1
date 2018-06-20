@@ -272,6 +272,14 @@ table td[class*="col-"],table th[class*="col-"] {
   margin: 0;
 }
 
+.layout-title h2 {
+  font-size: 2rem;
+  font-weight: 200;
+  text-align: center;
+  color: #999;
+  margin-bottom: 0;
+}
+
 .layout-navigation .nav {
   padding: 1.875rem 0;
   border-bottom: 1px solid #f0f0f0;

@@ -4,15 +4,15 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<meta name="keywords" value="wallee, Magento 1, Magento Extension, Payment, Payment Integration, Documentation"><meta name="description" value="The documentation for the Magento extension that enables processing payments with wallee.">		<link rel="canonical" href="https://plugin-documentation.wallee.com/wallee-payment/magento/master/docs/en/documentation.html" />
-		<title>Magento Documentation</title>
-		<link href="assets/base.css" rel="stylesheet" /> 
+		<meta name="keywords" value="wallee, Magento 1, Magento Extension, Payment, Payment Integration, Documentation"><meta name="description" value="The documentation for the Magento extension that enables processing payments with wallee.">		<link rel="canonical" href="https://plugin-documentation.wallee.com/wallee-payment/magento-1/master/docs/en/documentation.html" />
+		<title>wallee Magento 1</title>
+		<link href="assets/base.css" rel="stylesheet" />
 	</head>
 	<body class="documentation">
 		<div class="layout-wrapper">
 							<div class="layout-title">
-					<h1>Magento Documentation</h1>
-				</div>
+					<h1>wallee Magento 1</h1>
+<h2>Documentation</h2>				</div>
 										<div class="layout-navigation">
 					<ul class="nav">
 	<li>
@@ -21,8 +21,8 @@
 		</a>
 	</li>
 	<li>
-		<a href="https://github.com/wallee-payment/magento/tree/1.0.14/">
-			Download
+		<a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.15/">
+			Source
 		</a>
 	</li>
 </ul>				</div>
@@ -37,21 +37,7 @@
 	</div>
 	<div class="chapter-body">
 					<div class="paragraph">
-<p>If you don&#8217;t already have one, create a <a href="https://www.wallee.com/">wallee</a> account and set up a space.</p>
-</div><div class="paragraph">
-<p>We recommend to use the wallee setup assistant for configuration. If you prefer to do the setup manually, follow these steps:</p>
-</div><div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create an application user that is allowed to access the space you want to link the Magento store to. Navigate to your wallee account &#8594; application user and create your application user. The user ID and the authentication key will be shown. Make sure to write this information down.</p>
-</li>
-<li>
-<p>Make sure that you grant the application user the necessary rights (Account Admin) in order for the Magento plugin to be able to set up the necessary webhooks, payment methods etc.</p>
-</li>
-<li>
-<p>Set up at least one processor, one payment method and a connector configuration. More Information about the processor concept can be found in the <a href="https://app-wallee.com/doc/payment/processor-concept">wallee documentation</a>.</p>
-</li>
-</ol>
+<p>If you don&#8217;t already have one, create a <a href="https://www.wallee.com/">wallee</a> account and set up a space by following the setup assistant.</p>
 </div><div class="paragraph">
 <p>If your are using Magento 1.6.x you need to install the <a href="https://github.com/customweb/magento-fix-1.6">Magento compatibility module</a>.</p>
 </div>					</div>
@@ -64,7 +50,10 @@
 					<div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Upload the extension files to your store&#8217;s root directory using FTP/SSH.</p>
+<p><a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.15/">Download</a> the extension.</p>
+</li>
+<li>
+<p>Extract the files and upload them to your store&#8217;s root directory using FTP/SSH.</p>
 </li>
 <li>
 <p>Login to the backend of your Magento store.</p>
@@ -87,24 +76,20 @@
 <ol class="arabic">
 <li>
 <p>Navigate to System &#8594; Configuration &#8594; wallee Payment in your Magento store&#8217;s backend and enter the wallee application user&#8217;s access information that you created before.</p>
-</li>
-</ol>
-</div><div class="imageblock">
+<div class="imageblock">
 <div class="content">
 <img src="resource/application-user-configuration.png" alt="application user configuration"/>
 </div>
-</div><div class="olist arabic">
-<ol class="arabic">
+</div>
+</li>
 <li>
 <p>You need to switch the configuration scope to <strong>Main Website</strong> to enter the space id.</p>
-</li>
-</ol>
-</div><div class="imageblock">
+<div class="imageblock">
 <div class="content">
 <img src="resource/space-configuration.png" alt="space configuration"/>
 </div>
-</div><div class="olist arabic">
-<ol class="arabic">
+</div>
+</li>
 <li>
 <p>After saving the configuration, the payment methods are created in the Magento store and the necessary webhooks are set up.</p>
 </li>
@@ -162,14 +147,14 @@
 			<span class="title-number">6</span>FAQ					</h1>
 	</div>
 	<div class="chapter-body">
-							<div class="section" id="_the_payment_methods_are_not_showing_up">
+							<div class="section" id="_how_can_i_make_the_payment_methods_appear_in_the_checkout">
 	<div class="section-title">
 		<h2>
-			<span class="title-number">6.1</span>The payment methods are not showing up.					</h2>
+			<span class="title-number">6.1</span>How can I make the payment methods appear in the checkout?					</h2>
 	</div>
 	<div class="section-body">
 					<div class="paragraph">
-<p>Make sure that you followed configuration step 2 by stating your wallee space ID in the Magento backend. By saving the configuration form the synchronization of the payment methods and the set up of the webhooks are initiated.</p>
+<p>Make sure that you followed the <a href="#_configuration">Configuration</a> section by stating your wallee space ID and application user&#8217;s access information in the Magento backend. By saving the configuration form the synchronization of the payment methods and the set up of the webhooks are initiated.</p>
 </div><div class="paragraph">
 <p>If this does not solve the problem, it could be that you use a special fee or coupon module that we do not support. Try to disable this plugin and see if it helps.
 The payment methods are only displayed if the plugin&#8217;s total calculation matches the actual order total.</p>
@@ -191,7 +176,7 @@ The payment methods are only displayed if the plugin&#8217;s total calculation m
 	</div>
 	<div class="chapter-body">
 					<div class="paragraph">
-<p>If you have questions use the support form in your space.</p>
+<p>If you need help, feel free to contact our <a href="https://app-wallee.com/space/select?target=/support">support</a>.</p>
 </div>					</div>
 </div>																			</div>
 															</div>
@@ -232,9 +217,9 @@ The payment methods are only displayed if the plugin&#8217;s total calculation m
 			</a>
         	<ul  class="nav">
     		    			<li class="nav-level-2">
-	<a href="#_the_payment_methods_are_not_showing_up">
+	<a href="#_how_can_i_make_the_payment_methods_appear_in_the_checkout">
 		<span class="item-number">6.1</span>
-		<span class="item-title">The payment methods are not showing up.</span>
+		<span class="item-title">How can I make the payment methods appear in the checkout?</span>
 			</a>
     </li>    		    			<li class="nav-level-2">
 	<a href="#_how_can_i_change_the_look_and_feel_payment_method_name_emails_etc">
@@ -252,7 +237,7 @@ The payment methods are only displayed if the plugin&#8217;s total calculation m
 	</div>
 				</div>
 					</div>
-		
+
 		<script type="text/javascript" src="assets/jquery.js"></script>
 		<script type="text/javascript" src="assets/scrollspy.js"></script>
 		<script type="text/javascript" src="assets/sticky-kit.js"></script>
