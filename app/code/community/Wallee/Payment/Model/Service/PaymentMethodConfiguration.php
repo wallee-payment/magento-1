@@ -46,10 +46,6 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
             return true;
         }
         
-        if ($this->getResourceDomain($configuration->getResolvedImageUrl()) != $model->getResourceDomain()) {
-            return true;
-        }
-
         if ($this->getImagePath($configuration->getResolvedImageUrl()) != $model->getImage()) {
             return true;
         }
@@ -102,7 +98,6 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
                     $method->setState($this->getConfigurationState($configuration));
                     $method->setTitle($configuration->getResolvedTitle());
                     $method->setDescription($configuration->getResolvedDescription());
-                    $method->setResourceDomain($this->getResourceDomain($configuration->getResolvedImageUrl()));
                     $method->setImage($this->getImagePath($configuration->getResolvedImageUrl()));
                     $method->setSortOrder($configuration->getSortOrder());
                     $method->save();
@@ -120,21 +115,6 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         }
 
         $this->createPaymentMethodModelClasses();
-    }
-    
-    /**
-     * 
-     * @param string $resolvedImageUrl
-     * @return string
-     */
-    protected function getResourceDomain($resolvedImageUrl) {
-        $matches = array();
-        preg_match("/([a-z]+:\/\/[^\/]+\/)/", $resolvedImageUrl, $matches);
-        if (!empty($matches)) {
-            return $matches[0];
-        } else {
-            return null;
-        }
     }
 
     /**

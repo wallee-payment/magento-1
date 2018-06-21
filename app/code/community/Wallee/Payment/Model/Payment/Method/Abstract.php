@@ -185,6 +185,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
 
         /* @var Mage_Sales_Model_Order $order */
         $order = $payment->getOrder();
+        $this->setCheckoutOrder($order);
 
         $order->setCanSendNewEmailFlag(false);
         $payment->setAmountAuthorized($order->getTotalDue());
@@ -193,9 +194,22 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         /* @var Mage_Sales_Model_Quote $quote */
         $quote = Mage::getModel('sales/quote')->setStore($order->getStore())
             ->load($order->getQuoteId());
+        $this->setCheckoutQuote($quote);
 
         $invoice = $this->createInvoice($quote->getWalleeSpaceId(), $quote->getWalleeTransactionId(), $order);
+        $this->setCheckoutInvoice($invoice);
 
+        $stateObject->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
+        $stateObject->setStatus('pending_payment');
+        $stateObject->setIsNotified(false);
+        
+        $order->getResource()->addCommitCallback(array($this, 'onOrderCreation'));
+    }
+    
+    public function onOrderCreation() {
+        $order = Mage::getModel('sales/order')->load($this->getCheckoutOrder()->getId());
+        $quote = $this->getCheckoutQuote();
+        
         $token = null;
         if (Mage::app()->getStore()->isAdmin()) {
             $tokenInfoId = $quote->getPayment()->getData('wallee_token');
@@ -206,27 +220,27 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                 $token->setId($tokenInfo->getTokenId());
             }
         }
-
+        
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transaction = $transactionService->confirmTransaction(
-            $quote->getWalleeTransactionId(), $quote->getWalleeSpaceId(), $order, $invoice, Mage::app()->getStore()
+            $quote->getWalleeTransactionId(), $quote->getWalleeSpaceId(), $order, $this->getCheckoutInvoice(), Mage::app()->getStore()
             ->isAdmin(), $token
-        );
+            );
         $transactionService->updateTransactionInfo($transaction, $order);
-
+        
+        $this->getCheckoutOrder()->setWalleeSpaceId($transaction->getLinkedSpaceId());
+        $this->getCheckoutOrder()->setWalleeTransactionId($transaction->getId());
         $order->setWalleeSpaceId($transaction->getLinkedSpaceId());
         $order->setWalleeTransactionId($transaction->getId());
-
-        $stateObject->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
-        $stateObject->setStatus('pending_payment');
-        $stateObject->setIsNotified(false);
-
+        
         if (Mage::app()->getStore()->isAdmin()) {
             // Set the selected token on the order and tell it to apply the charge flow after it is saved.
-            $order->setWalleeChargeFlow(true);
-            $order->setWalleeToken($token);
+            $this->getCheckoutOrder()->setWalleeChargeFlow(true);
+            $this->getCheckoutOrder()->setWalleeToken($token);
         }
+        
+        $order->save();
     }
 
     /**

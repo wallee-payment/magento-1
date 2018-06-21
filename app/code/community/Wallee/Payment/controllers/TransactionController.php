@@ -82,27 +82,31 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     public function failureAction()
     {
         $orderId = $this->getRequest()->getParam('order_id');
-        if (Mage::helper('wallee_payment')->hash($orderId) != $this->getRequest()->getParam('secret')) {
-            Mage::throwException('Invalid secret.');
+        if (empty($orderId)) {
+            $this->_redirectUrl($this->getFailureUrl());
+        } else {
+            if (Mage::helper('wallee_payment')->hash($orderId) != $this->getRequest()->getParam('secret')) {
+                Mage::throwException('Invalid secret.');
+            }
+    
+            /* @var Mage_Sales_Model_Order $order */
+            $order = Mage::getModel('sales/order')->load($orderId);
+            /* @var Wallee_Payment_Model_Payment_Method_Abstract $methodInstance */
+            $methodInstance = $order->getPayment()->getMethodInstance();
+            $methodInstance->fail($order);
+    
+            $this->_redirectUrl($this->getFailureUrl($order));
         }
-
-        /* @var Mage_Sales_Model_Order $order */
-        $order = Mage::getModel('sales/order')->load($orderId);
-        /* @var Wallee_Payment_Model_Payment_Method_Abstract $methodInstance */
-        $methodInstance = $order->getPayment()->getMethodInstance();
-        $methodInstance->fail($order);
-
-        $this->_redirectUrl($this->getFailureUrl($order));
     }
 
-    protected function getFailureUrl(Mage_Sales_Model_Order $order)
+    protected function getFailureUrl(Mage_Sales_Model_Order $order = null)
     {
         $result = new StdClass();
         $result->url = Mage::getUrl('checkout/cart');
         Mage::dispatchEvent(
             'wallee_payment_failure_url', array(
-            'result' => $result,
-            'order' => $order
+                'result' => $result,
+                'order' => $order
             )
         );
         return $result->url;

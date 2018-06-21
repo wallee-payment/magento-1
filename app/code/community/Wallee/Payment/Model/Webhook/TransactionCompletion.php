@@ -27,14 +27,6 @@ class Wallee_Payment_Model_Webhook_TransactionCompletion extends Wallee_Payment_
         return $completionService->read($request->getSpaceId(), $request->getEntityId());
     }
 
-    protected function getOrderIncrementId($completion)
-    {
-        /* @var \Wallee\Sdk\Model\TransactionCompletion $completion */
-        return $completion->getLineItemVersion()
-            ->getTransaction()
-            ->getMerchantReference();
-    }
-
     protected function getTransactionId($completion)
     {
         /* @var \Wallee\Sdk\Model\TransactionCompletion $completion */

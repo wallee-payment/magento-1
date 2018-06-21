@@ -27,13 +27,6 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
         return $deliveryIndicationService->read($request->getSpaceId(), $request->getEntityId());
     }
 
-    protected function getOrderIncrementId($deliveryIndication)
-    {
-        /* @var \Wallee\Sdk\Model\DeliveryIndication $deliveryIndication */
-        return $deliveryIndication->getTransaction()
-                ->getMerchantReference();
-    }
-
     protected function getTransactionId($deliveryIndication)
     {
         /* @var \Wallee\Sdk\Model\DeliveryIndication $deliveryIndication */
@@ -60,4 +53,5 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
             $order->save();
         }
     }
+
 }

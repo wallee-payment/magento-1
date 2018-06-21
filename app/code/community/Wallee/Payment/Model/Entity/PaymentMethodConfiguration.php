@@ -29,8 +29,6 @@
  * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setImage(string image)
  * @method int getSortOrder()
  * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setSortOrder(int sortOrder)
- * @method string getResourceDomain()
- * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setResourceDomain(string resourceDomain)
  */
 class Wallee_Payment_Model_Entity_PaymentMethodConfiguration extends Mage_Core_Model_Abstract
 {

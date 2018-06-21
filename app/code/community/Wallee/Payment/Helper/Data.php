@@ -61,20 +61,15 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
     /**
      * Returns the URL to a resource on wallee in the given context (space, space view, language).
      *
-     * @param string $domain
      * @param string $path
      * @param string $language
      * @param int $spaceId
      * @param int $spaceViewId
      * @return string
      */
-    public function getResourceUrl($domain, $path, $language = null, $spaceId = null, $spaceViewId = null)
+    public function getResourceUrl($path, $language = null, $spaceId = null, $spaceViewId = null)
     {
-        if (!empty($domain)) {
-            $url = rtrim($domain, '/');
-        } else {
-            $url = rtrim($this->getBaseGatewayUrl(), '/');
-        }
+        $url = rtrim($this->getBaseGatewayUrl(), '/');
         if (! empty($language)) {
             $url .= '/' . str_replace('_', '-', $language);
         }

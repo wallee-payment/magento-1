@@ -41,8 +41,6 @@
  * @method int getOrderId()
  * @method Wallee_Payment_Model_Entity_TransactionInfo setOrderId(int orderId)
  * @method Wallee_Payment_Model_Entity_TransactionInfo setFailureReason(string failureReason)
- * @method string getResourceDomain()
- * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setResourceDomain(string resourceDomain)
  */
 class Wallee_Payment_Model_Entity_TransactionInfo extends Mage_Core_Model_Abstract
 {

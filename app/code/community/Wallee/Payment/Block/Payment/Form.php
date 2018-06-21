@@ -37,7 +37,6 @@ class Wallee_Payment_Block_Payment_Form extends Mage_Payment_Block_Form
         /* @var Wallee_Payment_Helper_Data $helper */
         $helper = $this->helper('wallee_payment');
         return $helper->getResourceUrl($methodInstance->getPaymentMethodConfiguration()
-            ->getResourceDomain(), $methodInstance->getPaymentMethodConfiguration()
             ->getImage(), $language, $spaceId, $spaceViewId);
     }
 

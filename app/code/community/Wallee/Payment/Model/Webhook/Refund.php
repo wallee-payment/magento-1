@@ -27,12 +27,6 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         return $refundService->read($request->getSpaceId(), $request->getEntityId());
     }
 
-    protected function getOrderIncrementId($refund)
-    {
-        /* @var \Wallee\Sdk\Model\Refund $refund */
-        return $refund->getTransaction()->getMerchantReference();
-    }
-
     protected function getTransactionId($refund)
     {
         /* @var \Wallee\Sdk\Model\Refund $refund */
