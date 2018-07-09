@@ -104,7 +104,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
                     $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
                     $reduction->setLineItemUniqueId($lineItem->getUniqueId());
                     $reduction->setQuantityReduction(0);
-                    $reduction->setUnitPriceReduction($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity());
+                    $reduction->setUnitPriceReduction($this->roundAmount($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity(), $creditmemo->getOrderCurrencyCode()));
                     $fixedReductions[] = $reduction;
                 }
             }
