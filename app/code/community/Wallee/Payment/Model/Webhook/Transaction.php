@@ -102,13 +102,17 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
     protected function failed(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
-        if ($invoice) {
+        if ($invoice && $invoice->canCancel()) {
             $order->setWalleePaymentInvoiceAllowManipulation(true);
             $invoice->cancel();
             $order->addRelatedObject($invoice);
         }
 
-        $order->registerCancellation(null, false)->save();
+        if (!$order->isCanceled()) {
+            $order->registerCancellation(null, false)->save();
+        } else {
+            Mage::log('Tried to cancel the order ' . $order->getIncrementId() . ' but it was already cancelled.', null, 'wallee.log');
+        }
     }
 
     protected function fulfill(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
@@ -127,7 +131,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
     {
         $order->getPayment()->registerVoidNotification();
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
-        if ($invoice) {
+        if ($invoice && $invoice->canCancel()) {
             $order->setWalleePaymentInvoiceAllowManipulation(true);
             $invoice->cancel();
             $order->addRelatedObject($invoice);
