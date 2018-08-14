@@ -263,6 +263,11 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
                     if ($reduction->getQuantityReduction() > 0) {
                         $refundQuantities[$orderItemMap[$reduction->getLineItemUniqueId()]->getId()] = $reduction->getQuantityReduction();
                         $creditmemoAmount += $reduction->getQuantityReduction() * $orderItemMap[$reduction->getLineItemUniqueId()]->getPriceInclTax();
+                        
+                        $discount = $this->findProductDiscount($refund->getTransaction()->getLineItems(), $reduction->getLineItemUniqueId());
+                        if ($discount != null) {
+                            $creditmemoAmount += $discount->getAmountIncludingTax();
+                        }
                     }
                     break;
                 case \Wallee\Sdk\Model\LineItemType::FEE:
@@ -300,6 +305,20 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             'adjustment_positive' => $positiveAdjustment,
             'adjustment_negative' => $negativeAdjustment
         );
+    }
+    
+    /**
+     * 
+     * @param \Wallee\Sdk\Model\LineItem[] $lineItems
+     * @param string $productId
+     */
+    protected function findProductDiscount(array $lineItems, $productId) {
+        foreach ($lineItems as $lineItem) {
+            if ($lineItem->getUniqueId() == $productId . '-discount') {
+                return $lineItem;
+            }
+        }
+        return null;
     }
 
     /**
