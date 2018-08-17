@@ -21,7 +21,7 @@ class Wallee_Payment_Block_Payment_Form extends Mage_Payment_Block_Form
         parent::_construct();
         $this->setTemplate('wallee/payment/form.phtml');
     }
-
+    
     /**
      * Returns the URL to the payment method image.
      *

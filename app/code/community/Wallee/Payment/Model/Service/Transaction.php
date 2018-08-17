@@ -89,6 +89,18 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $transaction = $this->getTransactionByQuote($quote);
         return $this->getTransactionService()->buildJavaScriptUrl($transaction->getLinkedSpaceId(), $transaction->getId());
     }
+    
+    /**
+     * Returns the URL to wallee's payment page.
+     *
+     * @param Mage_Sales_Model_Quote $quote
+     * @return string
+     */
+    public function getPaymentPageUrl(Mage_Sales_Model_Quote $quote)
+    {
+        $transaction = $this->getTransactionByQuote($quote);
+        return $this->getTransactionService()->buildPaymentPageUrl($transaction->getLinkedSpaceId(), $transaction->getId());
+    }
 
     /**
      * Returns the transaction with the given id.

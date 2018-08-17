@@ -14,8 +14,15 @@
 $block = $this;
 
 $javaScriptUrl = $block->getJavaScriptUrl();
+$paymentPageUrl = $block->getPaymentPageUrl();
 ?>
 
 <?php if ($javaScriptUrl) : ?>
     <script type="text/javascript" src="<?php echo $javaScriptUrl ?>"></script>
+<?php endif; ?>
+
+<?php if ($paymentPageUrl) : ?>
+	<script type="text/javascript">
+        MageWallee.Checkout.paymentPageUrl = '<?php echo $paymentPageUrl ?>';
+    </script>
 <?php endif; ?>
