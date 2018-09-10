@@ -30,7 +30,7 @@
 					<show_in_default>1</show_in_default>
 					<show_in_website>1</show_in_website>
 					<show_in_store>1</show_in_store>
-					<comment><![CDATA[If you need help setting up the wallee extension, check out the <a href="https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.0.22/docs/en/documentation.html" target="_blank">documentation</a>.]]></comment>
+					<comment><![CDATA[If you need help setting up the wallee extension, check out the <a href="https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.0.23/docs/en/documentation.html" target="_blank">documentation</a>.]]></comment>
 					<fields>
 						<version translate="label">
 							<label>Module Version</label>
@@ -78,7 +78,8 @@
 						</api_user_id>
 						<api_user_secret translate="label">
 							<label>Authentication Key</label>
-							<frontend_type>password</frontend_type>
+							<frontend_type>obscure</frontend_type>
+							<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
 							<sort_order>20</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
@@ -107,6 +108,7 @@
 							<show_in_default>0</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+							<comment>The Space View Id allows to control the styling of the payment form and the payment page. It allows in multistore setups to adapt the payment form to different styling per substore without requiring a dedicated space.</comment>
 						</space_view_id>
 					</fields>
 				</general>

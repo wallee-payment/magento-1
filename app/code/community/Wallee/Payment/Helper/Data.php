@@ -39,7 +39,10 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
     {
         if ($this->apiClient == null || ! $singleton) {
             $userId = Mage::getStoreConfig('wallee_payment/general/api_user_id');
-            $applicationKey = Mage::getStoreConfig('wallee_payment/general/api_user_secret');
+            $plainApplicationKey = Mage::getStoreConfig('wallee_payment/general/api_user_secret');
+            $helper = Mage::helper('core');
+            /* @var Mage_Core_Helper_Data $helper */
+            $applicationKey = $helper->decrypt($plainApplicationKey);
             if ($userId && $applicationKey) {
                 $client = new \Wallee\Sdk\ApiClient($userId, $applicationKey);
                 $client->setBasePath($this->getBaseGatewayUrl() . '/api');
