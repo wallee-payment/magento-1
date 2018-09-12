@@ -48,7 +48,9 @@ MageWallee.Checkout.Type.AWOneStepCheckout = Class.create(
 				}.bind(this),
 				function() {
 					this.hideLoader('payment_method');
-				}.bind(this)
+				}.bind(this),
+				function() {},
+				function() {}
 			);
 		},
 

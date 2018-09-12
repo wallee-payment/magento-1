@@ -43,6 +43,8 @@ MageWallee.Checkout.Type.IWDCheckoutSuite = Class.create(
 						this.createOrder();
 					}
 				}.bind(this),
+				function() {},
+				function() {},
 				function() {}
 			);
 		},

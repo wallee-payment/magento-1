@@ -35,9 +35,29 @@ MageWallee.Checkout.Type.TMFireCheckout = Class.create(
 				}.bind(this),
 				function() {
 					checkout.setLoadWaiting(false);
-				}
+				},
+				function(){
+					var container = $('review-buttons-container');
+					ontainer.removeClassName('disabled');
+		            container.setStyle({opacity:1});
+		            this._disableEnableAll(container, false);
+				}.bind(this),
+				function(){
+					var container = $('review-buttons-container');
+					container.addClassName('disabled');
+		            container.setStyle({opacity:0.5});
+		            this._disableEnableAll(container, true);
+				}.bind(this)
 			);
 		},
+		
+		_disableEnableAll: function(element, isDisabled) {
+	        var descendants = element.descendants();
+	        for (var k in descendants) {
+	            descendants[k].disabled = isDisabled;
+	        }
+	        element.disabled = isDisabled;
+	    },
 
 		validate: function(callOriginal) {
 			var result = callOriginal();

@@ -38,7 +38,7 @@ MageWallee.Checkout.Type = Class.create({
 		return MageWallee.Checkout.paymentMethods[code];
 	},
 
-	createHandler: function(code, onStart, onValidation, onDone) {
+	createHandler: function(code, onStart, onValidation, onDone, onEnableSubmit, onDisableSubmit) {
 		if (typeof window.IframeCheckoutHandler == 'undefined') {
 			return;
 		}
@@ -49,6 +49,8 @@ MageWallee.Checkout.Type = Class.create({
 			}
 
 			this.getPaymentMethod(code).handler = window.IframeCheckoutHandler(this.getPaymentMethod(code).configurationId);
+			this.getPaymentMethod(code).handler.setEnableSubmitCallback(onEnableSubmit);
+			this.getPaymentMethod(code).handler.setDisableSubmitCallback(onDisableSubmit);
 			this.getPaymentMethod(code).handler.create(
 				this.getPaymentMethod(code).container,
 				function(validationResult) {

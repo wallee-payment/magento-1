@@ -65,6 +65,12 @@ MageWallee.Checkout.Type.GoMageLightCheckout = Class.create(
 					}.bind(this),
 					function() {
 						this.enableSubmitButton();
+					}.bind(this),
+					function() {
+						this.enableSubmitButton();
+					}.bind(this),
+					function() {
+						this.disableSubmitButton();
 					}.bind(this)
 				);
 			}

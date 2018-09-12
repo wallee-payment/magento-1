@@ -52,6 +52,12 @@ MageWallee.Checkout.Type.IdevOneStepCheckout = Class.create(
 				}.bind(this),
 				function() {
 					this.enableSubmitButton();
+				}.bind(this),
+				function() {
+					this.enableSubmitButton();
+				}.bind(this),
+				function() {
+					this.disableSubmitButton();
 				}.bind(this)
 			);
 		},

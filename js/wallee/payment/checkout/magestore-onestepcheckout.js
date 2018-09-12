@@ -29,9 +29,11 @@ MageWallee.Checkout.Type.MageStoreOneStepCheckout = Class.create(
 			);
 		},
 
-		disableSubmitButton: function() {
+		disableSubmitButton: function(showLoader) {
 			$('onestepcheckout-button-place-order').removeClassName('onestepcheckout-btn-checkout');
-			$('onestepcheckout-button-place-order').addClassName('place-order-loader');
+			if (showLoader) {
+				$('onestepcheckout-button-place-order').addClassName('place-order-loader');
+			}
 			$('onestepcheckout-button-place-order').disabled = true;
 		},
 
@@ -68,7 +70,13 @@ MageWallee.Checkout.Type.MageStoreOneStepCheckout = Class.create(
 					}.bind(this),
 					function() {
 						paymentShow();
-					}
+					},
+					function() {
+						this.enableSubmitButton();
+					}.bind(this),
+					function() {
+						this.disableSubmitButton(false);
+					}.bind(this)
 				);
 			}
 		},
@@ -78,7 +86,7 @@ MageWallee.Checkout.Type.MageStoreOneStepCheckout = Class.create(
 		 */
 		validate: function(callOriginal, form) {
 			if (form.identify() == 'one-step-checkout-form' && this.isSupportedPaymentMethod(this.getPaymentMethodCode()) && this.getPaymentMethod(this.getPaymentMethodCode()).handler) {
-				this.disableSubmitButton();
+				this.disableSubmitButton(true);
 				this.getPaymentMethod(this.getPaymentMethodCode()).handler.validate();
 				return false;
 			}

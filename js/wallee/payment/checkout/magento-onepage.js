@@ -38,9 +38,29 @@ MageWallee.Checkout.Type.MagentoOnePage = Class.create(
 				}.bind(this),
 				function() {
 					checkout.setLoadWaiting(false);
-				}
+				},
+				function(){
+					var container = $('payment-buttons-container');
+					container.removeClassName('disabled');
+                    container.setStyle({opacity:1});
+                    this._disableEnableAll(container, false);
+				}.bind(this),
+				function(){
+					var container = $('payment-buttons-container');
+		            container.addClassName('disabled');
+		            container.setStyle({opacity:.5});
+		            this._disableEnableAll(container, true);
+				}.bind(this)
 			);
 		},
+		
+		_disableEnableAll: function(element, isDisabled) {
+	        var descendants = element.descendants();
+	        for (var k in descendants) {
+	            descendants[k].disabled = isDisabled;
+	        }
+	        element.disabled = isDisabled;
+	    },
 
 		/**
 		 * Validates the payment information when the customer saves the payment method.
