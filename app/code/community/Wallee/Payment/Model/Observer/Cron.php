@@ -31,9 +31,16 @@ class Wallee_Payment_Model_Observer_Cron
             /* @var Wallee_Payment_Model_Entity_RefundJob $refundJob */
             try {
                 $refundService->refund($refundJob->getSpaceId(), $refundJob->getRefund());
+            } catch (\Wallee\Sdk\ApiException $e) {
+                if ($e->getResponseObject() instanceof \Wallee\Sdk\Model\ClientError) {
+                    $refundJob->delete();
+                } else {
+                    Mage::logException($e);
+                }
             } catch (Exception $e) {
                 Mage::logException($e);
             }
         }
     }
+    
 }
