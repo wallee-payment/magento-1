@@ -291,7 +291,13 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     {
         if (! isset(self::$possiblePaymentMethodCache[$quote->getId()]) || self::$possiblePaymentMethodCache[$quote->getId()] == null) {
             $transaction = $this->getTransactionByQuote($quote);
-            $paymentMethods = $this->getTransactionService()->fetchPossiblePaymentMethods($transaction->getLinkedSpaceId(), $transaction->getId());
+            
+            try {
+                $paymentMethods = $this->getTransactionService()->fetchPossiblePaymentMethods($transaction->getLinkedSpaceId(), $transaction->getId());
+            } catch (\WhitelabelMachineName\Sdk\ApiException $e) {
+                self::$possiblePaymentMethodCache[$quote->getId()] = [];
+                throw $e;
+            }
 
             /* @var Wallee_Payment_Model_Service_PaymentMethodConfiguration $paymentMethodConfigurationService */
             $paymentMethodConfigurationService = Mage::getSingleton('wallee_payment/service_paymentMethodConfiguration');
