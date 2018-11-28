@@ -24,7 +24,8 @@ MageWallee.Checkout = {
 		this.paymentMethods[code] = {
 			configurationId: configurationId,
 			container: container,
-			handler: null
+			handler: null,
+			submitDisabled: false
 		};
 	}
 };
@@ -49,8 +50,14 @@ MageWallee.Checkout.Type = Class.create({
 			}
 
 			this.getPaymentMethod(code).handler = window.IframeCheckoutHandler(this.getPaymentMethod(code).configurationId);
-			this.getPaymentMethod(code).handler.setEnableSubmitCallback(onEnableSubmit);
-			this.getPaymentMethod(code).handler.setDisableSubmitCallback(onDisableSubmit);
+			this.getPaymentMethod(code).handler.setEnableSubmitCallback(function(){
+				this.getPaymentMethod(code).submitDisabled = false;
+				onEnableSubmit();
+			}.bind(this));
+			this.getPaymentMethod(code).handler.setDisableSubmitCallback(function(){
+				this.getPaymentMethod(code).submitDisabled = true;
+				onDisableSubmit();
+			}.bind(this));
 			this.getPaymentMethod(code).handler.create(
 				this.getPaymentMethod(code).container,
 				function(validationResult) {
@@ -64,6 +71,14 @@ MageWallee.Checkout.Type = Class.create({
 					}
 				}
 			);
+		} else if (this.isSupportedPaymentMethod(code)) {
+			if (this.getPaymentMethod(code).submitDisabled) {
+				onDisableSubmit();
+			} else {
+				onEnableSubmit();
+			}
+		} else {
+			onEnableSubmit();
 		}
 	},
 
