@@ -56,6 +56,9 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
 
     protected function refunded(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
     {
+        if ($order->getWalleeCanceled()) {
+            return;
+        }
 
         /* @var Mage_Sales_Model_Order_Creditmemo $existingCreditmemo */
         $existingCreditmemo = Mage::getModel('sales/order_creditmemo')->load($refund->getExternalId(), 'wallee_external_id');

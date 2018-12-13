@@ -48,6 +48,7 @@ class TransactionInvoice extends TransactionAwareEntity  {
 	 */
 	private static $swaggerTypes = array(
 		'amount' => 'float',
+		'billingAddress' => '\Wallee\Sdk\Model\Address',
 		'completion' => '\Wallee\Sdk\Model\TransactionCompletion',
 		'createdOn' => '\DateTime',
 		'derecognizedOn' => '\DateTime',
@@ -86,6 +87,13 @@ class TransactionInvoice extends TransactionAwareEntity  {
 	/**
 	 * 
 	 *
+	 * @var \Wallee\Sdk\Model\Address
+	 */
+	private $billingAddress;
+
+	/**
+	 * 
+	 *
 	 * @var \Wallee\Sdk\Model\TransactionCompletion
 	 */
 	private $completion;
@@ -119,7 +127,7 @@ class TransactionInvoice extends TransactionAwareEntity  {
 	private $environment;
 
 	/**
-	 * 
+	 * The external id helps to identify the entity and a subsequent creation of an entity with the same ID will not create a new entity.
 	 *
 	 * @var string
 	 */
@@ -204,6 +212,9 @@ class TransactionInvoice extends TransactionAwareEntity  {
 	public function __construct(array $data = null) {
 		parent::__construct($data);
 
+		if (isset($data['billingAddress'])) {
+			$this->setBillingAddress($data['billingAddress']);
+		}
 		if (isset($data['completion'])) {
 			$this->setCompletion($data['completion']);
 		}
@@ -238,6 +249,29 @@ class TransactionInvoice extends TransactionAwareEntity  {
 	 */
 	protected function setAmount($amount) {
 		$this->amount = $amount;
+
+		return $this;
+	}
+
+	/**
+	 * Returns billingAddress.
+	 *
+	 * 
+	 *
+	 * @return \Wallee\Sdk\Model\Address
+	 */
+	public function getBillingAddress() {
+		return $this->billingAddress;
+	}
+
+	/**
+	 * Sets billingAddress.
+	 *
+	 * @param \Wallee\Sdk\Model\Address $billingAddress
+	 * @return TransactionInvoice
+	 */
+	public function setBillingAddress($billingAddress) {
+		$this->billingAddress = $billingAddress;
 
 		return $this;
 	}
@@ -360,7 +394,7 @@ class TransactionInvoice extends TransactionAwareEntity  {
 	/**
 	 * Returns externalId.
 	 *
-	 * 
+	 * The external id helps to identify the entity and a subsequent creation of an entity with the same ID will not create a new entity.
 	 *
 	 * @return string
 	 */

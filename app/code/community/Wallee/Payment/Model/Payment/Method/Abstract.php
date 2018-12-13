@@ -1,5 +1,7 @@
 <?php
 
+use Wallee\Sdk\Model\TransactionState;
+
 /**
  * wallee Magento 1
  *
@@ -79,6 +81,24 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         }
 
         return $this->_paymentMethodConfiguration;
+    }
+    
+    public function canVoid(Varien_Object $payment)
+    {
+        if (! parent::canVoid($payment)) {
+            return false;
+        }
+        
+        /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
+        $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
+        try {
+            $transaction = $transactionService->getTransaction($payment->getOrder()->getWalleeSpaceId(), $payment->getOrder()->getWalleeTransactionId());
+            if ($transaction instanceof \Wallee\Sdk\Model\Transaction) {
+                return $transaction->getState() == TransactionState::AUTHORIZED;
+            }
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function canRefund()
@@ -309,7 +329,25 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
     public function cancel(Varien_Object $payment)
     {
         parent::cancel($payment);
-        $this->voidOnline($payment);
+        
+        $order = $payment->getOrder();
+        
+        /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
+        $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
+        try {
+            $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
+            if (!($transaction instanceof \Wallee\Sdk\Model\Transaction)) {
+                Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
+            }
+        } catch (Exception $e) {
+            Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
+        }
+        
+        if ($transaction->getState() == TransactionState::AUTHORIZED) {
+            $this->voidOnline($payment);
+        } else {
+            $this->refundCancelledOrder($payment);
+        }
         return $this;
     }
 
@@ -327,6 +365,52 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
             Mage::throwException($this->getHelper()->__('The void of the payment failed on the gateway.'));
         }
     }
+    
+    /**
+     * Refunds the transaction online in case the order has been cancelled.
+     *
+     * @param Varien_Object $payment
+     * @throws Mage_Core_Exception
+     */
+    private function refundCancelledOrder(Varien_Object $payment)
+    {
+        $order = $payment->getOrder();
+        
+        $this->checkExistingRefundJob($order);
+        
+        /* @var Wallee_Payment_Model_Service_Refund $refundService */
+        $refundService = Mage::getSingleton('wallee_payment/service_refund');
+        $refund = $refundService->createForPayment($payment);
+        
+        $refundJob = $this->createRefundJob($order, $refund);
+        
+        try {
+            $refund = $refundService->refund($refundJob->getSpaceId(), $refund);
+        } catch (\Wallee\Sdk\ApiException $e) {
+            if ($e->getResponseObject() instanceof \Wallee\Sdk\Model\ClientError) {
+                $refundJob->delete();
+                Mage::throwException($e->getResponseObject()->getMessage());
+            } else {
+                Mage::throwException($this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
+            }
+        } catch (Exception $e) {
+            Mage::throwException($this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
+        }
+        
+        if ($refund->getState() == \Wallee\Sdk\Model\RefundState::FAILED) {
+            $refundJob->delete();
+            Mage::throwException(
+                $this->getHelper()->translate(
+                    $refund->getFailureReason()
+                    ->getDescription()
+                    )
+                );
+        } elseif ($refund->getState() == \Wallee\Sdk\Model\RefundState::PENDING) {
+            Mage::throwException($this->getHelper()->__('The refund was requested successfully, but is still pending on the gateway.'));
+        }
+        
+        $refundJob->delete();
+    }
 
     /**
      * Captures the payment with the given amount.
@@ -343,11 +427,26 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         if ($invoice->getWalleeCapturePending()) {
             Mage::throwException($this->getHelper()->__('The capture has already been requested but could not be completed yet. The invoice will be updated, as soon as the capture is done.'));
         }
-
-        if ($invoice->getId()) {
-            $this->complete($payment, $invoice, $amount);
+        
+        /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
+        $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
+        try {
+            $transaction = $transactionService->getTransaction($payment->getOrder()->getWalleeSpaceId(), $payment->getOrder()->getWalleeTransactionId());
+            if (!($transaction instanceof \Wallee\Sdk\Model\Transaction)) {
+                Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
+            }
+        } catch (Exception $e) {
+            Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
+        }
+        
+        if ($transaction->getState() == TransactionState::AUTHORIZED) {
+            if ($invoice->getId()) {
+                $this->complete($payment, $invoice, $amount);
+            } else {
+                $invoice->setWalleePaymentNeedsCapture(true);
+            }
         } else {
-            $invoice->setWalleePaymentNeedsCapture(true);
+            Mage::throwException($this->getHelper()->__('The invoice cannot be captured manually.'));
         }
 
         return $this;

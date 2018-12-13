@@ -24,20 +24,18 @@ namespace Wallee\Sdk\Model;
 
 
 /**
- * TokenizationnMode model
+ * PaymentLinkProtectionMode model
  *
  * @category    Class
- * @description The tokenization mode controls how the tokenization of payment information is applied on the transaction.
+ * @description 
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  */
-class TokenizationnMode implements IEnum {
+class PaymentLinkProtectionMode implements IEnum {
 
-	const FORCE_UPDATE = 'FORCE_UPDATE';
-	const FORCE_CREATION = 'FORCE_CREATION';
-	const FORCE_CREATION_WITH_ONE_CLICK_PAYMENT = 'FORCE_CREATION_WITH_ONE_CLICK_PAYMENT';
-	const ALLOW_ONE_CLICK_PAYMENT = 'ALLOW_ONE_CLICK_PAYMENT';
+	const NO_PROTECTION = 'NO_PROTECTION';
+	const ACCESS_KEY = 'ACCESS_KEY';
 	
 
 	

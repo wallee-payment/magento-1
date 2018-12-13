@@ -48,7 +48,8 @@ class PaymentLinkCreate extends AbstractPaymentLinkUpdate  {
 	 */
 	private static $swaggerTypes = array(
 		'state' => '\Wallee\Sdk\Model\CreationEntityState',
-		'externalId' => 'string'	);
+		'externalId' => 'string',
+		'protectionMode' => '\Wallee\Sdk\Model\PaymentLinkProtectionMode'	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -75,6 +76,13 @@ class PaymentLinkCreate extends AbstractPaymentLinkUpdate  {
 	 */
 	private $externalId;
 
+	/**
+	 * The protection mode determines if the payment link is protected against tampering and in what way.
+	 *
+	 * @var \Wallee\Sdk\Model\PaymentLinkProtectionMode
+	 */
+	private $protectionMode;
+
 
 	/**
 	 * Constructor.
@@ -89,6 +97,9 @@ class PaymentLinkCreate extends AbstractPaymentLinkUpdate  {
 		}
 		if (isset($data['externalId'])) {
 			$this->setExternalId($data['externalId']);
+		}
+		if (isset($data['protectionMode'])) {
+			$this->setProtectionMode($data['protectionMode']);
 		}
 	}
 
@@ -135,6 +146,29 @@ class PaymentLinkCreate extends AbstractPaymentLinkUpdate  {
 	 */
 	public function setExternalId($externalId) {
 		$this->externalId = $externalId;
+
+		return $this;
+	}
+
+	/**
+	 * Returns protectionMode.
+	 *
+	 * The protection mode determines if the payment link is protected against tampering and in what way.
+	 *
+	 * @return \Wallee\Sdk\Model\PaymentLinkProtectionMode
+	 */
+	public function getProtectionMode() {
+		return $this->protectionMode;
+	}
+
+	/**
+	 * Sets protectionMode.
+	 *
+	 * @param \Wallee\Sdk\Model\PaymentLinkProtectionMode $protectionMode
+	 * @return PaymentLinkCreate
+	 */
+	public function setProtectionMode($protectionMode) {
+		$this->protectionMode = $protectionMode;
 
 		return $this;
 	}

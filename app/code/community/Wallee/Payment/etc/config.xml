@@ -13,7 +13,7 @@
 <config>
 	<modules>
 		<Wallee_Payment>
-			<version>1.0.28</version>
+			<version>1.0.29</version>
 		</Wallee_Payment>
 	</modules>
 	<global>
@@ -132,6 +132,15 @@
 					</wallee_payment_payment_capture>
 				</observers>
 			</sales_order_payment_capture>
+			<sales_order_payment_cancel>
+				<observers>
+					<wallee_payment_payment_capture>
+						<type>singleton</type>
+						<class>wallee_payment/observer_payment</class>
+						<method>cancelPayment</method>
+					</wallee_payment_payment_capture>
+				</observers>
+			</sales_order_payment_cancel>
 			<sales_model_service_quote_submit_success>
 				<observers>
 					<wallee_payment_quote_submit_success>
@@ -330,8 +339,8 @@
 	<default>
 		<wallee_payment>
 			<information>
-				<version>1.0.28</version>
-				<sdk_version>1.1.7</sdk_version>
+				<version>1.0.29</version>
+				<sdk_version>1.1.12</sdk_version>
 			</information>
 			<general>
 				<base_gateway_url>https://app-wallee.com/</base_gateway_url>

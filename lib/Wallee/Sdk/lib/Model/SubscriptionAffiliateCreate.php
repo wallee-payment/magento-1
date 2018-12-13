@@ -24,21 +24,22 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * AbstractApplicationUserUpdate model
+ * SubscriptionAffiliateCreate model
  *
  * @category    Class
+ * @description 
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  */
-class AbstractApplicationUserUpdate  {
+class SubscriptionAffiliateCreate extends AbstractSubscriptionAffiliateUpdate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'Abstract.ApplicationUser.Update';
+	private static $swaggerModelName = 'SubscriptionAffiliate.Create';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -46,9 +47,9 @@ class AbstractApplicationUserUpdate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'name' => 'string',
-		'requestLimit' => 'int',
-		'state' => '\Wallee\Sdk\Model\CreationEntityState'	);
+		'externalId' => 'string',
+		'reference' => 'string',
+	);
 
 	/**
 	 * Returns an array of property to type mappings.
@@ -56,31 +57,24 @@ class AbstractApplicationUserUpdate  {
 	 * @return string[]
 	 */
 	public static function swaggerTypes() {
-		return self::$swaggerTypes;
+		return self::$swaggerTypes + parent::swaggerTypes();
 	}
 
 	
 
 	/**
-	 * The user name is used to identify the application user in administrative interfaces.
+	 * The external id helps to identify the entity and a subsequent creation of an entity with the same ID will not create a new entity.
 	 *
 	 * @var string
 	 */
-	private $name;
-
-	/**
-	 * The request limit defines the maximum number of API request accepted within 2 minutes. This limit can only be changed with special privileges.
-	 *
-	 * @var int
-	 */
-	private $requestLimit;
+	private $externalId;
 
 	/**
 	 * 
 	 *
-	 * @var \Wallee\Sdk\Model\CreationEntityState
+	 * @var string
 	 */
-	private $state;
+	private $reference;
 
 
 	/**
@@ -89,11 +83,13 @@ class AbstractApplicationUserUpdate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
-		if (isset($data['name'])) {
-			$this->setName($data['name']);
+		parent::__construct($data);
+
+		if (isset($data['externalId'])) {
+			$this->setExternalId($data['externalId']);
 		}
-		if (isset($data['requestLimit'])) {
-			$this->setRequestLimit($data['requestLimit']);
+		if (isset($data['reference'])) {
+			$this->setReference($data['reference']);
 		}
 		if (isset($data['state'])) {
 			$this->setState($data['state']);
@@ -102,47 +98,47 @@ class AbstractApplicationUserUpdate  {
 
 
 	/**
-	 * Returns name.
+	 * Returns externalId.
 	 *
-	 * The user name is used to identify the application user in administrative interfaces.
+	 * The external id helps to identify the entity and a subsequent creation of an entity with the same ID will not create a new entity.
 	 *
 	 * @return string
 	 */
-	public function getName() {
-		return $this->name;
+	public function getExternalId() {
+		return $this->externalId;
 	}
 
 	/**
-	 * Sets name.
+	 * Sets externalId.
 	 *
-	 * @param string $name
-	 * @return AbstractApplicationUserUpdate
+	 * @param string $externalId
+	 * @return SubscriptionAffiliateCreate
 	 */
-	public function setName($name) {
-		$this->name = $name;
+	public function setExternalId($externalId) {
+		$this->externalId = $externalId;
 
 		return $this;
 	}
 
 	/**
-	 * Returns requestLimit.
+	 * Returns reference.
 	 *
-	 * The request limit defines the maximum number of API request accepted within 2 minutes. This limit can only be changed with special privileges.
+	 * 
 	 *
-	 * @return int
+	 * @return string
 	 */
-	public function getRequestLimit() {
-		return $this->requestLimit;
+	public function getReference() {
+		return $this->reference;
 	}
 
 	/**
-	 * Sets requestLimit.
+	 * Sets reference.
 	 *
-	 * @param int $requestLimit
-	 * @return AbstractApplicationUserUpdate
+	 * @param string $reference
+	 * @return SubscriptionAffiliateCreate
 	 */
-	public function setRequestLimit($requestLimit) {
-		$this->requestLimit = $requestLimit;
+	public function setReference($reference) {
+		$this->reference = $reference;
 
 		return $this;
 	}
@@ -155,19 +151,17 @@ class AbstractApplicationUserUpdate  {
 	 * @return \Wallee\Sdk\Model\CreationEntityState
 	 */
 	public function getState() {
-		return $this->state;
+		return parent::getState();
 	}
 
 	/**
 	 * Sets state.
 	 *
 	 * @param \Wallee\Sdk\Model\CreationEntityState $state
-	 * @return AbstractApplicationUserUpdate
+	 * @return SubscriptionAffiliateCreate
 	 */
 	public function setState($state) {
-		$this->state = $state;
-
-		return $this;
+		return parent::setState($state);
 	}
 
 	/**
@@ -176,7 +170,11 @@ class AbstractApplicationUserUpdate  {
 	 * @throws ValidationException
 	 */
 	public function validate() {
+		parent::validate();
 
+		if ($this->getExternalId() === null) {
+			throw new ValidationException("'externalId' can't be null", 'externalId', $this);
+		}
 	}
 
 	/**

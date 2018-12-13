@@ -24,21 +24,21 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * AbstractApplicationUserUpdate model
+ * AbstractSubscriptionAffiliateUpdate model
  *
  * @category    Class
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  */
-class AbstractApplicationUserUpdate  {
+class AbstractSubscriptionAffiliateUpdate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'Abstract.ApplicationUser.Update';
+	private static $swaggerModelName = 'Abstract.SubscriptionAffiliate.Update';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -46,8 +46,9 @@ class AbstractApplicationUserUpdate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
+		'language' => 'string',
+		'metaData' => 'map[string,string]',
 		'name' => 'string',
-		'requestLimit' => 'int',
 		'state' => '\Wallee\Sdk\Model\CreationEntityState'	);
 
 	/**
@@ -62,18 +63,25 @@ class AbstractApplicationUserUpdate  {
 	
 
 	/**
-	 * The user name is used to identify the application user in administrative interfaces.
+	 * 
+	 *
+	 * @var string
+	 */
+	private $language;
+
+	/**
+	 * Meta data allow to store additional data along the object.
+	 *
+	 * @var map[string,string]
+	 */
+	private $metaData;
+
+	/**
+	 * 
 	 *
 	 * @var string
 	 */
 	private $name;
-
-	/**
-	 * The request limit defines the maximum number of API request accepted within 2 minutes. This limit can only be changed with special privileges.
-	 *
-	 * @var int
-	 */
-	private $requestLimit;
 
 	/**
 	 * 
@@ -89,11 +97,14 @@ class AbstractApplicationUserUpdate  {
 	 * @param mixed[] $data an associated array of property values initializing the model
 	 */
 	public function __construct(array $data = null) {
+		if (isset($data['language'])) {
+			$this->setLanguage($data['language']);
+		}
+		if (isset($data['metaData'])) {
+			$this->setMetaData($data['metaData']);
+		}
 		if (isset($data['name'])) {
 			$this->setName($data['name']);
-		}
-		if (isset($data['requestLimit'])) {
-			$this->setRequestLimit($data['requestLimit']);
 		}
 		if (isset($data['state'])) {
 			$this->setState($data['state']);
@@ -102,9 +113,55 @@ class AbstractApplicationUserUpdate  {
 
 
 	/**
+	 * Returns language.
+	 *
+	 * 
+	 *
+	 * @return string
+	 */
+	public function getLanguage() {
+		return $this->language;
+	}
+
+	/**
+	 * Sets language.
+	 *
+	 * @param string $language
+	 * @return AbstractSubscriptionAffiliateUpdate
+	 */
+	public function setLanguage($language) {
+		$this->language = $language;
+
+		return $this;
+	}
+
+	/**
+	 * Returns metaData.
+	 *
+	 * Meta data allow to store additional data along the object.
+	 *
+	 * @return map[string,string]
+	 */
+	public function getMetaData() {
+		return $this->metaData;
+	}
+
+	/**
+	 * Sets metaData.
+	 *
+	 * @param map[string,string] $metaData
+	 * @return AbstractSubscriptionAffiliateUpdate
+	 */
+	public function setMetaData($metaData) {
+		$this->metaData = $metaData;
+
+		return $this;
+	}
+
+	/**
 	 * Returns name.
 	 *
-	 * The user name is used to identify the application user in administrative interfaces.
+	 * 
 	 *
 	 * @return string
 	 */
@@ -116,33 +173,10 @@ class AbstractApplicationUserUpdate  {
 	 * Sets name.
 	 *
 	 * @param string $name
-	 * @return AbstractApplicationUserUpdate
+	 * @return AbstractSubscriptionAffiliateUpdate
 	 */
 	public function setName($name) {
 		$this->name = $name;
-
-		return $this;
-	}
-
-	/**
-	 * Returns requestLimit.
-	 *
-	 * The request limit defines the maximum number of API request accepted within 2 minutes. This limit can only be changed with special privileges.
-	 *
-	 * @return int
-	 */
-	public function getRequestLimit() {
-		return $this->requestLimit;
-	}
-
-	/**
-	 * Sets requestLimit.
-	 *
-	 * @param int $requestLimit
-	 * @return AbstractApplicationUserUpdate
-	 */
-	public function setRequestLimit($requestLimit) {
-		$this->requestLimit = $requestLimit;
 
 		return $this;
 	}
@@ -162,7 +196,7 @@ class AbstractApplicationUserUpdate  {
 	 * Sets state.
 	 *
 	 * @param \Wallee\Sdk\Model\CreationEntityState $state
-	 * @return AbstractApplicationUserUpdate
+	 * @return AbstractSubscriptionAffiliateUpdate
 	 */
 	public function setState($state) {
 		$this->state = $state;

@@ -47,6 +47,7 @@ class SubscriptionPending extends SubscriptionUpdate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
+		'affiliate' => 'int',
 		'reference' => 'string',
 		'subscriber' => 'int',
 		'token' => 'int'	);
@@ -61,6 +62,13 @@ class SubscriptionPending extends SubscriptionUpdate  {
 	}
 
 	
+
+	/**
+	 * 
+	 *
+	 * @var int
+	 */
+	private $affiliate;
 
 	/**
 	 * 
@@ -92,6 +100,9 @@ class SubscriptionPending extends SubscriptionUpdate  {
 	public function __construct(array $data = null) {
 		parent::__construct($data);
 
+		if (isset($data['affiliate'])) {
+			$this->setAffiliate($data['affiliate']);
+		}
 		if (isset($data['reference'])) {
 			$this->setReference($data['reference']);
 		}
@@ -103,6 +114,29 @@ class SubscriptionPending extends SubscriptionUpdate  {
 		}
 	}
 
+
+	/**
+	 * Returns affiliate.
+	 *
+	 * 
+	 *
+	 * @return int
+	 */
+	public function getAffiliate() {
+		return $this->affiliate;
+	}
+
+	/**
+	 * Sets affiliate.
+	 *
+	 * @param int $affiliate
+	 * @return SubscriptionPending
+	 */
+	public function setAffiliate($affiliate) {
+		$this->affiliate = $affiliate;
+
+		return $this;
+	}
 
 	/**
 	 * Returns reference.

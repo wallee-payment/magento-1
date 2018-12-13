@@ -24,22 +24,22 @@ namespace Wallee\Sdk\Model;
 use Wallee\Sdk\ValidationException;
 
 /**
- * DocumentTemplate model
+ * SubscriptionAffiliate model
  *
  * @category    Class
- * @description A document template contains the customizations for a particular document template type.
+ * @description 
  * @package     Wallee\Sdk
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  */
-class DocumentTemplate  {
+class SubscriptionAffiliate  {
 
 	/**
 	 * The original name of the model.
 	 *
 	 * @var string
 	 */
-	private static $swaggerModelName = 'DocumentTemplate';
+	private static $swaggerModelName = 'SubscriptionAffiliate';
 
 	/**
 	 * An array of property to type mappings. Used for (de)serialization.
@@ -47,16 +47,15 @@ class DocumentTemplate  {
 	 * @var string[]
 	 */
 	private static $swaggerTypes = array(
-		'defaultTemplate' => 'bool',
-		'deliveryEnabled' => 'bool',
+		'externalId' => 'string',
 		'id' => 'int',
+		'language' => 'string',
 		'linkedSpaceId' => 'int',
+		'metaData' => 'map[string,string]',
 		'name' => 'string',
 		'plannedPurgeDate' => '\DateTime',
-		'spaceId' => 'int',
+		'reference' => 'string',
 		'state' => '\Wallee\Sdk\Model\CreationEntityState',
-		'templateResource' => '\Wallee\Sdk\Model\ModelResourcePath',
-		'type' => 'int',
 		'version' => 'int'	);
 
 	/**
@@ -71,18 +70,11 @@ class DocumentTemplate  {
 	
 
 	/**
-	 * The default document template is used whenever no specific template is specified for a particular template type.
+	 * The external id helps to identify the entity and a subsequent creation of an entity with the same ID will not create a new entity.
 	 *
-	 * @var bool
+	 * @var string
 	 */
-	private $defaultTemplate;
-
-	/**
-	 * 
-	 *
-	 * @var bool
-	 */
-	private $deliveryEnabled;
+	private $externalId;
 
 	/**
 	 * The ID is the primary key of the entity. The ID identifies the entity uniquely.
@@ -92,11 +84,25 @@ class DocumentTemplate  {
 	private $id;
 
 	/**
+	 * 
+	 *
+	 * @var string
+	 */
+	private $language;
+
+	/**
 	 * The linked space id holds the ID of the space to which the entity belongs to.
 	 *
 	 * @var int
 	 */
 	private $linkedSpaceId;
+
+	/**
+	 * Meta data allow to store additional data along the object.
+	 *
+	 * @var map[string,string]
+	 */
+	private $metaData;
 
 	/**
 	 * 
@@ -115,9 +121,9 @@ class DocumentTemplate  {
 	/**
 	 * 
 	 *
-	 * @var int
+	 * @var string
 	 */
-	private $spaceId;
+	private $reference;
 
 	/**
 	 * 
@@ -125,20 +131,6 @@ class DocumentTemplate  {
 	 * @var \Wallee\Sdk\Model\CreationEntityState
 	 */
 	private $state;
-
-	/**
-	 * 
-	 *
-	 * @var \Wallee\Sdk\Model\ModelResourcePath
-	 */
-	private $templateResource;
-
-	/**
-	 * 
-	 *
-	 * @var int
-	 */
-	private $type;
 
 	/**
 	 * The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
@@ -157,11 +149,11 @@ class DocumentTemplate  {
 		if (isset($data['id'])) {
 			$this->setId($data['id']);
 		}
+		if (isset($data['metaData'])) {
+			$this->setMetaData($data['metaData']);
+		}
 		if (isset($data['state'])) {
 			$this->setState($data['state']);
-		}
-		if (isset($data['templateResource'])) {
-			$this->setTemplateResource($data['templateResource']);
 		}
 		if (isset($data['version'])) {
 			$this->setVersion($data['version']);
@@ -170,47 +162,24 @@ class DocumentTemplate  {
 
 
 	/**
-	 * Returns defaultTemplate.
+	 * Returns externalId.
 	 *
-	 * The default document template is used whenever no specific template is specified for a particular template type.
+	 * The external id helps to identify the entity and a subsequent creation of an entity with the same ID will not create a new entity.
 	 *
-	 * @return bool
+	 * @return string
 	 */
-	public function getDefaultTemplate() {
-		return $this->defaultTemplate;
+	public function getExternalId() {
+		return $this->externalId;
 	}
 
 	/**
-	 * Sets defaultTemplate.
+	 * Sets externalId.
 	 *
-	 * @param bool $defaultTemplate
-	 * @return DocumentTemplate
+	 * @param string $externalId
+	 * @return SubscriptionAffiliate
 	 */
-	protected function setDefaultTemplate($defaultTemplate) {
-		$this->defaultTemplate = $defaultTemplate;
-
-		return $this;
-	}
-
-	/**
-	 * Returns deliveryEnabled.
-	 *
-	 * 
-	 *
-	 * @return bool
-	 */
-	public function getDeliveryEnabled() {
-		return $this->deliveryEnabled;
-	}
-
-	/**
-	 * Sets deliveryEnabled.
-	 *
-	 * @param bool $deliveryEnabled
-	 * @return DocumentTemplate
-	 */
-	protected function setDeliveryEnabled($deliveryEnabled) {
-		$this->deliveryEnabled = $deliveryEnabled;
+	protected function setExternalId($externalId) {
+		$this->externalId = $externalId;
 
 		return $this;
 	}
@@ -230,10 +199,33 @@ class DocumentTemplate  {
 	 * Sets id.
 	 *
 	 * @param int $id
-	 * @return DocumentTemplate
+	 * @return SubscriptionAffiliate
 	 */
 	public function setId($id) {
 		$this->id = $id;
+
+		return $this;
+	}
+
+	/**
+	 * Returns language.
+	 *
+	 * 
+	 *
+	 * @return string
+	 */
+	public function getLanguage() {
+		return $this->language;
+	}
+
+	/**
+	 * Sets language.
+	 *
+	 * @param string $language
+	 * @return SubscriptionAffiliate
+	 */
+	protected function setLanguage($language) {
+		$this->language = $language;
 
 		return $this;
 	}
@@ -253,10 +245,33 @@ class DocumentTemplate  {
 	 * Sets linkedSpaceId.
 	 *
 	 * @param int $linkedSpaceId
-	 * @return DocumentTemplate
+	 * @return SubscriptionAffiliate
 	 */
 	protected function setLinkedSpaceId($linkedSpaceId) {
 		$this->linkedSpaceId = $linkedSpaceId;
+
+		return $this;
+	}
+
+	/**
+	 * Returns metaData.
+	 *
+	 * Meta data allow to store additional data along the object.
+	 *
+	 * @return map[string,string]
+	 */
+	public function getMetaData() {
+		return $this->metaData;
+	}
+
+	/**
+	 * Sets metaData.
+	 *
+	 * @param map[string,string] $metaData
+	 * @return SubscriptionAffiliate
+	 */
+	public function setMetaData($metaData) {
+		$this->metaData = $metaData;
 
 		return $this;
 	}
@@ -276,7 +291,7 @@ class DocumentTemplate  {
 	 * Sets name.
 	 *
 	 * @param string $name
-	 * @return DocumentTemplate
+	 * @return SubscriptionAffiliate
 	 */
 	protected function setName($name) {
 		$this->name = $name;
@@ -299,7 +314,7 @@ class DocumentTemplate  {
 	 * Sets plannedPurgeDate.
 	 *
 	 * @param \DateTime $plannedPurgeDate
-	 * @return DocumentTemplate
+	 * @return SubscriptionAffiliate
 	 */
 	protected function setPlannedPurgeDate($plannedPurgeDate) {
 		$this->plannedPurgeDate = $plannedPurgeDate;
@@ -308,24 +323,24 @@ class DocumentTemplate  {
 	}
 
 	/**
-	 * Returns spaceId.
+	 * Returns reference.
 	 *
 	 * 
 	 *
-	 * @return int
+	 * @return string
 	 */
-	public function getSpaceId() {
-		return $this->spaceId;
+	public function getReference() {
+		return $this->reference;
 	}
 
 	/**
-	 * Sets spaceId.
+	 * Sets reference.
 	 *
-	 * @param int $spaceId
-	 * @return DocumentTemplate
+	 * @param string $reference
+	 * @return SubscriptionAffiliate
 	 */
-	protected function setSpaceId($spaceId) {
-		$this->spaceId = $spaceId;
+	protected function setReference($reference) {
+		$this->reference = $reference;
 
 		return $this;
 	}
@@ -345,56 +360,10 @@ class DocumentTemplate  {
 	 * Sets state.
 	 *
 	 * @param \Wallee\Sdk\Model\CreationEntityState $state
-	 * @return DocumentTemplate
+	 * @return SubscriptionAffiliate
 	 */
 	public function setState($state) {
 		$this->state = $state;
-
-		return $this;
-	}
-
-	/**
-	 * Returns templateResource.
-	 *
-	 * 
-	 *
-	 * @return \Wallee\Sdk\Model\ModelResourcePath
-	 */
-	public function getTemplateResource() {
-		return $this->templateResource;
-	}
-
-	/**
-	 * Sets templateResource.
-	 *
-	 * @param \Wallee\Sdk\Model\ModelResourcePath $templateResource
-	 * @return DocumentTemplate
-	 */
-	public function setTemplateResource($templateResource) {
-		$this->templateResource = $templateResource;
-
-		return $this;
-	}
-
-	/**
-	 * Returns type.
-	 *
-	 * 
-	 *
-	 * @return int
-	 */
-	public function getType() {
-		return $this->type;
-	}
-
-	/**
-	 * Sets type.
-	 *
-	 * @param int $type
-	 * @return DocumentTemplate
-	 */
-	protected function setType($type) {
-		$this->type = $type;
 
 		return $this;
 	}
@@ -414,7 +383,7 @@ class DocumentTemplate  {
 	 * Sets version.
 	 *
 	 * @param int $version
-	 * @return DocumentTemplate
+	 * @return SubscriptionAffiliate
 	 */
 	public function setVersion($version) {
 		$this->version = $version;

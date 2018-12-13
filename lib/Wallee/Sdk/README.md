@@ -30,7 +30,7 @@ composer require wallee/sdk
 
 ### Manual Installation
 
-Alternatively you can download the package in its entirety. The [Releases](/releases) page lists all stable versions.
+Alternatively you can download the package in its entirety. The [Releases](../../releases) page lists all stable versions.
 
 Uncompress the zip file you download, and include the autoloader in your project:
 
@@ -44,27 +44,44 @@ require_once '/path/to/php-sdk/autoload.php';
 
 ```php
 <?php
+
 require_once(__DIR__ . '/autoload.php');
 
+// Configuration
+$spaceId = 405;
+$userId = 512;
+$secret = "FKrO76r5VwJtBrqZawBspljbBNOxp5veKQQkOnZxucQ=";
 
 // Setup API client
-$client = new \Wallee\Sdk\ApiClient('YOUR_USER_ID', 'YOUR_API_KEY');
+$client = new \Wallee\Sdk\ApiClient($userId, $secret);
 
 // Create API service instance
-$service = new \Wallee\Sdk\Service\AccountService($apiClient);
-// The filter which restricts the entities which are used to calculate the count.
-$filter = new \Wallee\Sdk\Model\EntityQueryFilter();
+$transactionService = new \Wallee\Sdk\Service\TransactionService($client);
 
-try {
-    $result = $apiService->count($filter);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling AccountService->count: ', $e->getMessage(), PHP_EOL;
-}
+// Create transaction
+$lineItem = new \Wallee\Sdk\Model\LineItemCreate();
+$lineItem->setName('Red T-Shirt');
+$lineItem->setUniqueId('5412');
+$lineItem->setSku('red-t-shirt-123');
+$lineItem->setQuantity(1);
+$lineItem->setAmountIncludingTax(29.95);
+$lineItem->setType(\Wallee\Sdk\Model\LineItemType::PRODUCT);
 
-?>
+
+$transaction = new \Wallee\Sdk\Model\TransactionCreate();
+$transaction->setCurrency("EUR");
+$transaction->setLineItems(array($lineItem));
+$transaction->setAutoConfirmationEnabled(true);
+
+$createdTransaction = $transactionService->create($spaceId, $transaction);
+
+// Create Payment Page URL:
+$redirectionUrl = $transactionService->buildPaymentPageUrl($spaceId, $createdTransaction->getId());
+
+header('Location: ' . $redirectionUrl);
+
 ```
 
 ## License
 
-Please see the [license file](/blob/master/LICENSE) for more information.
+Please see the [license file](LICENSE) for more information.

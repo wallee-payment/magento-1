@@ -52,11 +52,13 @@ class Transaction  {
 		'allowedPaymentMethodBrands' => '\Wallee\Sdk\Model\PaymentMethodBrand[]',
 		'allowedPaymentMethodConfigurations' => 'int[]',
 		'authorizationAmount' => 'float',
+		'authorizationEnvironment' => '\Wallee\Sdk\Model\ChargeAttemptEnvironment',
 		'authorizationTimeoutOn' => '\DateTime',
 		'authorizedOn' => '\DateTime',
 		'autoConfirmationEnabled' => 'bool',
 		'billingAddress' => '\Wallee\Sdk\Model\Address',
 		'chargeRetryEnabled' => 'bool',
+		'completedAmount' => 'float',
 		'completedOn' => '\DateTime',
 		'completionTimeoutOn' => '\DateTime',
 		'confirmedBy' => 'int',
@@ -149,6 +151,13 @@ class Transaction  {
 	private $authorizationAmount;
 
 	/**
+	 * The environment in which this transaction was successfully authorized.
+	 *
+	 * @var \Wallee\Sdk\Model\ChargeAttemptEnvironment
+	 */
+	private $authorizationEnvironment;
+
+	/**
 	 * This is the time on which the transaction will be timed out when it is not at least authorized. The timeout time may change over time.
 	 *
 	 * @var \DateTime
@@ -182,6 +191,13 @@ class Transaction  {
 	 * @var bool
 	 */
 	private $chargeRetryEnabled;
+
+	/**
+	 * The completed amount is the amount which of the succesful completion.
+	 *
+	 * @var float
+	 */
+	private $completedAmount;
 
 	/**
 	 * 
@@ -457,7 +473,7 @@ class Transaction  {
 	private $token;
 
 	/**
-	 * The tokenization mode controls if and how a token is automatically applied to the transaction. When a token is directly assigned to the transaction the mode will have no effect at all. Obmitting the mode will disable the automatic application of a token.
+	 * The tokenization mode controls if and how the tokenization of payment information is applied to the transaction.
 	 *
 	 * @var \Wallee\Sdk\Model\TokenizationnMode
 	 */
@@ -503,6 +519,9 @@ class Transaction  {
 		}
 		if (isset($data['allowedPaymentMethodConfigurations'])) {
 			$this->setAllowedPaymentMethodConfigurations($data['allowedPaymentMethodConfigurations']);
+		}
+		if (isset($data['authorizationEnvironment'])) {
+			$this->setAuthorizationEnvironment($data['authorizationEnvironment']);
 		}
 		if (isset($data['billingAddress'])) {
 			$this->setBillingAddress($data['billingAddress']);
@@ -671,6 +690,29 @@ class Transaction  {
 	}
 
 	/**
+	 * Returns authorizationEnvironment.
+	 *
+	 * The environment in which this transaction was successfully authorized.
+	 *
+	 * @return \Wallee\Sdk\Model\ChargeAttemptEnvironment
+	 */
+	public function getAuthorizationEnvironment() {
+		return $this->authorizationEnvironment;
+	}
+
+	/**
+	 * Sets authorizationEnvironment.
+	 *
+	 * @param \Wallee\Sdk\Model\ChargeAttemptEnvironment $authorizationEnvironment
+	 * @return Transaction
+	 */
+	public function setAuthorizationEnvironment($authorizationEnvironment) {
+		$this->authorizationEnvironment = $authorizationEnvironment;
+
+		return $this;
+	}
+
+	/**
 	 * Returns authorizationTimeoutOn.
 	 *
 	 * This is the time on which the transaction will be timed out when it is not at least authorized. The timeout time may change over time.
@@ -781,6 +823,29 @@ class Transaction  {
 	 */
 	protected function setChargeRetryEnabled($chargeRetryEnabled) {
 		$this->chargeRetryEnabled = $chargeRetryEnabled;
+
+		return $this;
+	}
+
+	/**
+	 * Returns completedAmount.
+	 *
+	 * The completed amount is the amount which of the succesful completion.
+	 *
+	 * @return float
+	 */
+	public function getCompletedAmount() {
+		return $this->completedAmount;
+	}
+
+	/**
+	 * Sets completedAmount.
+	 *
+	 * @param float $completedAmount
+	 * @return Transaction
+	 */
+	protected function setCompletedAmount($completedAmount) {
+		$this->completedAmount = $completedAmount;
 
 		return $this;
 	}
@@ -1685,7 +1750,7 @@ class Transaction  {
 	/**
 	 * Returns tokenizationMode.
 	 *
-	 * The tokenization mode controls if and how a token is automatically applied to the transaction. When a token is directly assigned to the transaction the mode will have no effect at all. Obmitting the mode will disable the automatic application of a token.
+	 * The tokenization mode controls if and how the tokenization of payment information is applied to the transaction.
 	 *
 	 * @return \Wallee\Sdk\Model\TokenizationnMode
 	 */

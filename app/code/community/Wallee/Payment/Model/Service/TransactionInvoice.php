@@ -87,11 +87,26 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
     {
         $replacement = new \Wallee\Sdk\Model\TransactionInvoiceReplacement();
         $replacement->setMerchantReference($invoice->getIncrementId());
-        $replacement->setExternalId($invoice->getIncrementId());
+        $replacement->setExternalId($this->getExternalId($invoice));
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
         $lineItems = Mage::getSingleton('wallee_payment/service_lineItem');
         $replacement->setLineItems($lineItems->collectInvoiceLineItems($invoice, $invoice->getGrandTotal()));
         return $this->getTransactionInvoiceService()->replace($spaceId, $invoiceId, $replacement);
+    }
+    
+    /**
+     * Returns an external ID for a transaction invoice.
+     * 
+     * @param Mage_Sales_Model_Order_Invoice $invoice
+     * @return string
+     */
+    private function getExternalId(Mage_Sales_Model_Order_Invoice $invoice) {
+        $incrementId = $invoice->getIncrementId();
+        if (!empty($incrementId)) {
+            return $incrementId;
+        } else {
+            return uniqid($invoice->getOrderId() . '-');
+        }
     }
 
     /**

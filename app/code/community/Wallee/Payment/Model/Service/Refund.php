@@ -42,6 +42,33 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             Mage::throwException('The refund could not be found.');
         }
     }
+    
+    public function createForPayment(Mage_Sales_Model_Order_Payment $payment) {
+        /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
+        $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
+        $transaction = new \Wallee\Sdk\Model\Transaction();
+        $transaction->setId(
+            $payment->getOrder()
+            ->getWalleeTransactionId()
+            );
+        
+        $baseLineItems = $this->getBaseLineItems($payment->getOrder()->getWalleeSpaceId(), $transaction);
+        $reductions = array();
+        foreach ($baseLineItems as $lineItem) {
+            $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
+            $reduction->setLineItemUniqueId($lineItem->getUniqueId());
+            $reduction->setQuantityReduction($lineItem->getQuantity());
+            $reduction->setUnitPriceReduction(0);
+            $reductions[] = $reduction;
+        }
+        
+        $refund = new \Wallee\Sdk\Model\RefundCreate();
+        $refund->setExternalId(uniqid($payment->getOrder()->getId() . '-'));
+        $refund->setReductions($reductions);
+        $refund->setTransaction($transaction);
+        $refund->setType(\Wallee\Sdk\Model\RefundType::MERCHANT_INITIATED_ONLINE);
+        return $refund;
+    }
 
     /**
      * Creates a refund request model for the given creditmemo.

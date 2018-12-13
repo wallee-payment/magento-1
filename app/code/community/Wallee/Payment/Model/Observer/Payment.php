@@ -1,5 +1,7 @@
 <?php
 
+use Wallee\Sdk\Model\TransactionState;
+
 /**
  * wallee Magento 1
  *
@@ -27,6 +29,21 @@ class Wallee_Payment_Model_Observer_Payment
     {
         Mage::unregister('wallee_payment_capture_invoice');
         Mage::register('wallee_payment_capture_invoice', $observer->getInvoice());
+    }
+    
+    /**
+     * Cancels the payment online.
+     * 
+     * This is done via event because the payment method disallows online voids.
+     * 
+     * @param Varien_Event_Observer $observer
+     */
+    public function cancelPayment(Varien_Event_Observer $observer)
+    {
+        /* @var Mage_Sales_Model_Order_Payment $payment */
+        $payment = $observer->getPayment();
+        $payment->getOrder()->setWalleeCanceled(true)->save();
+        $payment->getMethodInstance()->setStore($payment->getOrder()->getStoreId())->cancel($payment);
     }
 
     /**
@@ -58,11 +75,13 @@ class Wallee_Payment_Model_Observer_Payment
             return;
         }
 
-        // The invoice can only be cancelled by the merchant if the transaction is in state 'AUTHORIZED'.
+        // The invoice can only be cancelled by the merchant if the transaction is in state 'AUTHORIZED', 'COMPLETED' or 'FULFILL'.
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
-        if ($transaction->getState() != \Wallee\Sdk\Model\TransactionState::AUTHORIZED) {
+        if ($transaction->getState() != \Wallee\Sdk\Model\TransactionState::AUTHORIZED
+            && $transaction->getState() != \Wallee\Sdk\Model\TransactionState::COMPLETED
+            && $transaction->getState() != \Wallee\Sdk\Model\TransactionState::FULFILL) {
             Mage::throwException(Mage::helper('wallee_payment')->__('The invoice cannot be cancelled.'));
         }
 
@@ -71,7 +90,7 @@ class Wallee_Payment_Model_Observer_Payment
         if ($methodInstance instanceof Wallee_Payment_Model_Payment_Method_Abstract) {
             /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
             $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder($order);
-            if ($transactionInfo->getState() != \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED) {
+            if ($transactionInfo->getState() == \Wallee\Sdk\Model\TransactionState::AUTHORIZED) {
                 $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, 'processing_wallee');
             }
         }
@@ -120,24 +139,33 @@ class Wallee_Payment_Model_Observer_Payment
             return;
         }
 
-        // The invoice can only be created by the merchant if the transaction is in state 'AUTHORIZED'.
+        // The invoice can only be created by the merchant if the transaction is in state 'AUTHORIZED', 'COMPLETED' or 'FULFILL'.
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
-        if ($transaction->getState() != \Wallee\Sdk\Model\TransactionState::AUTHORIZED) {
+        if ($transaction->getState() != \Wallee\Sdk\Model\TransactionState::AUTHORIZED
+            && $transaction->getState() != \Wallee\Sdk\Model\TransactionState::COMPLETED
+            && $transaction->getState() != \Wallee\Sdk\Model\TransactionState::FULFILL) {
             Mage::throwException(Mage::helper('wallee_payment')->__('The invoice cannot be created.'));
         }
 
-        // Completes the transaction on the gateway if necessary, otherwise just update the line items.
-        if ($invoice->getWalleePaymentNeedsCapture()) {
-            $order->getPayment()
-                ->getMethodInstance()
-                ->complete($order->getPayment(), $invoice, $invoice->getGrandTotal());
+        if ($transaction->getState() == TransactionState::AUTHORIZED) {
+            // Completes the transaction on the gateway if necessary, otherwise just update the line items.
+            if ($invoice->getWalleePaymentNeedsCapture()) {
+                $order->getPayment()
+                    ->getMethodInstance()
+                    ->complete($order->getPayment(), $invoice, $invoice->getGrandTotal());
+            } else {
+                /* @var Wallee_Payment_Model_Service_LineItem $lineItemCollection */
+                $lineItemCollection = Mage::getSingleton('wallee_payment/service_lineItem');
+                $lineItems = $lineItemCollection->collectInvoiceLineItems($invoice, $invoice->getGrandTotal());
+                $transactionService->updateLineItems($order->getWalleeSpaceId(), $order->getWalleeTransactionId(), $lineItems);
+            }
         } else {
-            /* @var Wallee_Payment_Model_Service_LineItem $lineItemCollection */
-            $lineItemCollection = Mage::getSingleton('wallee_payment/service_lineItem');
-            $lineItems = $lineItemCollection->collectInvoiceLineItems($invoice, $invoice->getGrandTotal());
-            $transactionService->updateLineItems($order->getWalleeSpaceId(), $order->getWalleeTransactionId(), $lineItems);
+            /* @var Wallee_Payment_Model_Service_TransactionInvoice $transactionInvoiceService */
+            $transactionInvoiceService = Mage::getSingleton('wallee_payment/service_transactionInvoice');
+            $transactionInvoice = $transactionInvoiceService->getTransactionInvoiceByTransaction($transaction->getLinkedSpaceId(), $transaction->getId());
+            $transactionInvoiceService->replace($transactionInvoice->getLinkedSpaceId(), $transactionInvoice->getId(), $invoice);
         }
     }
 

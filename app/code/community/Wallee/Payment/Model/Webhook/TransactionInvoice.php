@@ -67,6 +67,10 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
 
     protected function capture(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, $amount, Mage_Sales_Model_Order_Invoice $invoice = null)
     {
+        if ($order->getWalleeCanceled()) {
+            return;
+        }
+        
         $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
 
         if (! $invoice) {
