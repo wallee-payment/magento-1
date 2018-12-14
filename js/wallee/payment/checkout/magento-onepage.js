@@ -19,6 +19,20 @@ MageWallee.Checkout.Type.MagentoOnePage = Class.create(
 
 			Review.prototype.save = Review.prototype.save.wrap(this.placeOrder.bind(this));
 		},
+		
+		resetValidationErrors: function(){
+			$(this.getPaymentMethod(payment.currentMethod).container + '_errors').innerHTML = '';
+		},
+		
+		setValidationErrors: function(errors){
+			var formattedErrors = '<ul class="messages"><li class="error-msg"><ul>';
+			for (var i = 0; i < errors.length; i++) {
+				formattedErrors += '<li><span>' + errors[i] + '</span></li>';
+			}
+			formattedErrors += '</ul></li></ul>';
+			
+			$(this.getPaymentMethod(payment.currentMethod).container + '_errors').innerHTML = formattedErrors;
+		},
 
 		/**
 		 * Initializes the payment iframe when the customer switches the payment method.
@@ -29,11 +43,15 @@ MageWallee.Checkout.Type.MagentoOnePage = Class.create(
 				method,
 				function() {
 					checkout.setLoadWaiting('payment');
-				},
+				}.bind(this),
 				function(validationResult) {
 					checkout.setLoadWaiting(false);
 					if (validationResult.success) {
 						this.originalPaymentSave();
+					} else {
+						if (validationResult.errors) {
+							this.setValidationErrors(validationResult.errors);
+						}
 					}
 				}.bind(this),
 				function() {
@@ -68,6 +86,7 @@ MageWallee.Checkout.Type.MagentoOnePage = Class.create(
 		savePayment: function(callOriginal) {
 			if (this.isSupportedPaymentMethod(payment.currentMethod) && this.getPaymentMethod(payment.currentMethod).handler) {
 				checkout.setLoadWaiting('payment');
+				this.resetValidationErrors();
 				this.getPaymentMethod(payment.currentMethod).handler.validate();
 				return false;
 			} else {

@@ -45,4 +45,7 @@ $imageUrl = $block->getImageUrl();
 			MageWallee.Checkout.registerMethod('<?php echo $code ?>', <?php echo $method->getPaymentMethodConfiguration()->getConfigurationId() ?>, 'wallee_payment_method_form_<?php echo $method->getPaymentMethodConfigurationId() ?>');
 		</script>
 	</li>
+	<li>
+		<div id="wallee_payment_method_form_<?php echo $method->getPaymentMethodConfigurationId() ?>_errors"></div>
+	</li>
 </ul>

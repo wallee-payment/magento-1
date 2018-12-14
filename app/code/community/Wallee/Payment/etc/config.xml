@@ -13,7 +13,7 @@
 <config>
 	<modules>
 		<Wallee_Payment>
-			<version>1.0.29</version>
+			<version>1.0.30</version>
 		</Wallee_Payment>
 	</modules>
 	<global>
@@ -339,7 +339,7 @@
 	<default>
 		<wallee_payment>
 			<information>
-				<version>1.0.29</version>
+				<version>1.0.30</version>
 				<sdk_version>1.1.12</sdk_version>
 			</information>
 			<general>
