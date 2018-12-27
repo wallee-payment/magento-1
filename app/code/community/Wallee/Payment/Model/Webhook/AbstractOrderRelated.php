@@ -27,7 +27,7 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
 
         /* @var Mage_Sales_Model_Order $order */
         $order = Mage::getModel('sales/order');
-        $order->getResource()->beginTransaction();
+        $this->beginTransaction();
         try {
             $order->load($this->getOrderId($entity));
             if ($order->getId() > 0) {
@@ -45,6 +45,29 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
             $order->getResource()->rollBack();
             throw $e;
         }
+    }
+    
+    /**
+     * Starts a database transaction with isolation level 'read uncommitted'.
+     *
+     * In case of two parallel requests linked to the same order, data written to the database by the first will
+     * not be up-to-date in the second. This can lead to processing the same data multiple times. By setting the
+     * isolation level to 'read uncommitted' this issue can be avoided.
+     *
+     * An alternative solution to this problem would be to use optimistic locking. However, this could lead to database
+     * rollbacks and as for example updating the order status could lead to triggering further processes which may not
+     * propertly handle rollbacks, this could result in inconsistencies.
+     *
+     * @return Varien_Db_Adapter_Interface
+     */
+    protected function beginTransaction()
+    {
+        /* @var Mage_Core_Model_Resource $resource */
+        $resource = Mage::getSingleton('core/resource');
+        $connection = $resource->getConnection('sales_write');
+        $connection->query("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
+        $connection->beginTransaction();
+        return $connection;
     }
 
     /**
