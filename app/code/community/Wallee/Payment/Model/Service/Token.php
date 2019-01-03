@@ -21,14 +21,14 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
      *
      * @var \Wallee\Sdk\Service\TokenService
      */
-    private $tokenService;
+    protected $_tokenService;
 
     /**
      * The token version API service.
      *
      * @var \Wallee\Sdk\Service\TokenVersionService
      */
-    private $tokenVersionService;
+    protected $_tokenVersionService;
 
     public function updateTokenVersion($spaceId, $tokenVersionId)
     {
@@ -43,10 +43,9 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
         $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
         $filter->setChildren(
             array(
-            $this->createEntityFilter('token.id', $tokenId),
-            $this->createEntityFilter('state', \Wallee\Sdk\Model\TokenVersionState::ACTIVE)
-            )
-        );
+                $this->createEntityFilter('token.id', $tokenId),
+                $this->createEntityFilter('state', \Wallee\Sdk\Model\TokenVersionState::ACTIVE)
+            ));
         $query->setFilter($filter);
         $query->setNumberOfEntities(1);
         $tokenVersion = $this->getTokenVersionService()->search($spaceId, $query);
@@ -64,17 +63,15 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
     protected function updateInfo($spaceId, \Wallee\Sdk\Model\TokenVersion $tokenVersion)
     {
         /* @var Wallee_Payment_Model_Entity_TokenInfo $info */
-        $info = Mage::getModel('wallee_payment/entity_tokenInfo')->loadByToken(
-            $spaceId, $tokenVersion->getToken()
-            ->getId()
-        );
+        $info = Mage::getModel('wallee_payment/entity_tokenInfo')->loadByToken($spaceId,
+            $tokenVersion->getToken()
+                ->getId());
 
-        if (! in_array(
-            $tokenVersion->getToken()->getState(), array(
-            \Wallee\Sdk\Model\CreationEntityState::ACTIVE,
-            \Wallee\Sdk\Model\CreationEntityState::INACTIVE
-            )
-        )) {
+        if (! in_array($tokenVersion->getToken()->getState(),
+            array(
+                \Wallee\Sdk\Model\CreationEntityState::ACTIVE,
+                \Wallee\Sdk\Model\CreationEntityState::INACTIVE
+            ))) {
             if ($info->getId()) {
                 $info->delete();
             }
@@ -82,33 +79,24 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
             return;
         }
 
-        $info->setCustomerId(
-            $tokenVersion->getToken()
-            ->getCustomerId()
-        );
+        $info->setCustomerId($tokenVersion->getToken()
+            ->getCustomerId());
         $info->setName($tokenVersion->getName());
 
         /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $paymentMethod */
         $paymentMethod = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->loadByConfigurationId(
             $spaceId, $tokenVersion->getPaymentConnectorConfiguration()
-            ->getPaymentMethodConfiguration()
-            ->getId()
-        );
+                ->getPaymentMethodConfiguration()
+                ->getId());
         $info->setPaymentMethodId($paymentMethod->getId());
-        $info->setConnectorId(
-            $tokenVersion->getPaymentConnectorConfiguration()
-            ->getConnector()
-        );
+        $info->setConnectorId($tokenVersion->getPaymentConnectorConfiguration()
+            ->getConnector());
 
         $info->setSpaceId($spaceId);
-        $info->setState(
-            $tokenVersion->getToken()
-            ->getState()
-        );
-        $info->setTokenId(
-            $tokenVersion->getToken()
-            ->getId()
-        );
+        $info->setState($tokenVersion->getToken()
+            ->getState());
+        $info->setTokenId($tokenVersion->getToken()
+            ->getId());
         $info->save();
     }
 
@@ -124,11 +112,12 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
      */
     protected function getTokenService()
     {
-        if ($this->tokenService == null) {
-            $this->tokenService = new \Wallee\Sdk\Service\TokenService($this->getHelper()->getApiClient());
+        if ($this->_tokenService == null) {
+            $this->_tokenService = new \Wallee\Sdk\Service\TokenService(
+                $this->getHelper()->getApiClient());
         }
 
-        return $this->tokenService;
+        return $this->_tokenService;
     }
 
     /**
@@ -138,10 +127,11 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
      */
     protected function getTokenVersionService()
     {
-        if ($this->tokenVersionService == null) {
-            $this->tokenVersionService = new \Wallee\Sdk\Service\TokenVersionService($this->getHelper()->getApiClient());
+        if ($this->_tokenVersionService == null) {
+            $this->_tokenVersionService = new \Wallee\Sdk\Service\TokenVersionService(
+                $this->getHelper()->getApiClient());
         }
 
-        return $this->tokenVersionService;
+        return $this->_tokenVersionService;
     }
 }

@@ -52,19 +52,19 @@ class Wallee_Payment_Model_Entity_TokenInfo extends Mage_Core_Model_Abstract
      *
      * @var Mage_Customer_Model_Customer
      */
-    private $_customer;
+    protected $_customer;
 
     /**
      *
      * @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration
      */
-    private $_paymentMethod;
+    protected $_paymentMethod;
 
     /**
      *
      * @var \Wallee\Sdk\Model\PaymentConnector
      */
-    private $_connector;
+    protected $_connector;
 
     /**
      * Initialize resource model
@@ -79,7 +79,7 @@ class Wallee_Payment_Model_Entity_TokenInfo extends Mage_Core_Model_Abstract
         parent::_beforeSave();
 
         if ($this->isObjectNew()) {
-            $this->setCreatedAt(date("Y-m-d H:i:s"));
+            $this->setCreatedAt(Mage::getSingleton('core/date')->date());
         }
     }
 
@@ -118,7 +118,8 @@ class Wallee_Payment_Model_Entity_TokenInfo extends Mage_Core_Model_Abstract
     public function getPaymentMethod()
     {
         if (! $this->_paymentMethod instanceof Wallee_Payment_Model_Entity_PaymentMethodConfiguration) {
-            $this->_paymentMethod = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->load($this->getPaymentMethodId());
+            $this->_paymentMethod = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->load(
+                $this->getPaymentMethodId());
         }
 
         return $this->_paymentMethod;
@@ -132,7 +133,8 @@ class Wallee_Payment_Model_Entity_TokenInfo extends Mage_Core_Model_Abstract
     public function getConnector()
     {
         if (! $this->_connector instanceof \Wallee\Sdk\Model\PaymentConnector) {
-            $this->_connector = Mage::getSingleton('wallee_payment/provider_paymentConnector')->find($this->getConnectorId());
+            $this->_connector = Mage::getSingleton('wallee_payment/provider_paymentConnector')->find(
+                $this->getConnectorId());
         }
 
         return $this->_connector;

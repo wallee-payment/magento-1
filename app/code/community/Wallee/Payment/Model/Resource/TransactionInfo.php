@@ -48,18 +48,17 @@ class Wallee_Payment_Model_Resource_TransactionInfo extends Mage_Core_Model_Reso
      * @param int $transactionId
      * @return array
      */
-    public function loadByTransaction(Wallee_Payment_Model_Entity_TransactionInfo $model, $spaceId, $transactionId)
+    public function loadByTransaction(Wallee_Payment_Model_Entity_TransactionInfo $model, $spaceId,
+        $transactionId)
     {
         $select = $this->_read->select()
             ->from($this->getMainTable())
             ->where('space_id=:space_id AND transaction_id=:transaction_id');
 
-        $data = $this->_read->fetchRow(
-            $select, array(
+        $data = $this->_read->fetchRow($select, array(
             'space_id' => $spaceId,
             'transaction_id' => $transactionId
-            )
-        );
+        ));
 
         $model->setData($data);
         $this->unserializeFields($model);

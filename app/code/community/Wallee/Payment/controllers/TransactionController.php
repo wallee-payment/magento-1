@@ -11,11 +11,12 @@
  */
 
 /**
- * This controller redirects the customer to the relevant page in the shop after the payment process and allows customers to download transaction documents.
+ * This controller redirects the customer to the relevant page in the shop after the payment process and allows
+ * customers to download transaction documents.
  */
 class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Action
 {
-    
+
     /**
      * This action is needed for some one step checkouts.
      */
@@ -48,13 +49,12 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
 
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
-        $transactionService->waitForTransactionState(
-            $order, array(
-            \Wallee\Sdk\Model\TransactionState::CONFIRMED,
-            \Wallee\Sdk\Model\TransactionState::PENDING,
-            \Wallee\Sdk\Model\TransactionState::PROCESSING
-            ), 3
-        );
+        $transactionService->waitForTransactionState($order,
+            array(
+                \Wallee\Sdk\Model\TransactionState::CONFIRMED,
+                \Wallee\Sdk\Model\TransactionState::PENDING,
+                \Wallee\Sdk\Model\TransactionState::PROCESSING
+            ), 3);
 
         $this->_redirectUrl($this->getSuccessUrl($order));
     }
@@ -62,17 +62,13 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     protected function getSuccessUrl(Mage_Sales_Model_Order $order)
     {
         $result = new StdClass();
-        $result->url = Mage::getUrl(
-            'checkout/onepage/success', array(
+        $result->url = Mage::getUrl('checkout/onepage/success', array(
             '_secure' => true
-            )
-        );
-        Mage::dispatchEvent(
-            'wallee_payment_success_url', array(
+        ));
+        Mage::dispatchEvent('wallee_payment_success_url', array(
             'result' => $result,
             'order' => $order
-            )
-        );
+        ));
         return $result->url;
     }
 
@@ -88,13 +84,13 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
             if (Mage::helper('wallee_payment')->hash($orderId) != $this->getRequest()->getParam('secret')) {
                 Mage::throwException('Invalid secret.');
             }
-    
+
             /* @var Mage_Sales_Model_Order $order */
             $order = Mage::getModel('sales/order')->load($orderId);
             /* @var Wallee_Payment_Model_Payment_Method_Abstract $methodInstance */
             $methodInstance = $order->getPayment()->getMethodInstance();
             $methodInstance->fail($order);
-    
+
             $this->_redirectUrl($this->getFailureUrl($order));
         }
     }
@@ -103,12 +99,10 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     {
         $result = new StdClass();
         $result->url = Mage::getUrl('checkout/cart');
-        Mage::dispatchEvent(
-            'wallee_payment_failure_url', array(
-                'result' => $result,
-                'order' => $order
-            )
-        );
+        Mage::dispatchEvent('wallee_payment_failure_url', array(
+            'result' => $result,
+            'order' => $order
+        ));
         return $result->url;
     }
 
@@ -122,16 +116,19 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
             return false;
         }
 
-        if (! Mage::getStoreConfigFlag('wallee_payment/document/customer_download_invoice', $transactionInfo->getOrder()->getStore())) {
+        if (! Mage::getStoreConfigFlag('wallee_payment/document/customer_download_invoice',
+            $transactionInfo->getOrder()->getStore())) {
             $this->_redirect('sales/order/view/order_id/' . $transactionInfo->getOrderId());
             return false;
         }
 
         try {
-            $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
-            $document = $service->getInvoiceDocument($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
+            $service = new \Wallee\Sdk\Service\TransactionService(
+                Mage::helper('wallee_payment')->getApiClient());
+            $document = $service->getInvoiceDocument($transactionInfo->getSpaceId(),
+                $transactionInfo->getTransactionId());
             $this->download($document);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             /* @var Mage_Core_Model_Session $session */
             $session = Mage::getSingleton('core/session');
             $session->addError('The invoice document cannot be downloaded.');
@@ -150,16 +147,18 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
             return false;
         }
 
-        if (! Mage::getStoreConfigFlag('wallee_payment/document/customer_download_packing_slip', $transactionInfo->getOrder()->getStore())) {
+        if (! Mage::getStoreConfigFlag('wallee_payment/document/customer_download_packing_slip',
+            $transactionInfo->getOrder()->getStore())) {
             $this->_redirect('sales/order/view/order_id/' . $transactionInfo->getOrderId());
             return false;
         }
 
         try {
-            $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
+            $service = new \Wallee\Sdk\Service\TransactionService(
+                Mage::helper('wallee_payment')->getApiClient());
             $document = $service->getPackingSlip($transactionInfo->getSpaceId(), $transactionInfo->getTransactionId());
             $this->download($document);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             /* @var Mage_Core_Model_Session $session */
             $session = Mage::getSingleton('core/session');
             $session->addError('The packing slip cannot be downloaded.');
@@ -245,7 +244,8 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
     {
         $customerId = Mage::getSingleton('customer/session')->getCustomerId();
         $availableStates = Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates();
-        if ($order->getId() && $order->getCustomerId() && ($order->getCustomerId() == $customerId) && in_array($order->getState(), $availableStates)) {
+        if ($order->getId() && $order->getCustomerId() && ($order->getCustomerId() == $customerId) &&
+            in_array($order->getState(), $availableStates)) {
             return true;
         }
 

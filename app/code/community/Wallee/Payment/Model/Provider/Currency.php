@@ -44,7 +44,8 @@ class Wallee_Payment_Model_Provider_Currency extends Wallee_Payment_Model_Provid
 
     protected function fetchData()
     {
-        $currencyService = new \Wallee\Sdk\Service\CurrencyService(Mage::helper('wallee_payment')->getApiClient());
+        $currencyService = new \Wallee\Sdk\Service\CurrencyService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $currencyService->all();
     }
 

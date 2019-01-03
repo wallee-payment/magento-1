@@ -16,9 +16,7 @@
 class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
 {
 
-    private $transaction = null;
-
-    private $transactionInfo = null;
+    protected $_transactionInfo = null;
 
     protected function _construct()
     {
@@ -33,7 +31,8 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function isCreditmemo()
     {
-        return Mage::app()->getStore()->isAdmin() && strstr($this->getRequest()->getControllerName(), 'creditmemo') !== false;
+        return Mage::app()->getStore()->isAdmin() &&
+            strstr($this->getRequest()->getControllerName(), 'creditmemo') !== false;
     }
 
     /**
@@ -43,7 +42,8 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function isInvoice()
     {
-        return Mage::app()->getStore()->isAdmin() && strstr($this->getRequest()->getControllerName(), 'invoice') !== false;
+        return Mage::app()->getStore()->isAdmin() &&
+            strstr($this->getRequest()->getControllerName(), 'invoice') !== false;
     }
 
     /**
@@ -53,7 +53,8 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function isShipment()
     {
-        return Mage::app()->getStore()->isAdmin() && strstr($this->getRequest()->getControllerName(), 'shipment') !== false;
+        return Mage::app()->getStore()->isAdmin() &&
+            strstr($this->getRequest()->getControllerName(), 'shipment') !== false;
     }
 
     /**
@@ -63,9 +64,11 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function isCustomerDownloadInvoiceAllowed()
     {
-        return $this->getInfo()->getOrder() != null && Mage::getStoreConfigFlag('wallee_payment/document/customer_download_invoice', $this->getInfo()
-            ->getOrder()
-            ->getStore());
+        return $this->getInfo()->getOrder() != null && Mage::getStoreConfigFlag(
+            'wallee_payment/document/customer_download_invoice',
+            $this->getInfo()
+                ->getOrder()
+                ->getStore());
     }
 
     /**
@@ -75,9 +78,11 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function isCustomerDownloadPackingSlipAllowed()
     {
-        return $this->getInfo()->getOrder() != null && Mage::getStoreConfigFlag('wallee_payment/document/customer_download_packing_slip', $this->getInfo()
-            ->getOrder()
-            ->getStore());
+        return $this->getInfo()->getOrder() != null && Mage::getStoreConfigFlag(
+            'wallee_payment/document/customer_download_packing_slip',
+            $this->getInfo()
+                ->getOrder()
+                ->getStore());
     }
 
     /**
@@ -90,13 +95,14 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
         if ($this->getTransactionInfo() && Mage::app()->getStore()->isAdmin()) {
             /* @var Mage_Adminhtml_Helper_Data $adminHelper */
             $adminHelper = Mage::helper('adminhtml');
-            return $adminHelper->getUrl('adminhtml/wallee_transaction/update', array(
-                'transaction_id' => $this->getTransactionInfo()
-                    ->getTransactionId(),
-                'space_id' => $this->getTransactionInfo()
-                    ->getSpaceId(),
-                '_secure' => true
-            ));
+            return $adminHelper->getUrl('adminhtml/wallee_transaction/update',
+                array(
+                    'transaction_id' => $this->getTransactionInfo()
+                        ->getTransactionId(),
+                    'space_id' => $this->getTransactionInfo()
+                        ->getSpaceId(),
+                    '_secure' => true
+                ));
         }
     }
 
@@ -107,30 +113,33 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function getDownloadInvoiceUrl()
     {
-        if (! $this->getTransactionInfo() || ! in_array($this->getTransactionInfo()->getState(), array(
-            \Wallee\Sdk\Model\TransactionState::COMPLETED,
-            \Wallee\Sdk\Model\TransactionState::FULFILL,
-            \Wallee\Sdk\Model\TransactionState::DECLINE
-        ))) {
+        if (! $this->getTransactionInfo() || ! in_array($this->getTransactionInfo()->getState(),
+            array(
+                \Wallee\Sdk\Model\TransactionState::COMPLETED,
+                \Wallee\Sdk\Model\TransactionState::FULFILL,
+                \Wallee\Sdk\Model\TransactionState::DECLINE
+            ))) {
             return false;
         }
-        
+
         if (Mage::app()->getStore()->isAdmin()) {
             /* @var Mage_Adminhtml_Helper_Data $adminHelper */
             $adminHelper = Mage::helper('adminhtml');
-            return $adminHelper->getUrl('adminhtml/wallee_transaction/downloadInvoice', array(
-                'transaction_id' => $this->getTransactionInfo()
-                    ->getTransactionId(),
-                'space_id' => $this->getTransactionInfo()
-                    ->getSpaceId(),
-                '_secure' => true
-            ));
+            return $adminHelper->getUrl('adminhtml/wallee_transaction/downloadInvoice',
+                array(
+                    'transaction_id' => $this->getTransactionInfo()
+                        ->getTransactionId(),
+                    'space_id' => $this->getTransactionInfo()
+                        ->getSpaceId(),
+                    '_secure' => true
+                ));
         } else {
-            return $this->getUrl('wallee/transaction/downloadInvoice', array(
-                'order_id' => $this->getInfo()
-                    ->getOrder()
-                    ->getId()
-            ));
+            return $this->getUrl('wallee/transaction/downloadInvoice',
+                array(
+                    'order_id' => $this->getInfo()
+                        ->getOrder()
+                        ->getId()
+                ));
         }
     }
 
@@ -141,26 +150,29 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function getDownloadPackingSlipUrl()
     {
-        if (! $this->getTransactionInfo() || $this->getTransactionInfo()->getState() != \Wallee\Sdk\Model\TransactionState::FULFILL) {
+        if (! $this->getTransactionInfo() ||
+            $this->getTransactionInfo()->getState() != \Wallee\Sdk\Model\TransactionState::FULFILL) {
             return false;
         }
-        
+
         if (Mage::app()->getStore()->isAdmin()) {
             /* @var Mage_Adminhtml_Helper_Data $adminHelper */
             $adminHelper = Mage::helper('adminhtml');
-            return $adminHelper->getUrl('adminhtml/wallee_transaction/downloadPackingSlip', array(
-                'transaction_id' => $this->getTransactionInfo()
-                    ->getTransactionId(),
-                'space_id' => $this->getTransactionInfo()
-                    ->getSpaceId(),
-                '_secure' => true
-            ));
+            return $adminHelper->getUrl('adminhtml/wallee_transaction/downloadPackingSlip',
+                array(
+                    'transaction_id' => $this->getTransactionInfo()
+                        ->getTransactionId(),
+                    'space_id' => $this->getTransactionInfo()
+                        ->getSpaceId(),
+                    '_secure' => true
+                ));
         } else {
-            return $this->getUrl('wallee/transaction/downloadPackingSlip', array(
-                'order_id' => $this->getInfo()
-                    ->getOrder()
-                    ->getId()
-            ));
+            return $this->getUrl('wallee/transaction/downloadPackingSlip',
+                array(
+                    'order_id' => $this->getInfo()
+                        ->getOrder()
+                        ->getId()
+                ));
         }
     }
 
@@ -176,15 +188,16 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
         if ($creditmemo == null || $creditmemo->getWalleeExternalId() == null) {
             return false;
         }
-        
+
         /* @var Mage_Adminhtml_Helper_Data $adminHelper */
         $adminHelper = Mage::helper('adminhtml');
-        return $adminHelper->getUrl('adminhtml/wallee_transaction/downloadRefund', array(
-            'external_id' => $creditmemo->getWalleeExternalId(),
-            'space_id' => $this->getTransactionInfo()
-                ->getSpaceId(),
-            '_secure' => true
-        ));
+        return $adminHelper->getUrl('adminhtml/wallee_transaction/downloadRefund',
+            array(
+                'external_id' => $creditmemo->getWalleeExternalId(),
+                'space_id' => $this->getTransactionInfo()
+                    ->getSpaceId(),
+                '_secure' => true
+            ));
     }
 
     /**
@@ -194,22 +207,23 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function getTransactionInfo()
     {
-        if ($this->transactionInfo === null) {
+        if ($this->_transactionInfo === null) {
             if ($this->getInfo() instanceof Mage_Sales_Model_Order_Payment) {
                 /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
-                $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder($this->getInfo()
-                    ->getOrder());
+                $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder(
+                    $this->getInfo()
+                        ->getOrder());
                 if ($transactionInfo->getId()) {
-                    $this->transactionInfo = $transactionInfo;
+                    $this->_transactionInfo = $transactionInfo;
                 } else {
-                    $this->transactionInfo = false;
+                    $this->_transactionInfo = false;
                 }
             } else {
-                $this->transactionInfo = false;
+                $this->_transactionInfo = false;
             }
         }
-        
-        return $this->transactionInfo;
+
+        return $this->_transactionInfo;
     }
 
     /**
@@ -237,7 +251,9 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
      */
     public function getTransactionUrl()
     {
-        return Mage::helper('wallee_payment')->getBaseGatewayUrl() . '/s/' . $this->getTransactionInfo()->getSpaceId() . '/payment/transaction/view/' . $this->getTransactionInfo()->getTransactionId();
+        return Mage::helper('wallee_payment')->getBaseGatewayUrl() . '/s/' .
+            $this->getTransactionInfo()->getSpaceId() . '/payment/transaction/view/' .
+            $this->getTransactionInfo()->getTransactionId();
     }
 
     /**
@@ -294,10 +310,11 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
         if ($this->getTransactionInfo()) {
             /* @var Wallee_Payment_Model_Provider_LabelDescriptor $labelDescriptorProvider */
             $labelDescriptorProvider = Mage::getSingleton('wallee_payment/provider_labelDescriptor');
-            
+
             /* @var Wallee_Payment_Model_Provider_LabelDescriptorGroup $labelDescriptorGroupProvider */
-            $labelDescriptorGroupProvider = Mage::getSingleton('wallee_payment/provider_labelDescriptorGroup');
-            
+            $labelDescriptorGroupProvider = Mage::getSingleton(
+                'wallee_payment/provider_labelDescriptorGroup');
+
             $labelsByGroupId = array();
             foreach ($this->getTransactionInfo()->getLabels() as $descriptorId => $value) {
                 $descriptor = $labelDescriptorProvider->find($descriptorId);
@@ -308,21 +325,22 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
                     );
                 }
             }
-            
+
             $labelsByGroup = array();
             foreach ($labelsByGroupId as $groupId => $labels) {
                 $group = $labelDescriptorGroupProvider->find($groupId);
                 if ($group) {
-                    usort($labels, function ($a, $b) {
-                        return $a['descriptor']->getWeight() - $b['descriptor']->getWeight();
-                    });
+                    usort($labels,
+                        function ($a, $b) {
+                            return $a['descriptor']->getWeight() - $b['descriptor']->getWeight();
+                        });
                     $labelsByGroup[] = array(
                         'group' => $group,
                         'labels' => $labels
                     );
                 }
             }
-            
+
             usort($labelsByGroup, function ($a, $b) {
                 return $a['group']->getWeight() - $b['group']->getWeight();
             });

@@ -12,17 +12,24 @@
 
 /* @var Wallee_Payment_Block_Adminhtml_Sales_Order_Invoice_View $block */
 $block = $this;
+
+/* @var Wallee_Payment_Helper_Data $helper */
+$helper = $block->helper('wallee_payment');
 ?>
 <?php if ($block->isInvoicePending()) : ?>
-	<div id="messages">
-		<ul class="messages">
-			<li class="notice-msg">
-				<ul>
-					<li>
-						<span><?php echo $block->helper('wallee_payment')->__('The capture has been requested but could not be completed yet. The invoice will be updated, as soon as the capture is done.') ?></span>
-					</li>
-				</ul>
-			</li>
-		</ul>
-	</div>
+    <div id="messages">
+        <ul class="messages">
+            <li class="notice-msg">
+                <ul>
+                    <li>
+                        <span>
+                            <?php echo $block->escapeHtml(
+                                $helper->__('The capture has been requested but could not be completed yet. The invoice will be updated, as soon as the capture is done.')
+                            ) ?>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 <?php endif; ?>

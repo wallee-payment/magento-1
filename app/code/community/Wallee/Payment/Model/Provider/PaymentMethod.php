@@ -44,7 +44,8 @@ class Wallee_Payment_Model_Provider_PaymentMethod extends Wallee_Payment_Model_P
 
     protected function fetchData()
     {
-        $methodService = new \Wallee\Sdk\Service\PaymentMethodService(Mage::helper('wallee_payment')->getApiClient());
+        $methodService = new \Wallee\Sdk\Service\PaymentMethodService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $methodService->all();
     }
 

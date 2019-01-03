@@ -39,7 +39,7 @@ class Wallee_Payment_Block_Payment_Checkout extends Mage_Payment_Block_Form
             return false;
         }
     }
-    
+
     /**
      * Returns the URL to wallee's payment page.
      *

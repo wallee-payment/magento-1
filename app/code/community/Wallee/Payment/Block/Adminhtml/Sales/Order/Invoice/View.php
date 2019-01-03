@@ -24,6 +24,7 @@ class Wallee_Payment_Block_Adminhtml_Sales_Order_Invoice_View extends Mage_Admin
     public function isInvoicePending()
     {
         $invoice = Mage::registry('current_invoice');
-        return $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_PAID && $invoice->getWalleeCapturePending();
+        return $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_PAID &&
+            $invoice->getWalleeCapturePending();
     }
 }

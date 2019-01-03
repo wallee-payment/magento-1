@@ -16,7 +16,7 @@
 class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
 {
 
-    private $apiClient = null;
+    protected $_apiClient = null;
 
     /**
      * Returns the base URL to the gateway.
@@ -37,7 +37,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
      */
     public function getApiClient($gracefully = false, $singleton = true)
     {
-        if ($this->apiClient == null || ! $singleton) {
+        if ($this->_apiClient == null || ! $singleton) {
             $userId = Mage::getStoreConfig('wallee_payment/general/api_user_id');
             $plainApplicationKey = Mage::getStoreConfig('wallee_payment/general/api_user_secret');
             $helper = Mage::helper('core');
@@ -50,7 +50,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
                     return $client;
                 }
 
-                $this->apiClient = $client;
+                $this->_apiClient = $client;
             } else if ($gracefully) {
                 return false;
             } else {
@@ -58,7 +58,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
             }
         }
 
-        return $this->apiClient;
+        return $this->_apiClient;
     }
 
     /**
@@ -129,6 +129,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
                 return $translatedString[$primaryLanguage->getIetfCode()];
             }
         } catch (Exception $e) {
+            Mage::log('Could not find the primary language: ' . $e->getMessage(), null, 'wallee.log');
         }
 
         if (isset($translatedString['en-US'])) {

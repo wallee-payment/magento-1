@@ -21,19 +21,32 @@ $totalNumberOfManualTasks = array_sum($numberOfManualTasks);
 ?>
 
 <?php if ($block->isAdminNotificationEnabled() && $totalNumberOfManualTasks > 0) : ?>
-	<div class="notification-global notification-global-notice">
-		<span class="f-right">
-    		<?php if (count($numberOfManualTasks) == 1) : ?>
-    			<a href="<?php echo $block->getManualTasksUrl(key($numberOfManualTasks)) ?>" target="_blank"><?php echo $helper->__('View in wallee') ?></a>
-    		<?php else : ?>
-    			<a href="<?php echo $block->getManualTasksUrl() ?>" target="_blank"><?php echo $helper->__('View in wallee') ?></a>
-    		<?php endif; ?>
-		</span>
-		<strong><?php echo $helper->__('wallee:') ?></strong>
-		<?php if ($totalNumberOfManualTasks == 1) : ?>
-		    <?php echo $helper->__('There is a manual task that needs your attention.') ?>
-		<?php else : ?>
-			<?php echo $helper->__('There are %s manual tasks that need your attention.', $totalNumberOfManualTasks) ?>
-		<?php endif; ?>
-	</div>
+    <div class="notification-global notification-global-notice">
+        <span class="f-right">
+            <?php if (count($numberOfManualTasks) == 1) : ?>
+                <a
+                    href="<?php echo $block->escapeHtml($block->getManualTasksUrl(key($numberOfManualTasks))) ?>"
+                    target="_blank">
+                    <?php echo $block->escapeHtml($helper->__('View in wallee')) ?>
+                </a>
+            <?php else : ?>
+                <a
+                    href="<?php echo $block->escapeHtml($block->getManualTasksUrl()) ?>"
+                    target="_blank">
+                    <?php echo $block->escapeHtml($helper->__('View in wallee')) ?>
+                </a>
+            <?php endif; ?>
+        </span>
+        <strong><?php echo $block->escapeHtml($helper->__('wallee:')) ?></strong>
+        <?php if ($totalNumberOfManualTasks == 1) : ?>
+            <?php echo $block->escapeHtml($helper->__('There is a manual task that needs your attention.')) ?>
+        <?php else : ?>
+            <?php echo $block->escapeHtml(
+                $helper->__(
+                   'There are %s manual tasks that need your attention.',
+                    $totalNumberOfManualTasks
+                )
+            ) ?>
+        <?php endif; ?>
+    </div>
 <?php endif; ?>

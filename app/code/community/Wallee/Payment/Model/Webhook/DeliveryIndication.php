@@ -23,7 +23,8 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
      */
     protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request)
     {
-        $deliveryIndicationService = new \Wallee\Sdk\Service\DeliveryIndicationService(Mage::helper('wallee_payment')->getApiClient());
+        $deliveryIndicationService = new \Wallee\Sdk\Service\DeliveryIndicationService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $deliveryIndicationService->read($request->getSpaceId(), $request->getEntityId());
     }
 
@@ -49,9 +50,10 @@ class Wallee_Payment_Model_Webhook_DeliveryIndication extends Wallee_Payment_Mod
     protected function review(Mage_Sales_Model_Order $order)
     {
         if ($order->getState() != Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW) {
-            $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true, Mage::helper('wallee_payment')->__('A manual decision about whether to accept the payment is required.'));
+            $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true,
+                Mage::helper('wallee_payment')->__(
+                    'A manual decision about whether to accept the payment is required.'));
             $order->save();
         }
     }
-
 }

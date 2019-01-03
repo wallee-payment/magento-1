@@ -16,19 +16,19 @@
 class Wallee_Payment_Model_Webhook_Request
 {
 
-    private $eventId;
+    protected $_eventId;
 
-    private $entityId;
+    protected $_entityId;
 
-    private $listenerEntityId;
+    protected $_listenerEntityId;
 
-    private $listenerEntityTechnicalName;
+    protected $_listenerEntityTechnicalName;
 
-    private $spaceId;
+    protected $_spaceId;
 
-    private $webhookListenerId;
+    protected $_webhookListenerId;
 
-    private $timestamp;
+    protected $_timestamp;
 
     /**
      * Constructor.
@@ -37,13 +37,13 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function __construct($model)
     {
-        $this->eventId = $model->eventId;
-        $this->entityId = $model->entityId;
-        $this->listenerEntityId = $model->listenerEntityId;
-        $this->listenerEntityTechnicalName = $model->listenerEntityTechnicalName;
-        $this->spaceId = $model->spaceId;
-        $this->webhookListenerId = $model->webhookListenerId;
-        $this->timestamp = $model->timestamp;
+        $this->_eventId = $model->eventId;
+        $this->_entityId = $model->entityId;
+        $this->_listenerEntityId = $model->listenerEntityId;
+        $this->_listenerEntityTechnicalName = $model->listenerEntityTechnicalName;
+        $this->_spaceId = $model->spaceId;
+        $this->_webhookListenerId = $model->webhookListenerId;
+        $this->_timestamp = $model->timestamp;
     }
 
     /**
@@ -53,7 +53,7 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function getEventId()
     {
-        return $this->eventId;
+        return $this->_eventId;
     }
 
     /**
@@ -63,7 +63,7 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function getEntityId()
     {
-        return $this->entityId;
+        return $this->_entityId;
     }
 
     /**
@@ -73,7 +73,7 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function getListenerEntityId()
     {
-        return $this->listenerEntityId;
+        return $this->_listenerEntityId;
     }
 
     /**
@@ -83,7 +83,7 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function getListenerEntityTechnicalName()
     {
-        return $this->listenerEntityTechnicalName;
+        return $this->_listenerEntityTechnicalName;
     }
 
     /**
@@ -93,7 +93,7 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function getSpaceId()
     {
-        return $this->spaceId;
+        return $this->_spaceId;
     }
 
     /**
@@ -103,7 +103,7 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function getWebhookListenerId()
     {
-        return $this->webhookListenerId;
+        return $this->_webhookListenerId;
     }
 
     /**
@@ -113,6 +113,6 @@ class Wallee_Payment_Model_Webhook_Request
      */
     public function getTimestamp()
     {
-        return $this->timestamp;
+        return $this->_timestamp;
     }
 }

@@ -9,43 +9,42 @@
  * @author customweb GmbH (http://www.customweb.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
  */
-
 class Wallee_Payment_Model_Webhook_Entity
 {
 
-    private $id;
+    protected $_id;
 
-    private $name;
+    protected $_name;
 
-    private $states;
+    protected $_states;
 
-    private $notifyEveryChange;
+    protected $_notifyEveryChange;
 
     public function __construct($id, $name, array $states, $notifyEveryChange = false)
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->states = $states;
-        $this->notifyEveryChange = $notifyEveryChange;
+        $this->_id = $id;
+        $this->_name = $name;
+        $this->_states = $states;
+        $this->_notifyEveryChange = $notifyEveryChange;
     }
 
     public function getId()
     {
-        return $this->id;
+        return $this->_id;
     }
 
     public function getName()
     {
-        return $this->name;
+        return $this->_name;
     }
 
     public function getStates()
     {
-        return $this->states;
+        return $this->_states;
     }
 
     public function isNotifyEveryChange()
     {
-        return $this->notifyEveryChange;
+        return $this->_notifyEveryChange;
     }
 }

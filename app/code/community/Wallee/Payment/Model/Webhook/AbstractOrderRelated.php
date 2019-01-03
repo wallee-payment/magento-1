@@ -46,7 +46,7 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
             throw $e;
         }
     }
-    
+
     /**
      * Starts a database transaction with isolation level 'read uncommitted'.
      *
@@ -99,25 +99,25 @@ abstract class Wallee_Payment_Model_Webhook_AbstractOrderRelated extends Wallee_
     protected function getOrderId($entity)
     {
         /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
-        $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByTransaction($entity->getLinkedSpaceId(), $this->getTransactionId($entity));
+        $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByTransaction(
+            $entity->getLinkedSpaceId(), $this->getTransactionId($entity));
         return $transactionInfo->getOrderId();
     }
-    
+
     /**
      * Create a lock to prevent concurrency.
      *
      * @param Mage_Sales_Model_Order $order
      */
-    private function lock(Mage_Sales_Model_Order $order)
+    protected function lock(Mage_Sales_Model_Order $order)
     {
         /* @var Mage_Core_Model_Resource $resource */
         $resource = Mage::getSingleton('core/resource');
-        $resource->getConnection('core_write')->update(
-            $resource->getTableName('sales/order'), array(
-                'wallee_lock' => date("Y-m-d H:i:s")
+        $resource->getConnection('core_write')->update($resource->getTableName('sales/order'),
+            array(
+                'wallee_lock' => Mage::getSingleton('core/date')->date()
             ), array(
                 'entity_id = ?' => $order->getId()
-            )
-        );
+            ));
     }
 }

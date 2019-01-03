@@ -22,7 +22,8 @@
  * @method int getConfigurationId()
  * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setConfigurationId(int configurationId)
  * @method string getConfigurationName()
- * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setConfigurationName(string configurationName)
+ * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setConfigurationName(string
+ *         configurationName)
  * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setTitle(array title)
  * @method Wallee_Payment_Model_Entity_PaymentMethodConfiguration setDescription(array description)
  * @method string getImage()
@@ -68,10 +69,10 @@ class Wallee_Payment_Model_Entity_PaymentMethodConfiguration extends Mage_Core_M
         parent::_beforeSave();
 
         if ($this->isObjectNew()) {
-            $this->setCreatedAt(date("Y-m-d H:i:s"));
+            $this->setCreatedAt(Mage::getSingleton('core/date')->date());
         }
 
-        $this->setUpdatedAt(date("Y-m-d H:i:s"));
+        $this->setUpdatedAt(Mage::getSingleton('core/date')->date());
     }
 
     /**

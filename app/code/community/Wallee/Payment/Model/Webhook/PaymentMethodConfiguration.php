@@ -24,7 +24,8 @@ class Wallee_Payment_Model_Webhook_PaymentMethodConfiguration extends Wallee_Pay
     protected function process(Wallee_Payment_Model_Webhook_Request $request)
     {
         /* @var Wallee_Payment_Model_Service_PaymentMethodConfiguration $paymentMethodConfigurationService */
-        $paymentMethodConfigurationService = Mage::getSingleton('wallee_payment/service_paymentMethodConfiguration');
+        $paymentMethodConfigurationService = Mage::getSingleton(
+            'wallee_payment/service_paymentMethodConfiguration');
         $paymentMethodConfigurationService->synchronize();
     }
 }

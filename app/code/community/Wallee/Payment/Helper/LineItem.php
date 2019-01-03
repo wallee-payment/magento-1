@@ -36,7 +36,8 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
             $lineItem = $lineItemMap[$reduction->getLineItemUniqueId()];
             $unitPrice = $lineItem->getAmountIncludingTax() / $lineItem->getQuantity();
             $amount += $unitPrice * $reduction->getQuantityReduction();
-            $amount += $reduction->getUnitPriceReduction() * ($lineItem->getQuantity() - $reduction->getQuantityReduction());
+            $amount += $reduction->getUnitPriceReduction() *
+                ($lineItem->getQuantity() - $reduction->getQuantityReduction());
         }
 
         return $this->roundAmount($amount, $currencyCode);
@@ -67,8 +68,8 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
      */
     public function getItemsByReductionAmount(array $lineItems, $expectedSum)
     {
-        if (count($lineItems) <= 0) {
-            throw new Exception("No line items provided.");
+        if (empty($lineItems)) {
+            Mage::throwException("No line items provided.");
         }
 
         $total = $this->getTotalAmountIncludingTax($lineItems);
@@ -99,53 +100,60 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
     {
         $diff = $this->getDifference($lineItems, $expectedSum, $currency);
         if ($diff != 0) {
-            $currencyFractionDigits = Mage::helper('wallee_payment')->getCurrencyFractionDigits($currency);
-            if (abs($diff) < count($lineItems) * pow(10, -$currencyFractionDigits)) {
+            $currencyFractionDigits = Mage::helper('wallee_payment')->getCurrencyFractionDigits(
+                $currency);
+            if (abs($diff) < count($lineItems) * pow(10, - $currencyFractionDigits)) {
                 $this->fixDiscountLineItem($lineItems, $diff, $currency);
             }
-            
+
             $this->checkAmount($lineItems, $expectedSum, $currency);
         }
 
         return $this->ensureUniqueIds($lineItems);
     }
-    
+
     /**
      *
      * @param \Wallee\Sdk\Model\LineItemCreate[] $lineItems
      * @param float $amount
      * @param string $currency
      */
-    private function getDifference(array $lineItems, $expectedSum, $currency) {
+    protected function getDifference(array $lineItems, $expectedSum, $currency)
+    {
         $effectiveSum = $this->roundAmount($this->getTotalAmountIncludingTax($lineItems), $currency);
         return $this->roundAmount($expectedSum, $currency) - $effectiveSum;
     }
-    
+
     /**
      *
      * @param \Wallee\Sdk\Model\LineItemCreate[] $lineItems
      * @param float $amount
      * @param string $currency
      */
-    private function checkAmount(array $lineItems, $expectedSum, $currency) {
+    protected function checkAmount(array $lineItems, $expectedSum, $currency)
+    {
         $effectiveSum = $this->roundAmount($this->getTotalAmountIncludingTax($lineItems), $currency);
         $diff = $this->roundAmount($expectedSum, $currency) - $effectiveSum;
         if ($diff != 0) {
-            throw new \Exception('The line item total amount of ' . $effectiveSum . ' does not match the order\'s invoice amount of ' . $expectedSum . '.');
+            Mage::throwException(
+                'The line item total amount of ' . $effectiveSum . ' does not match the order\'s invoice amount of ' .
+                $expectedSum . '.');
         }
     }
-    
+
     /**
-     * 
+     *
      * @param \Wallee\Sdk\Model\LineItemCreate[] $lineItems
      * @param float $amount
      * @param string $currency
      */
-    private function fixDiscountLineItem(array &$lineItems, $amount, $currency) {
+    protected function fixDiscountLineItem(array &$lineItems, $amount, $currency)
+    {
         foreach (array_reverse($lineItems, true) as $index => $lineItem) {
             if (preg_match('/^(\d+)-discount$/', $lineItem->getUniqueId())) {
                 $updatedLineItem = new \Wallee\Sdk\Model\LineItemCreate();
-                $updatedLineItem->setAmountIncludingTax($this->roundAmount($lineItem->getAmountIncludingTax() + $amount, $currency));
+                $updatedLineItem->setAmountIncludingTax(
+                    $this->roundAmount($lineItem->getAmountIncludingTax() + $amount, $currency));
                 $updatedLineItem->setName($lineItem->getName());
                 $updatedLineItem->setQuantity($lineItem->getQuantity());
                 $updatedLineItem->setSku($lineItem->getSku());
@@ -176,7 +184,7 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
             }
 
             if (empty($uniqueId)) {
-                throw new Exception("There is an invoice item without unique id.");
+                Mage::throwException("There is an invoice item without unique id.");
             }
 
             if (isset($uniqueIds[$uniqueId])) {
@@ -193,7 +201,7 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
         return $lineItems;
     }
 
-    private function roundAmount($amount, $currencyCode)
+    protected function roundAmount($amount, $currencyCode)
     {
         /* @var Wallee_Payment_Helper_Data $helper */
         $helper = Mage::helper('wallee_payment');

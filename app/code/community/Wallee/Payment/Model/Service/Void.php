@@ -21,7 +21,7 @@ class Wallee_Payment_Model_Service_Void extends Wallee_Payment_Model_Service_Abs
      *
      * @var \Wallee\Sdk\Service\TransactionVoidService
      */
-    private $transactionVoidService;
+    protected $_transactionVoidService;
 
     /**
      * Void the transaction of the given payment.
@@ -33,9 +33,8 @@ class Wallee_Payment_Model_Service_Void extends Wallee_Payment_Model_Service_Abs
     {
         return $this->getTransactionVoidService()->voidOnline(
             $payment->getOrder()
-            ->getWalleeSpaceId(), $payment->getOrder()
-            ->getWalleeTransactionId()
-        );
+                ->getWalleeSpaceId(), $payment->getOrder()
+                ->getWalleeTransactionId());
     }
 
     /**
@@ -45,10 +44,11 @@ class Wallee_Payment_Model_Service_Void extends Wallee_Payment_Model_Service_Abs
      */
     protected function getTransactionVoidService()
     {
-        if ($this->transactionVoidService == null) {
-            $this->transactionVoidService = new \Wallee\Sdk\Service\TransactionVoidService(Mage::helper('wallee_payment')->getApiClient());
+        if ($this->_transactionVoidService == null) {
+            $this->_transactionVoidService = new \Wallee\Sdk\Service\TransactionVoidService(
+                Mage::helper('wallee_payment')->getApiClient());
         }
 
-        return $this->transactionVoidService;
+        return $this->_transactionVoidService;
     }
 }

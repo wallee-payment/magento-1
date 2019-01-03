@@ -48,7 +48,7 @@ class Wallee_Payment_Model_Entity_RefundJob extends Mage_Core_Model_Abstract
      *
      * @var Mage_Sales_Model_Order
      */
-    private $_order;
+    protected $_order;
 
     /**
      * Initialize resource model
@@ -63,7 +63,7 @@ class Wallee_Payment_Model_Entity_RefundJob extends Mage_Core_Model_Abstract
         parent::_beforeSave();
 
         if ($this->isObjectNew()) {
-            $this->setCreatedAt(date("Y-m-d H:i:s"));
+            $this->setCreatedAt(Mage::getSingleton('core/date')->date());
         }
     }
 

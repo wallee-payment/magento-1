@@ -43,9 +43,8 @@ class Wallee_Payment_Wallee_TokenController extends Mage_Adminhtml_Controller_Ac
         $this->loadLayout();
         $this->getResponse()->setBody(
             $this->getLayout()
-            ->createBlock('wallee_payment/adminhtml_customer_token')
-            ->toHtml()
-        );
+                ->createBlock('wallee_payment/adminhtml_customer_token')
+                ->toHtml());
     }
 
     /**
@@ -60,7 +59,9 @@ class Wallee_Payment_Wallee_TokenController extends Mage_Adminhtml_Controller_Ac
             Mage::throwException('Token not found.');
         }
 
-        $this->_redirectUrl(Mage::helper('wallee_payment')->getBaseGatewayUrl() . '/s/' . $tokenInfo->getSpaceId() . '/payment/token/view/' . $tokenInfo->getTokenId());
+        $this->_redirectUrl(
+            Mage::helper('wallee_payment')->getBaseGatewayUrl() . '/s/' . $tokenInfo->getSpaceId() .
+            '/payment/token/view/' . $tokenInfo->getTokenId());
     }
 
     /**
@@ -77,12 +78,12 @@ class Wallee_Payment_Wallee_TokenController extends Mage_Adminhtml_Controller_Ac
             $tokenService->deleteToken($tokenInfo->getSpaceId(), $tokenInfo->getTokenId());
         }
 
-        $this->_getSession()->addSuccess(Mage::helper('wallee_payment')->__('The token has been deleted.'));
-        $this->_redirect(
-            'adminhtml/customer/edit', array(
-            'id' => $tokenInfo->getCustomerId(),
-            'active_tab' => 'wallee_payment_token'
-            )
-        );
+        $this->_getSession()->addSuccess(
+            Mage::helper('wallee_payment')->__('The token has been deleted.'));
+        $this->_redirect('adminhtml/customer/edit',
+            array(
+                'id' => $tokenInfo->getCustomerId(),
+                'active_tab' => 'wallee_payment_token'
+            ));
     }
 }

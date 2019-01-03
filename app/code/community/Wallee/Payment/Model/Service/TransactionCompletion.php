@@ -21,7 +21,7 @@ class Wallee_Payment_Model_Service_TransactionCompletion extends Wallee_Payment_
      *
      * @var \Wallee\Sdk\Service\TransactionCompletionService
      */
-    private $transactionCompletionService;
+    protected $_transactionCompletionService;
 
     /**
      * Completes a transaction completion.
@@ -33,9 +33,8 @@ class Wallee_Payment_Model_Service_TransactionCompletion extends Wallee_Payment_
     {
         return $this->getTransactionCompletionService()->completeOnline(
             $payment->getOrder()
-            ->getWalleeSpaceId(), $payment->getOrder()
-            ->getWalleeTransactionId()
-        );
+                ->getWalleeSpaceId(), $payment->getOrder()
+                ->getWalleeTransactionId());
     }
 
     /**
@@ -45,10 +44,11 @@ class Wallee_Payment_Model_Service_TransactionCompletion extends Wallee_Payment_
      */
     protected function getTransactionCompletionService()
     {
-        if ($this->transactionCompletionService == null) {
-            $this->transactionCompletionService = new \Wallee\Sdk\Service\TransactionCompletionService($this->getHelper()->getApiClient());
+        if ($this->_transactionCompletionService == null) {
+            $this->_transactionCompletionService = new \Wallee\Sdk\Service\TransactionCompletionService(
+                $this->getHelper()->getApiClient());
         }
 
-        return $this->transactionCompletionService;
+        return $this->_transactionCompletionService;
     }
 }

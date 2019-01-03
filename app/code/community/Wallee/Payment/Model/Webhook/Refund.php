@@ -23,7 +23,8 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
      */
     protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request)
     {
-        $refundService = new \Wallee\Sdk\Service\RefundService(Mage::helper('wallee_payment')->getApiClient());
+        $refundService = new \Wallee\Sdk\Service\RefundService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $refundService->read($request->getSpaceId(), $request->getEntityId());
     }
 
@@ -38,7 +39,6 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         /* @var \Wallee\Sdk\Model\Refund $refund */
         switch ($refund->getState()) {
             case \Wallee\Sdk\Model\RefundState::FAILED:
-                $this->failed($refund, $order);
                 $this->deleteRefundJob($refund);
                 break;
             case \Wallee\Sdk\Model\RefundState::SUCCESSFUL:
@@ -50,10 +50,6 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         }
     }
 
-    protected function failed(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
-    {
-    }
-
     protected function refunded(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
     {
         if ($order->getWalleeCanceled()) {
@@ -61,7 +57,8 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         }
 
         /* @var Mage_Sales_Model_Order_Creditmemo $existingCreditmemo */
-        $existingCreditmemo = Mage::getModel('sales/order_creditmemo')->load($refund->getExternalId(), 'wallee_external_id');
+        $existingCreditmemo = Mage::getModel('sales/order_creditmemo')->load($refund->getExternalId(),
+            'wallee_external_id');
         if ($existingCreditmemo->getId() > 0) {
             return;
         }

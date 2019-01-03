@@ -16,11 +16,11 @@
 abstract class Wallee_Payment_Model_Provider_Abstract
 {
 
-    private $cacheKey;
+    protected $_cacheKey;
 
-    private $cacheTag;
+    protected $_cacheTag;
 
-    private $data;
+    protected $_data;
 
     /**
      * Constructor.
@@ -30,8 +30,8 @@ abstract class Wallee_Payment_Model_Provider_Abstract
      */
     public function __construct($cacheKey, $cacheTag = 'COLLECTION_DATA')
     {
-        $this->cacheKey = $cacheKey;
-        $this->cacheTag = $cacheTag;
+        $this->_cacheKey = $cacheKey;
+        $this->_cacheTag = $cacheTag;
     }
 
     /**
@@ -57,12 +57,12 @@ abstract class Wallee_Payment_Model_Provider_Abstract
      */
     public function find($id)
     {
-        if ($this->data == null) {
+        if ($this->_data == null) {
             $this->loadData();
         }
 
-        if (isset($this->data[$id])) {
-            return $this->data[$id];
+        if (isset($this->_data[$id])) {
+            return $this->_data[$id];
         } else {
             return false;
         }
@@ -75,29 +75,27 @@ abstract class Wallee_Payment_Model_Provider_Abstract
      */
     public function getAll()
     {
-        if ($this->data == null) {
+        if ($this->_data == null) {
             $this->loadData();
         }
 
-        return $this->data;
+        return $this->_data;
     }
 
     private function loadData()
     {
-        $cachedData = Mage::app()->loadCache($this->cacheKey);
+        $cachedData = Mage::app()->loadCache($this->_cacheKey);
         if ($cachedData) {
-            $this->data = unserialize($cachedData);
+            $this->_data = unserialize($cachedData);
         } else {
-            $this->data = array();
+            $this->_data = array();
             foreach ($this->fetchData() as $entry) {
-                $this->data[$this->getId($entry)] = $entry;
+                $this->_data[$this->getId($entry)] = $entry;
             }
 
-            Mage::app()->saveCache(
-                serialize($this->data), $this->cacheKey, array(
-                $this->cacheTag
-                )
-            );
+            Mage::app()->saveCache(serialize($this->_data), $this->_cacheKey, array(
+                $this->_cacheTag
+            ));
         }
     }
 }

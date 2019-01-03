@@ -22,15 +22,18 @@ class Wallee_Payment_WebhookController extends Mage_Core_Controller_Front_Action
     public function indexAction()
     {
         $this->getResponse()->setHttpResponseCode(500);
-        $request = new Wallee_Payment_Model_Webhook_Request(json_decode($this->getRequest()->getRawBody()));
+        $request = new Wallee_Payment_Model_Webhook_Request(
+            json_decode($this->getRequest()->getRawBody()));
         try {
             Mage::dispatchEvent(
-                'wallee_payment_webhook_' . strtolower($request->getListenerEntityTechnicalName()), array(
-                'request' => $request
-                )
-            );
+                'wallee_payment_webhook_' . strtolower($request->getListenerEntityTechnicalName()),
+                array(
+                    'request' => $request
+                ));
         } catch (Exception $e) {
-            Mage::log('The webhook  ' . $request->getEntityId() . ' could not be processed because of an exception: ' . "\n" . $e->__toString(), Zend_Log::ERR, 'wallee.log');
+            Mage::log(
+                'The webhook  ' . $request->getEntityId() . ' could not be processed because of an exception: ' . "\n" .
+                $e->__toString(), Zend_Log::ERR, 'wallee.log');
             throw $e;
         }
         $this->getResponse()->setHttpResponseCode(200);

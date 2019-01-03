@@ -104,7 +104,8 @@ $installer->getConnection()->addColumn(
 );
 
 /**
- * Add a new column to the sales/creditmemo table that stores the external id of the refund in wallee representing this creditmemo.
+ * Add a new column to the sales/creditmemo table that stores the external id of the refund in wallee
+ * representing this creditmemo.
  */
 $installer->getConnection()->addColumn(
     $installer->getTable('sales/creditmemo'), 'wallee_external_id', array(

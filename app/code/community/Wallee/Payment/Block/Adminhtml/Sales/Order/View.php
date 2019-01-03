@@ -41,10 +41,9 @@ class Wallee_Payment_Block_Adminhtml_Sales_Order_View extends Mage_Adminhtml_Blo
     {
         /* @var Mage_Sales_Model_Order $order */
         $order = Mage::registry('sales_order');
-        return $this->getUrl(
-            'adminhtml/wallee_transaction/refund', array(
-            'order_id' => $order->getId()
-            )
-        );
+        return $this->getUrl('adminhtml/wallee_transaction/refund',
+            array(
+                'order_id' => $order->getId()
+            ));
     }
 }

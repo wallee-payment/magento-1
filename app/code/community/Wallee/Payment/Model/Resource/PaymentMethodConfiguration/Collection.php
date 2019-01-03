@@ -40,7 +40,8 @@ class Wallee_Payment_Model_Resource_PaymentMethodConfiguration_Collection extend
      */
     public function addActiveStateFilter()
     {
-        $this->addFieldToFilter('main_table.state', Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE);
+        $this->addFieldToFilter('main_table.state',
+            Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE);
         return $this;
     }
 
@@ -51,14 +52,13 @@ class Wallee_Payment_Model_Resource_PaymentMethodConfiguration_Collection extend
      */
     public function addStateFilter()
     {
-        $this->addFieldToFilter(
-            'main_table.state', array(
-            'in' => array(
-                Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE,
-                Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_INACTIVE
-            )
-            )
-        );
+        $this->addFieldToFilter('main_table.state',
+            array(
+                'in' => array(
+                    Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_ACTIVE,
+                    Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_INACTIVE
+                )
+            ));
         return $this;
     }
 }

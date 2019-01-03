@@ -43,12 +43,10 @@ class Wallee_Payment_Model_Resource_TokenInfo extends Mage_Core_Model_Resource_D
             ->from($this->getMainTable())
             ->where('space_id=:space_id AND token_id=:token_id');
 
-        $data = $this->_read->fetchRow(
-            $select, array(
+        $data = $this->_read->fetchRow($select, array(
             'space_id' => $spaceId,
             'token_id' => $tokenId
-            )
-        );
+        ));
 
         $model->setData($data);
         $this->unserializeFields($model);

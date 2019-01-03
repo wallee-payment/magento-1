@@ -32,7 +32,8 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         }
     }
 
-    private function hasChanged(\Wallee\Sdk\Model\PaymentMethodConfiguration $configuration, Wallee_Payment_Model_Entity_PaymentMethodConfiguration $model)
+    protected function hasChanged(\Wallee\Sdk\Model\PaymentMethodConfiguration $configuration,
+        Wallee_Payment_Model_Entity_PaymentMethodConfiguration $model)
     {
         if ($configuration->getName() != $model->getConfigurationName()) {
             return true;
@@ -45,7 +46,7 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         if ($configuration->getResolvedDescription() != $model->getDescriptionArray()) {
             return true;
         }
-        
+
         if ($this->getImagePath($configuration->getResolvedImageUrl()) != $model->getImage()) {
             return true;
         }
@@ -68,20 +69,24 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
         $existingConfigurations = $collection->getItems();
         $existingFound = array();
         foreach ($existingConfigurations as $existingConfiguration) {
-            $existingConfiguration->setState(Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_HIDDEN);
+            $existingConfiguration->setState(
+                Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_HIDDEN);
         }
 
         foreach (Mage::app()->getWebsites() as $website) {
             $spaceId = $website->getConfig('wallee_payment/general/space_id');
             if ($spaceId && ! in_array($spaceId, $spaceIds)) {
-                $paymentMethodConfigurationService = new \Wallee\Sdk\Service\PaymentMethodConfigurationService($this->getHelper()->getApiClient());
-                $configurations = $paymentMethodConfigurationService->search($spaceId, new \Wallee\Sdk\Model\EntityQuery());
+                $paymentMethodConfigurationService = new \Wallee\Sdk\Service\PaymentMethodConfigurationService(
+                    $this->getHelper()->getApiClient());
+                $configurations = $paymentMethodConfigurationService->search($spaceId,
+                    new \Wallee\Sdk\Model\EntityQuery());
                 foreach ($configurations as $configuration) {
                     /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $method */
                     $method = null;
                     foreach ($existingConfigurations as $existingConfiguration) {
                         /* @var Wallee_Payment_Model_Entity_PaymentMethodConfiguration $existingConfiguration */
-                        if ($existingConfiguration->getSpaceId() == $spaceId && $existingConfiguration->getConfigurationId() == $configuration->getId()) {
+                        if ($existingConfiguration->getSpaceId() == $spaceId &&
+                            $existingConfiguration->getConfigurationId() == $configuration->getId()) {
                             $method = $existingConfiguration;
                             $existingFound[] = $method->getId();
                             break;
@@ -109,7 +114,8 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
 
         foreach ($existingConfigurations as $existingConfiguration) {
             if (! in_array($existingConfiguration->getId(), $existingFound)) {
-                $existingConfiguration->setState(Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_HIDDEN);
+                $existingConfiguration->setState(
+                    Wallee_Payment_Model_Entity_PaymentMethodConfiguration::STATE_HIDDEN);
                 $existingConfiguration->save();
             }
         }
@@ -118,10 +124,12 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
     }
 
     /**
+     *
      * @param string $resolvedImageUrl
      * @return string
      */
-    protected function getImagePath($resolvedImageUrl) {
+    protected function getImagePath($resolvedImageUrl)
+    {
         $index = strpos($resolvedImageUrl, 'resource/');
         return substr($resolvedImageUrl, $index + strlen('resource/'));
     }
@@ -164,24 +172,24 @@ class Wallee_Payment_Model_Service_PaymentMethodConfiguration extends Wallee_Pay
     {
         /* @var Wallee_Payment_Model_Resource_PaymentMethodConfiguration_Collection $collection */
         $collection = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->getCollection();
-        $generationDir = $this->getHelper()->getGenerationDirectoryPath() . DS . 'Wallee' . DS . 'Payment' . DS . 'Model';
+        $generationDir = $this->getHelper()->getGenerationDirectoryPath() . DS . 'Wallee' . DS . 'Payment' .
+            DS . 'Model';
         if (! file_exists($generationDir)) {
             mkdir($generationDir, 0777, true);
         }
 
-        $classTemplate = file_get_contents(Mage::getModuleDir('', 'Wallee_Payment') . DS . 'Model' . DS . 'Payment' . DS . 'Method' . DS . 'Template.php.tpl');
+        $classTemplate = file_get_contents(
+            Mage::getModuleDir('', 'Wallee_Payment') . DS . 'Model' . DS . 'Payment' . DS . 'Method' . DS .
+            'Template.php.tpl');
         foreach ($collection->getItems() as $configuration) {
             $fileName = $generationDir . DS . 'PaymentMethod' . $configuration->getId() . '.php';
             if (! file_exists($fileName)) {
-                file_put_contents(
-                    $fileName, str_replace(
-                        array(
+                file_put_contents($fileName,
+                    str_replace(array(
                         '{id}'
-                        ), array(
+                    ), array(
                         $configuration->getId()
-                        ), $classTemplate
-                    )
-                );
+                    ), $classTemplate));
             }
         }
     }

@@ -21,7 +21,7 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
      *
      * @var \Wallee\Sdk\Service\TransactionInvoiceService
      */
-    private $transactionInvoiceService;
+    protected $_transactionInvoiceService;
 
     /**
      * Returns the transaction invoice for the given transaction.
@@ -93,16 +93,17 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
         $replacement->setLineItems($lineItems->collectInvoiceLineItems($invoice, $invoice->getGrandTotal()));
         return $this->getTransactionInvoiceService()->replace($spaceId, $invoiceId, $replacement);
     }
-    
+
     /**
      * Returns an external ID for a transaction invoice.
-     * 
+     *
      * @param Mage_Sales_Model_Order_Invoice $invoice
      * @return string
      */
-    private function getExternalId(Mage_Sales_Model_Order_Invoice $invoice) {
+    protected function getExternalId(Mage_Sales_Model_Order_Invoice $invoice)
+    {
         $incrementId = $invoice->getIncrementId();
-        if (!empty($incrementId)) {
+        if (! empty($incrementId)) {
             return $incrementId;
         } else {
             return uniqid($invoice->getOrderId() . '-');
@@ -116,10 +117,11 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
      */
     protected function getTransactionInvoiceService()
     {
-        if ($this->transactionInvoiceService == null) {
-            $this->transactionInvoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService($this->getHelper()->getApiClient());
+        if ($this->_transactionInvoiceService == null) {
+            $this->_transactionInvoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService(
+                $this->getHelper()->getApiClient());
         }
 
-        return $this->transactionInvoiceService;
+        return $this->_transactionInvoiceService;
     }
 }

@@ -23,7 +23,8 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
      */
     protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request)
     {
-        $transactionService = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
+        $transactionService = new \Wallee\Sdk\Service\TransactionService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $transactionService->read($request->getSpaceId(), $request->getEntityId());
     }
 
@@ -78,13 +79,16 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
             ->setIsTransactionClosed(false);
         $order->getPayment()->registerAuthorizationNotification($transaction->getAuthorizationAmount());
         $this->sendOrderEmail($order);
-        $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, 'processing_wallee', Mage::helper('wallee_payment')->__('The order should not be fulfilled yet, as the payment is not guaranteed.'));
+        $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, 'processing_wallee',
+            Mage::helper('wallee_payment')->__(
+                'The order should not be fulfilled yet, as the payment is not guaranteed.'));
         $order->setWalleeAuthorized(true);
         $order->save();
         try {
             $this->updateShopCustomer($transaction, $order);
         } catch (Exception $e) {
             // Try to update the customer, ignore if it fails.
+            Mage::log('Failed to update the customer: ' . $e->getMessage(), null, 'wallee.log');
         }
     }
 
@@ -108,10 +112,11 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
             $order->addRelatedObject($invoice);
         }
 
-        if (!$order->isCanceled()) {
+        if (! $order->isCanceled()) {
             $order->registerCancellation(null, false)->save();
         } else {
-            Mage::log('Tried to cancel the order ' . $order->getIncrementId() . ' but it was already cancelled.', null, 'wallee.log');
+            Mage::log('Tried to cancel the order ' . $order->getIncrementId() . ' but it was already cancelled.', null,
+                'wallee.log');
         }
     }
 
@@ -119,9 +124,11 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
     {
         if ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW) {
             $order->getPayment()->setNotificationResult(true);
-            $order->getPayment()->registerPaymentReviewAction(Mage_Sales_Model_Order_Payment::REVIEW_ACTION_ACCEPT, false);
+            $order->getPayment()->registerPaymentReviewAction(Mage_Sales_Model_Order_Payment::REVIEW_ACTION_ACCEPT,
+                false);
         } elseif ($order->getStatus() == 'processing_wallee') {
-            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, Mage::helper('wallee_payment')->__('The order can be fulfilled now.'));
+            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true,
+                Mage::helper('wallee_payment')->__('The order can be fulfilled now.'));
         }
 
         $order->save();
@@ -163,7 +170,8 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
     protected function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         foreach ($order->getInvoiceCollection() as $invoice) {
-            if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 && $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
+            if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 &&
+                $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
                 $invoice->load($invoice->getId());
                 return $invoice;
             }
@@ -172,7 +180,8 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         return false;
     }
 
-    protected function updateShopCustomer(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function updateShopCustomer(\Wallee\Sdk\Model\Transaction $transaction,
+        Mage_Sales_Model_Order $order)
     {
         if ($order->getCustomerIsGuest()) {
             return;
@@ -181,34 +190,47 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         /* @var Mage_Customer_Model_Customer $customer */
         $customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
 
-        $billingAddress = $customer->getAddressById(
-            $order->getBillingAddress()
-            ->getCustomerAddressId()
-        );
+        $billingAddress = $customer->getAddressById($order->getBillingAddress()
+            ->getCustomerAddressId());
 
+        $this->updateDateOfBirth($customer, $transaction);
+        $this->updateSalutation($customer, $billingAddress, $transaction);
+        $this->updateGender($customer, $transaction);
+        $this->updateSalesTaxNumber($customer, $billingAddress, $transaction);
+        $this->updateCompany($customer, $billingAddress, $transaction);
+
+        $billingAddress->save();
+        $customer->save();
+    }
+
+    protected function updateDateOfBirth(Mage_Customer_Model_Customer $customer,
+        \Wallee\Sdk\Model\Transaction $transaction)
+    {
         if ($customer->getDob() == null && $transaction->getBillingAddress()->getDateOfBirth() != null) {
-            $customer->setDob(
-                $transaction->getBillingAddress()
-                ->getDateOfBirth()
-            );
+            $customer->setDob($transaction->getBillingAddress()
+                ->getDateOfBirth());
         }
+    }
 
+    protected function updateSalutation(Mage_Customer_Model_Customer $customer,
+        Mage_Customer_Model_Address $billingAddress, \Wallee\Sdk\Model\Transaction $transaction)
+    {
         if ($transaction->getBillingAddress()->getSalutation() != null) {
             if ($customer->getPrefix() == null) {
-                $customer->setPrefix(
-                    $transaction->getBillingAddress()
-                    ->getSalutation()
-                );
+                $customer->setPrefix($transaction->getBillingAddress()
+                    ->getSalutation());
             }
 
             if ($billingAddress->getPrefix() == null) {
-                $billingAddress->setPrefix(
-                    $transaction->getBillingAddress()
-                    ->getSalutation()
-                );
+                $billingAddress->setPrefix($transaction->getBillingAddress()
+                    ->getSalutation());
             }
         }
+    }
 
+    protected function updateGender(Mage_Customer_Model_Customer $customer,
+        \Wallee\Sdk\Model\Transaction $transaction)
+    {
         if ($customer->getGender() == null && $transaction->getBillingAddress()->getGender() != null) {
             if ($transaction->getBillingAddress()->getGender() == \Wallee\Sdk\Model\Gender::MALE) {
                 $customer->setGender(1);
@@ -216,31 +238,30 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
                 $customer->setGender(2);
             }
         }
+    }
 
+    protected function updateSalesTaxNumber(Mage_Customer_Model_Customer $customer,
+        Mage_Customer_Model_Address $billingAddress, \Wallee\Sdk\Model\Transaction $transaction)
+    {
         if ($transaction->getBillingAddress()->getSalesTaxNumber() != null) {
             if ($customer->getTaxvat() == null) {
-                $customer->setTaxvat(
-                    $transaction->getBillingAddress()
-                    ->getSalesTaxNumber()
-                );
+                $customer->setTaxvat($transaction->getBillingAddress()
+                    ->getSalesTaxNumber());
             }
 
             if ($billingAddress->getVatId() == null) {
-                $billingAddress->setVatId(
-                    $transaction->getBillingAddress()
-                    ->getSalesTaxNumber()
-                );
+                $billingAddress->setVatId($transaction->getBillingAddress()
+                    ->getSalesTaxNumber());
             }
         }
+    }
 
+    protected function updateCompany(Mage_Customer_Model_Customer $customer, Mage_Customer_Model_Address $billingAddress,
+        \Wallee\Sdk\Model\Transaction $transaction)
+    {
         if ($billingAddress->getCompany() == null && $transaction->getBillingAddress()->getOrganizationName() != null) {
-            $billingAddress->setCompany(
-                $transaction->getBillingAddress()
-                ->getOrganizationName()
-            );
+            $billingAddress->setCompany($transaction->getBillingAddress()
+                ->getOrganizationName());
         }
-
-        $billingAddress->save();
-        $customer->save();
     }
 }

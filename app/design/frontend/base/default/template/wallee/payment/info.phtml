@@ -22,21 +22,28 @@ $helper = $block->helper('wallee_payment');
 $imageUrl = $block->getImageUrl();
 ?>
 
-<div><?php echo $method->getTitle() ?></div>
+<div><?php echo $block->escapeHtml($method->getTitle()) ?></div>
 <?php if ($method->getConfigData('show_image') && $imageUrl != null) : ?>
-	<img src="<?php echo $imageUrl ?>" width="50" style="margin-top: 10px;" />
+<img src="<?php echo $block->escapeHtml($imageUrl) ?>" width="50"
+    style="margin-top: 10px;" />
 <?php endif; ?>
 
 <?php if ($block->isCustomerDownloadInvoiceAllowed() || $block->isCustomerDownloadPackingSlipAllowed()) : ?>
-	<div style="margin-top: 20px;">
+<div style="margin-top: 20px;">
         <?php $invoiceDownloadUrl = $block->getDownloadInvoiceUrl(); ?>
-		<?php if ($block->isCustomerDownloadInvoiceAllowed() && $invoiceDownloadUrl) : ?>
-        		<a href="<?php echo $invoiceDownloadUrl?>"><?php echo $helper->__('Download Invoice') ?></a><br/>
+        <?php if ($block->isCustomerDownloadInvoiceAllowed() && $invoiceDownloadUrl) : ?>
+                <a
+        href="<?php echo $block->escapeHtml($invoiceDownloadUrl) ?>">
+                    <?php echo $block->escapeHtml($helper->__('Download Invoice')) ?>
+                </a><br />
         <?php endif; ?>
 
         <?php $packingSlipDownloadUrl = $block->getDownloadPackingSlipUrl(); ?>
-		<?php if ($block->isCustomerDownloadPackingSlipAllowed() && $packingSlipDownloadUrl) : ?>
-        		<a href="<?php echo $packingSlipDownloadUrl?>"><?php echo $helper->__('Download Packing Slip') ?></a><br/>
+        <?php if ($block->isCustomerDownloadPackingSlipAllowed() && $packingSlipDownloadUrl) : ?>
+                <a
+        href="<?php echo $block->escapeHtml($packingSlipDownloadUrl) ?>">
+                    <?php echo $block->escapeHtml($helper->__('Download Packing Slip')) ?>
+                </a><br />
         <?php endif; ?>
-	</div>
+    </div>
 <?php endif; ?>

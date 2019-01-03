@@ -30,11 +30,13 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         foreach ($invoice->getAllItems() as $item) {
             /* @var Mage_Sales_Model_Order_Invoice_Item $item */
             $orderItem = $item->getOrderItem();
-            if ($orderItem->getParentItemId() != null && $orderItem->getParentItem()->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+            if ($orderItem->getParentItemId() != null &&
+                $orderItem->getParentItem()->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                 continue;
             }
 
-            if ($orderItem->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE && $orderItem->getParentItemId() == null) {
+            if ($orderItem->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE &&
+                $orderItem->getParentItemId() == null) {
                 continue;
             }
 
@@ -56,13 +58,13 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             $lineItems[] = $surchargeItem;
         }
 
-        $mx2gGiftCard = $this->getMX2GiftCardLineItem($invoice->getOrder());
-        if ($mx2gGiftCard) {
-            $lineItems[] = $mx2gGiftCard;
+        $mxgGiftCard = $this->getMX2GiftCardLineItem($invoice->getOrder());
+        if ($mxgGiftCard) {
+            $lineItems[] = $mxgGiftCard;
         }
-        
+
         $awGiftCards = $this->getAWGiftCardLineItems($invoice);
-        if (!empty($awGiftCards)) {
+        if (! empty($awGiftCards)) {
             $lineItems = array_merge($lineItems, $awGiftCards);
         }
 
@@ -79,25 +81,25 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
     {
         if ($invoice->getShippingAmount() > 0) {
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
-            $lineItem->setAmountIncludingTax($this->roundAmount($invoice->getShippingInclTax(), $invoice->getOrderCurrencyCode()));
-            if (Mage::getStoreConfig('wallee_payment/line_item/overwrite_shipping_description', $invoice->getStore())) {
-                $lineItem->setName(Mage::getStoreConfig('wallee_payment/line_item/custom_shipping_description', $invoice->getStore()));
-            } else {
+            $lineItem->setAmountIncludingTax(
+                $this->roundAmount($invoice->getShippingInclTax(), $invoice->getOrderCurrencyCode()));
+            if (Mage::getStoreConfig('wallee_payment/line_item/overwrite_shipping_description',
+                $invoice->getStore())) {
                 $lineItem->setName(
-                    $invoice->getOrder()
-                    ->getShippingDescription()
-                );
+                    Mage::getStoreConfig('wallee_payment/line_item/custom_shipping_description',
+                        $invoice->getStore()));
+            } else {
+                $lineItem->setName($invoice->getOrder()
+                    ->getShippingDescription());
             }
 
             $lineItem->setQuantity(1);
             $lineItem->setSku('shipping');
             $tax = $this->getShippingTax($invoice->getOrder());
             if ($tax->getRate() > 0) {
-                $lineItem->setTaxes(
-                    array(
+                $lineItem->setTaxes(array(
                     $tax
-                    )
-                );
+                ));
             }
 
             $lineItem->setType(\Wallee\Sdk\Model\LineItemType::SHIPPING);
@@ -126,17 +128,18 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             $lineItems[] = $surchargeItem;
         }
 
-        $mx2gGiftCard = $this->getMX2GiftCardLineItem($entity);
-        if ($mx2gGiftCard) {
-            $lineItems[] = $mx2gGiftCard;
+        $mxgGiftCard = $this->getMX2GiftCardLineItem($entity);
+        if ($mxgGiftCard) {
+            $lineItems[] = $mxgGiftCard;
         }
-        
+
         $awGiftCards = $this->getAWGiftCardLineItems($entity);
-        if (!empty($awGiftCards)) {
+        if (! empty($awGiftCards)) {
             $lineItems = array_merge($lineItems, $awGiftCards);
         }
 
-        return $this->getLineItemHelper()->cleanupLineItems($lineItems, $entity->getGrandTotal(), $this->getCurrencyCode($entity));
+        return $this->getLineItemHelper()->cleanupLineItems($lineItems, $entity->getGrandTotal(),
+            $this->getCurrencyCode($entity));
     }
 
     /**
@@ -152,11 +155,13 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
 
         foreach ($items as $item) {
             /* @var Mage_Sales_Model_Order_Item|Mage_Sales_Model_Quote_Item $item */
-            if ($item->getParentItemId() != null && $item->getParentItem()->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+            if ($item->getParentItemId() != null &&
+                $item->getParentItem()->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                 continue;
             }
 
-            if ($item->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE && $item->getParentItemId() == null) {
+            if ($item->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE &&
+                $item->getParentItemId() == null) {
                 /* @var Mage_Catalog_Model_Product $product */
                 $product = Mage::getModel('catalog/product')->load($item->getProductId());
                 if ($product->getPriceType() != Mage_Bundle_Model_Product_Price::PRICE_TYPE_FIXED) {
@@ -190,14 +195,12 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         $lineItem->setQuantity($productItem->getQty() ? $productItem->getQty() : $productItem->getQtyOrdered());
         $lineItem->setShippingRequired(! $productItem->getIsVirtual());
         $lineItem->setSku($productItem->getSku());
-        
+
         $orderItem = ($productItem instanceof Mage_Sales_Model_Order_Invoice_Item) ? $productItem->getOrderItem() : $productItem;
         if ($orderItem->getTaxPercent() > 0) {
-            $lineItem->setTaxes(
-                array(
-                    $this->getTax($orderItem)
-                )
-            );
+            $lineItem->setTaxes(array(
+                $this->getTax($orderItem)
+            ));
         }
 
         $lineItem->setType(\Wallee\Sdk\Model\LineItemType::PRODUCT);
@@ -209,43 +212,44 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         }
 
         $lineItem->setUniqueId($uniqueId);
-        
+
         $attributes = array();
         foreach ($this->getProductOptions($productItem) as $option) {
             $value = $option['value'];
             if (is_array($value)) {
                 $value = current($value);
             }
-            
+
             $attribute = new \Wallee\Sdk\Model\LineItemAttributeCreate();
             $attribute->setLabel($this->fixLength($this->getFirstLine($option['label']), 512));
             $attribute->setValue($this->fixLength($this->getFirstLine($value), 512));
             $attributes[$this->getAttributeKey($option)] = $attribute;
         }
 
-        if (!empty($attributes)) {
+        if (! empty($attributes)) {
             $lineItem->setAttributes($attributes);
         }
-        
+
         return $this->cleanLineItem($lineItem);
     }
-    
+
     protected function getAttributeKey($option)
     {
-        if (isset($option['option_id']) && !empty($option['option_id'])) {
+        if (isset($option['option_id']) && ! empty($option['option_id'])) {
             return $this->fixLength('option_' . $option['option_id'], 40);
         } else {
             return $this->fixLength(preg_replace('/[^a-z0-9]/', '', strtolower($option['label'])), 40);
         }
     }
-    
+
     /**
-     * 
+     *
      * @param Mage_Sales_Model_Order_Item|Mage_Sales_Model_Quote_Item|Mage_Sales_Model_Order_Invoice_Item $productItem
      */
     protected function getProductOptions($productItem)
     {
-        if ($productItem instanceof Mage_Sales_Model_Order_Item || $productItem instanceof Mage_Sales_Model_Order_Invoice_Item) {
+        if ($productItem instanceof Mage_Sales_Model_Order_Item ||
+            $productItem instanceof Mage_Sales_Model_Order_Invoice_Item) {
             $result = array();
             if ($options = $productItem->getProductOptions()) {
                 if (isset($options['options'])) {
@@ -283,27 +287,23 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         /* @var Mage_Tax_Helper_Data $taxHelper */
         $taxHelper = Mage::helper('tax');
         if ($productItem->getDiscountAmount() != 0) {
-            if ($taxHelper->priceIncludesTax($productItem->getStoreId())
-                || ! $taxHelper->applyTaxAfterDiscount($productItem->getStoreId())) {
-                $amountIncludingTax = -1 * $productItem->getDiscountAmount();
+            if ($taxHelper->priceIncludesTax($productItem->getStoreId()) ||
+                ! $taxHelper->applyTaxAfterDiscount($productItem->getStoreId())) {
+                $amountIncludingTax = - 1 * $productItem->getDiscountAmount();
             } else {
-                $amountIncludingTax = -1 * $productItem->getDiscountAmount() * ($productItem->getTaxPercent() / 100 + 1);
+                $amountIncludingTax = - 1 * $productItem->getDiscountAmount() * ($productItem->getTaxPercent() / 100 + 1);
             }
 
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
             $lineItem->setAmountIncludingTax($this->roundAmount($amountIncludingTax, $currency));
-            $lineItem->setName(
-                $this->getHelper()
-                ->__('Discount')
-            );
+            $lineItem->setName($this->getHelper()
+                ->__('Discount'));
             $lineItem->setQuantity($productItem->getQty() ? $productItem->getQty() : $productItem->getQtyOrdered());
             $lineItem->setSku($productItem->getSku() . '-discount');
             if ($taxHelper->applyTaxAfterDiscount($productItem->getStore()) && $productItem->getTaxPercent() > 0) {
-                $lineItem->setTaxes(
-                    array(
+                $lineItem->setTaxes(array(
                     $this->getTax($productItem)
-                    )
-                );
+                ));
             }
 
             $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);
@@ -334,9 +334,13 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
 
         if ($shippingInfo->getShippingAmount() > 0) {
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
-            $lineItem->setAmountIncludingTax($this->roundAmount($shippingInfo->getShippingInclTax(), $this->getCurrencyCode($entity)));
-            if (Mage::getStoreConfig('wallee_payment/line_item/overwrite_shipping_description', $entity->getStore())) {
-                $lineItem->setName(Mage::getStoreConfig('wallee_payment/line_item/custom_shipping_description', $entity->getStore()));
+            $lineItem->setAmountIncludingTax(
+                $this->roundAmount($shippingInfo->getShippingInclTax(), $this->getCurrencyCode($entity)));
+            if (Mage::getStoreConfig('wallee_payment/line_item/overwrite_shipping_description',
+                $entity->getStore())) {
+                $lineItem->setName(
+                    Mage::getStoreConfig('wallee_payment/line_item/custom_shipping_description',
+                        $entity->getStore()));
             } else {
                 $lineItem->setName($shippingInfo->getShippingDescription());
             }
@@ -345,11 +349,9 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             $lineItem->setSku('shipping');
             $tax = $this->getShippingTax($entity);
             if ($tax->getRate() > 0) {
-                $lineItem->setTaxes(
-                    array(
+                $lineItem->setTaxes(array(
                     $tax
-                    )
-                );
+                ));
             }
 
             $lineItem->setType(\Wallee\Sdk\Model\LineItemType::SHIPPING);
@@ -373,8 +375,10 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         $customerGroup = Mage::getModel('customer/group');
 
         $classId = $customerGroup->getTaxClassId($entity->getCustomerGroupId());
-        $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(), $classId, $entity->getStore());
-        $shippingTaxClass = Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_SHIPPING_TAX_CLASS, $entity->getStore());
+        $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(), $classId,
+            $entity->getStore());
+        $shippingTaxClass = Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_SHIPPING_TAX_CLASS,
+            $entity->getStore());
 
         /* @var Mage_Tax_Model_Class $taxClass */
         $taxClass = Mage::getModel('tax/class')->load($shippingTaxClass);
@@ -395,17 +399,16 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
     {
         if (Mage::helper('core')->isModuleEnabled('Fooman_Surcharge') && $entity->getFoomanSurchargeAmount() != 0) {
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
-            $lineItem->setAmountIncludingTax($this->roundAmount($entity->getFoomanSurchargeAmount(), $this->getCurrencyCode($entity)));
+            $lineItem->setAmountIncludingTax(
+                $this->roundAmount($entity->getFoomanSurchargeAmount(), $this->getCurrencyCode($entity)));
             $lineItem->setName($entity->getFoomanSurchargeDescription());
             $lineItem->setQuantity(1);
             $lineItem->setSku('surcharge');
             $tax = $this->getSurchargeTax($entity);
             if ($tax != null && $tax->getRate() > 0) {
-                $lineItem->setTaxes(
-                    array(
+                $lineItem->setTaxes(array(
                     $tax
-                    )
-                );
+                ));
             }
 
             $lineItem->setType(\Wallee\Sdk\Model\LineItemType::FEE);
@@ -431,7 +434,8 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             $customerGroup = Mage::getModel('customer/group');
 
             $classId = $customerGroup->getTaxClassId($entity->getCustomerGroupId());
-            $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(), $classId, $entity->getStore());
+            $request = $taxCalculation->getRateRequest($entity->getShippingAddress(), $entity->getBillingAddress(),
+                $classId, $entity->getStore());
             if ($surchargeTaxRate = $taxCalculation->getRate($request->setProductClassId($surchargeTaxClass))) {
                 /* @var Mage_Tax_Model_Class $taxClass */
                 $taxClass = Mage::getModel('tax/class')->load($surchargeTaxClass);
@@ -454,11 +458,10 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
     {
         if (Mage::helper('core')->isModuleEnabled('MX2_Giftcard') && $entity->getGiftCardsAmount() != 0) {
             $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
-            $lineItem->setAmountIncludingTax($this->roundAmount(-1 * $entity->getGiftCardsAmount(), $this->getCurrencyCode($entity)));
-            $lineItem->setName(
-                $this->getHelper()
-                ->__('Giftcard')
-            );
+            $lineItem->setAmountIncludingTax(
+                $this->roundAmount(- 1 * $entity->getGiftCardsAmount(), $this->getCurrencyCode($entity)));
+            $lineItem->setName($this->getHelper()
+                ->__('Giftcard'));
             $lineItem->setQuantity(1);
             $lineItem->setSku('giftcard');
             $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);
@@ -466,7 +469,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             return $this->cleanLineItem($lineItem);
         }
     }
-    
+
     /**
      * Returns the line item for the AW giftcards.
      *
@@ -488,11 +491,10 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             foreach ($giftcards as $giftcard) {
                 $giftcardModel = Mage::getModel('aw_giftcard/giftcard')->load($giftcard->getGiftcardId());
                 $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
-                $lineItem->setAmountIncludingTax($this->roundAmount(-1 * $giftcard->getGiftcardAmount(), $this->getCurrencyCode($entity)));
-                $lineItem->setName(
-                    $this->getHelper()
-                    ->__('Giftcard (%s)', $giftcardModel->getCode())
-                    );
+                $lineItem->setAmountIncludingTax(
+                    $this->roundAmount(- 1 * $giftcard->getGiftcardAmount(), $this->getCurrencyCode($entity)));
+                $lineItem->setName($this->getHelper()
+                    ->__('Giftcard (%s)', $giftcardModel->getCode()));
                 $lineItem->setQuantity(1);
                 $lineItem->setSku('giftcard_' . $giftcard->getGiftcardId());
                 $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);

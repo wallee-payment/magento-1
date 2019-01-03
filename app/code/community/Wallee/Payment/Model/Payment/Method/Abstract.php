@@ -1,5 +1,4 @@
 <?php
-
 use Wallee\Sdk\Model\TransactionState;
 
 /**
@@ -77,22 +76,28 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
     public function getPaymentMethodConfiguration()
     {
         if ($this->_paymentMethodConfiguration == null) {
-            $this->_paymentMethodConfiguration = Mage::getModel('wallee_payment/entity_paymentMethodConfiguration')->load($this->_paymentMethodConfigurationId);
+            $this->_paymentMethodConfiguration = Mage::getModel(
+                'wallee_payment/entity_paymentMethodConfiguration')->load(
+                $this->_paymentMethodConfigurationId);
         }
 
         return $this->_paymentMethodConfiguration;
     }
-    
+
     public function canVoid(Varien_Object $payment)
     {
         if (! parent::canVoid($payment)) {
             return false;
         }
-        
+
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         try {
-            $transaction = $transactionService->getTransaction($payment->getOrder()->getWalleeSpaceId(), $payment->getOrder()->getWalleeTransactionId());
+            $transaction = $transactionService->getTransaction(
+                $payment->getOrder()
+                    ->getWalleeSpaceId(),
+                $payment->getOrder()
+                    ->getWalleeTransactionId());
             if ($transaction instanceof \Wallee\Sdk\Model\Transaction) {
                 return $transaction->getState() == TransactionState::AUTHORIZED;
             }
@@ -107,10 +112,8 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
             return false;
         }
 
-        return ! $this->hasExistingRefundJob(
-            $this->getInfoInstance()
-            ->getOrder()
-        );
+        return ! $this->hasExistingRefundJob($this->getInfoInstance()
+            ->getOrder());
     }
 
     public function canRefundPartialPerInvoice()
@@ -119,10 +122,8 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
             return false;
         }
 
-        return ! $this->hasExistingRefundJob(
-            $this->getInfoInstance()
-            ->getOrder()
-        );
+        return ! $this->hasExistingRefundJob($this->getInfoInstance()
+            ->getOrder());
     }
 
     /**
@@ -131,7 +132,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      * @param int|Mage_Sales_Model_Order $order
      * @return boolean
      */
-    private function hasExistingRefundJob($order)
+    protected function hasExistingRefundJob($order)
     {
         /* @var Wallee_Payment_Model_Entity_RefundJob $existingRefundJob */
         $existingRefundJob = Mage::getModel('wallee_payment/entity_refundJob');
@@ -167,7 +168,8 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                     $possiblePaymentMethods = $transactionService->getPossiblePaymentMethods($quote);
                     $paymentMethodPossible = false;
                     foreach ($possiblePaymentMethods as $possiblePaymentMethod) {
-                        if ($possiblePaymentMethod->getId() == $this->getPaymentMethodConfiguration()->getConfigurationId()) {
+                        if ($possiblePaymentMethod->getId() ==
+                            $this->getPaymentMethodConfiguration()->getConfigurationId()) {
                             $paymentMethodPossible = true;
                             break;
                         }
@@ -177,7 +179,9 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                         return false;
                     }
                 } catch (Exception $e) {
-                    Mage::log('The payment method ' . $this->getTitle() . ' is not available because of an exception: ' . $e->getMessage(), null, 'wallee.log');
+                    Mage::log(
+                        'The payment method ' . $this->getTitle() . ' is not available because of an exception: ' .
+                        $e->getMessage(), null, 'wallee.log');
                     return false;
                 }
             } else {
@@ -216,20 +220,26 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
             ->load($order->getQuoteId());
         $this->setCheckoutQuote($quote);
 
-        $invoice = $this->createInvoice($quote->getWalleeSpaceId(), $quote->getWalleeTransactionId(), $order);
+        $invoice = $this->createInvoice($quote->getWalleeSpaceId(),
+            $quote->getWalleeTransactionId(), $order);
         $this->setCheckoutInvoice($invoice);
 
         $stateObject->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
         $stateObject->setStatus('pending_payment');
         $stateObject->setIsNotified(false);
-        
-        $order->getResource()->addCommitCallback(array($this, 'onOrderCreation'));
+
+        $order->getResource()->addCommitCallback(array(
+            $this,
+            'onOrderCreation'
+        ));
     }
-    
-    public function onOrderCreation() {
-        $order = Mage::getModel('sales/order')->load($this->getCheckoutOrder()->getId());
+
+    public function onOrderCreation()
+    {
+        $order = Mage::getModel('sales/order')->load($this->getCheckoutOrder()
+            ->getId());
         $quote = $this->getCheckoutQuote();
-        
+
         $token = null;
         if (Mage::app()->getStore()->isAdmin()) {
             $tokenInfoId = $quote->getPayment()->getData('wallee_token');
@@ -240,26 +250,26 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                 $token->setId($tokenInfo->getTokenId());
             }
         }
-        
+
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
-        $transaction = $transactionService->confirmTransaction(
-            $quote->getWalleeTransactionId(), $quote->getWalleeSpaceId(), $order, $this->getCheckoutInvoice(), Mage::app()->getStore()
-            ->isAdmin(), $token
-            );
+        $transaction = $transactionService->confirmTransaction($quote->getWalleeTransactionId(),
+            $quote->getWalleeSpaceId(), $order, $this->getCheckoutInvoice(),
+            Mage::app()->getStore()
+                ->isAdmin(), $token);
         $transactionService->updateTransactionInfo($transaction, $order);
-        
+
         $this->getCheckoutOrder()->setWalleeSpaceId($transaction->getLinkedSpaceId());
         $this->getCheckoutOrder()->setWalleeTransactionId($transaction->getId());
         $order->setWalleeSpaceId($transaction->getLinkedSpaceId());
         $order->setWalleeTransactionId($transaction->getId());
-        
+
         if (Mage::app()->getStore()->isAdmin()) {
             // Set the selected token on the order and tell it to apply the charge flow after it is saved.
             $this->getCheckoutOrder()->setWalleeChargeFlow(true);
             $this->getCheckoutOrder()->setWalleeToken($token);
         }
-        
+
         $order->save();
     }
 
@@ -271,7 +281,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      * @param Mage_Sales_Model_Order $order
      * @return Mage_Sales_Model_Order_Invoice
      */
-    private function createInvoice($spaceId, $transactionId, Mage_Sales_Model_Order $order)
+    protected function createInvoice($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         $invoice = $order->prepareInvoice();
         $invoice->register();
@@ -329,20 +339,21 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
     public function cancel(Varien_Object $payment)
     {
         parent::cancel($payment);
-        
+
         $order = $payment->getOrder();
-        
+
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         try {
-            $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
-            if (!($transaction instanceof \Wallee\Sdk\Model\Transaction)) {
+            $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(),
+                $order->getWalleeTransactionId());
+            if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction)) {
                 Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
             }
         } catch (Exception $e) {
             Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
         }
-        
+
         if ($transaction->getState() == TransactionState::AUTHORIZED) {
             $this->voidOnline($payment);
         } else {
@@ -357,7 +368,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      * @param Varien_Object $payment
      * @throws Mage_Core_Exception
      */
-    private function voidOnline(Varien_Object $payment)
+    protected function voidOnline(Varien_Object $payment)
     {
         /* @var \Wallee\Sdk\Model\TransactionVoid $void */
         $void = Mage::getSingleton('wallee_payment/service_void')->void($payment);
@@ -365,25 +376,25 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
             Mage::throwException($this->getHelper()->__('The void of the payment failed on the gateway.'));
         }
     }
-    
+
     /**
      * Refunds the transaction online in case the order has been cancelled.
      *
      * @param Varien_Object $payment
      * @throws Mage_Core_Exception
      */
-    private function refundCancelledOrder(Varien_Object $payment)
+    protected function refundCancelledOrder(Varien_Object $payment)
     {
         $order = $payment->getOrder();
-        
+
         $this->checkExistingRefundJob($order);
-        
+
         /* @var Wallee_Payment_Model_Service_Refund $refundService */
         $refundService = Mage::getSingleton('wallee_payment/service_refund');
         $refund = $refundService->createForPayment($payment);
-        
+
         $refundJob = $this->createRefundJob($order, $refund);
-        
+
         try {
             $refund = $refundService->refund($refundJob->getSpaceId(), $refund);
         } catch (\Wallee\Sdk\ApiException $e) {
@@ -391,24 +402,23 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                 $refundJob->delete();
                 Mage::throwException($e->getResponseObject()->getMessage());
             } else {
-                Mage::throwException($this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
+                Mage::throwException(
+                    $this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
             }
         } catch (Exception $e) {
-            Mage::throwException($this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
+            Mage::throwException(
+                $this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
         }
-        
+
         if ($refund->getState() == \Wallee\Sdk\Model\RefundState::FAILED) {
             $refundJob->delete();
-            Mage::throwException(
-                $this->getHelper()->translate(
-                    $refund->getFailureReason()
-                    ->getDescription()
-                    )
-                );
+            Mage::throwException($this->getHelper()->translate($refund->getFailureReason()
+                ->getDescription()));
         } elseif ($refund->getState() == \Wallee\Sdk\Model\RefundState::PENDING) {
-            Mage::throwException($this->getHelper()->__('The refund was requested successfully, but is still pending on the gateway.'));
+            Mage::throwException(
+                $this->getHelper()->__('The refund was requested successfully, but is still pending on the gateway.'));
         }
-        
+
         $refundJob->delete();
     }
 
@@ -425,20 +435,26 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         $invoice = Mage::registry('wallee_payment_capture_invoice');
 
         if ($invoice->getWalleeCapturePending()) {
-            Mage::throwException($this->getHelper()->__('The capture has already been requested but could not be completed yet. The invoice will be updated, as soon as the capture is done.'));
+            Mage::throwException(
+                $this->getHelper()->__(
+                    'The capture has already been requested but could not be completed yet. The invoice will be updated, as soon as the capture is done.'));
         }
-        
+
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         try {
-            $transaction = $transactionService->getTransaction($payment->getOrder()->getWalleeSpaceId(), $payment->getOrder()->getWalleeTransactionId());
-            if (!($transaction instanceof \Wallee\Sdk\Model\Transaction)) {
+            $transaction = $transactionService->getTransaction(
+                $payment->getOrder()
+                    ->getWalleeSpaceId(),
+                $payment->getOrder()
+                    ->getWalleeTransactionId());
+            if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction)) {
                 Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
             }
         } catch (Exception $e) {
             Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
         }
-        
+
         if ($transaction->getState() == TransactionState::AUTHORIZED) {
             if ($invoice->getId()) {
                 $this->complete($payment, $invoice, $amount);
@@ -464,14 +480,17 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         $this->updateLineItems($payment, $invoice, $amount);
 
         /* @var \Wallee\Sdk\Model\TransactionCompletion $completion */
-        $completion = Mage::getSingleton('wallee_payment/service_transactionCompletion')->complete($payment);
+        $completion = Mage::getSingleton('wallee_payment/service_transactionCompletion')->complete(
+            $payment);
         if ($completion->getState() == \Wallee\Sdk\Model\TransactionCompletionState::FAILED) {
             Mage::throwException($this->getHelper()->__('The capture of the invoice failed on the gateway.'));
         }
 
         /* @var \Wallee\Sdk\Model\TransactionInvoice $transactionInvoice */
-        $transactionInvoice = Mage::getSingleton('wallee_payment/service_transactionInvoice')->getTransactionInvoiceByCompletion($completion->getLinkedSpaceId(), $completion->getId());
-        if ($transactionInvoice->getState() != \Wallee\Sdk\Model\TransactionInvoiceState::PAID && $transactionInvoice->getState() != \Wallee\Sdk\Model\TransactionInvoiceState::NOT_APPLICABLE) {
+        $transactionInvoice = Mage::getSingleton('wallee_payment/service_transactionInvoice')->getTransactionInvoiceByCompletion(
+            $completion->getLinkedSpaceId(), $completion->getId());
+        if ($transactionInvoice->getState() != \Wallee\Sdk\Model\TransactionInvoiceState::PAID &&
+            $transactionInvoice->getState() != \Wallee\Sdk\Model\TransactionInvoiceState::NOT_APPLICABLE) {
             $invoice->setWalleeCapturePending(true);
         }
 
@@ -487,10 +506,12 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      * @param Mage_Sales_Model_Order_Invoice $invoice
      * @param number $amount
      */
-    private function updateLineItems(Mage_Sales_Model_Order_Payment $payment, Mage_Sales_Model_Order_Invoice $invoice, $amount)
+    protected function updateLineItems(Mage_Sales_Model_Order_Payment $payment, Mage_Sales_Model_Order_Invoice $invoice,
+        $amount)
     {
         /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
-        $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder($payment->getOrder());
+        $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder(
+            $payment->getOrder());
         if ($transactionInfo->getState() == \Wallee\Sdk\Model\TransactionState::AUTHORIZED) {
             /* @var Wallee_Payment_Model_Service_LineItem $lineItemCollection */
             $lineItemCollection = Mage::getSingleton('wallee_payment/service_lineItem');
@@ -498,11 +519,9 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
 
             /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
             $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
-            $transactionService->updateLineItems(
-                $payment->getOrder()
+            $transactionService->updateLineItems($payment->getOrder()
                 ->getWalleeSpaceId(), $payment->getOrder()
-                ->getWalleeTransactionId(), $lineItems
-            );
+                ->getWalleeTransactionId(), $lineItems);
         }
     }
 
@@ -533,22 +552,21 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                 $refundJob->delete();
                 Mage::throwException($e->getResponseObject()->getMessage());
             } else {
-                Mage::throwException($this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
+                Mage::throwException(
+                    $this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
             }
         } catch (Exception $e) {
-            Mage::throwException($this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
+            Mage::throwException(
+                $this->getHelper()->__('There has been an error while sending the refund to the gateway.'));
         }
 
         if ($refund->getState() == \Wallee\Sdk\Model\RefundState::FAILED) {
             $refundJob->delete();
-            Mage::throwException(
-                $this->getHelper()->translate(
-                    $refund->getFailureReason()
-                    ->getDescription()
-                )
-            );
+            Mage::throwException($this->getHelper()->translate($refund->getFailureReason()
+                ->getDescription()));
         } elseif ($refund->getState() == \Wallee\Sdk\Model\RefundState::PENDING) {
-            Mage::throwException($this->getHelper()->__('The refund was requested successfully, but is still pending on the gateway.'));
+            Mage::throwException(
+                $this->getHelper()->__('The refund was requested successfully, but is still pending on the gateway.'));
         }
 
         $creditmemo->setWalleeExternalId($refund->getExternalId());
@@ -564,7 +582,8 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      * @param \Wallee\Sdk\Model\RefundCreate $refund
      * @return Wallee_Payment_Model_Entity_RefundJob
      */
-    private function createRefundJob(Mage_Sales_Model_Order $order, \Wallee\Sdk\Model\RefundCreate $refund)
+    protected function createRefundJob(Mage_Sales_Model_Order $order,
+        \Wallee\Sdk\Model\RefundCreate $refund)
     {
         /* @var Wallee_Payment_Model_Entity_RefundJob $refundJob */
         $refundJob = Mage::getModel('wallee_payment/entity_refundJob');
@@ -584,7 +603,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      * @param Mage_Sales_Model_Order $order
      * @throws Mage_Core_Exception
      */
-    private function checkExistingRefundJob(Mage_Sales_Model_Order $order)
+    protected function checkExistingRefundJob(Mage_Sales_Model_Order $order)
     {
         /* @var Wallee_Payment_Model_Entity_RefundJob $existingRefundJob */
         $existingRefundJob = Mage::getModel('wallee_payment/entity_refundJob');
@@ -595,9 +614,13 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
                 $refundService = Mage::getSingleton('wallee_payment/service_refund');
                 $refundService->refund($existingRefundJob->getSpaceId(), $existingRefundJob->getRefund());
             } catch (Exception $e) {
+                Mage::log('Failed to refund because of an exception: ' . $e->getMessage(), null,
+                    'wallee.log');
             }
 
-            Mage::throwException($this->getHelper()->__('As long as there is an open creditmemo for the order, no new creditmemo can be created.'));
+            Mage::throwException(
+                $this->getHelper()->__(
+                    'As long as there is an open creditmemo for the order, no new creditmemo can be created.'));
         }
     }
 
@@ -646,17 +669,24 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         try {
-            $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId());
-            if ($transaction instanceof \Wallee\Sdk\Model\Transaction && $transaction->getUserFailureMessage() != null) {
+            $transaction = $transactionService->getTransaction($order->getWalleeSpaceId(),
+                $order->getWalleeTransactionId());
+            if ($transaction instanceof \Wallee\Sdk\Model\Transaction &&
+                $transaction->getUserFailureMessage() != null) {
                 $coreSession->addError($transaction->getUserFailureMessage());
                 return;
             }
         } catch (Exception $e) {
+            Mage::log(
+                'Failed to get the failure message from the transaction because of an exception: ' . $e->getMessage(),
+                null, 'wallee.log');
         }
 
-        $coreSession->addError($this->getHelper()->__('The payment process could not have been finished successfully.'));
+        $coreSession->addError(
+            $this->getHelper()
+                ->__('The payment process could not have been finished successfully.'));
     }
-    
+
     /**
      * Redirects the customer to the redirection controller action.
      */
@@ -672,7 +702,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
      *
      * @return Wallee_Payment_Helper_Data
      */
-    private function getHelper()
+    protected function getHelper()
     {
         return Mage::helper('wallee_payment');
     }

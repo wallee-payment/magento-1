@@ -21,7 +21,7 @@ class Wallee_Payment_Block_Payment_Form extends Mage_Payment_Block_Form
         parent::_construct();
         $this->setTemplate('wallee/payment/form.phtml');
     }
-    
+
     /**
      * Returns the URL to the payment method image.
      *
@@ -49,11 +49,11 @@ class Wallee_Payment_Block_Payment_Form extends Mage_Payment_Block_Form
     {
         /* @var Mage_Sales_Model_Quote $quote */
         $quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
-        
+
         /* @var Wallee_Payment_Model_Payment_Method_Abstract $methodInstance */
         $methodInstance = $this->getMethod();
         $spaceId = $methodInstance->getPaymentMethodConfiguration()->getSpaceId();
-        
+
         /* @var Wallee_Payment_Model_Resource_TokenInfo_Collection $collection */
         $collection = Mage::getModel('wallee_payment/entity_tokenInfo')->getCollection();
         $collection->addCustomerFilter($quote->getCustomerId());

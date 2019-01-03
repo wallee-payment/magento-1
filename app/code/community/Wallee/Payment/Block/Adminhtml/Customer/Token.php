@@ -13,7 +13,8 @@
 /**
  * This block renders the grid tab that lists the customer's tokens.
  */
-class Wallee_Payment_Block_Adminhtml_Customer_Token extends Mage_Adminhtml_Block_Widget_Grid implements Mage_Adminhtml_Block_Widget_Tab_Interface
+class Wallee_Payment_Block_Adminhtml_Customer_Token extends Mage_Adminhtml_Block_Widget_Grid implements 
+    Mage_Adminhtml_Block_Widget_Tab_Interface
 {
 
     protected function _construct()
@@ -33,7 +34,8 @@ class Wallee_Payment_Block_Adminhtml_Customer_Token extends Mage_Adminhtml_Block
      */
     protected function _prepareCollection()
     {
-        $collection = Mage::getModel('wallee_payment/entity_tokenInfo')->getCollection()->addCustomerFilter(Mage::registry('current_customer')->getId());
+        $collection = Mage::getModel('wallee_payment/entity_tokenInfo')->getCollection()->addCustomerFilter(
+            Mage::registry('current_customer')->getId());
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -47,63 +49,58 @@ class Wallee_Payment_Block_Adminhtml_Customer_Token extends Mage_Adminhtml_Block
     {
         $helper = Mage::helper('wallee_payment');
 
-        $this->addColumn(
-            'token_id', array(
-            'header' => $helper->__('Token ID'),
-            'width' => '50px',
-            'type' => 'number',
-            'index' => 'token_id'
-            )
-        );
+        $this->addColumn('token_id',
+            array(
+                'header' => $helper->__('Token ID'),
+                'width' => '50px',
+                'type' => 'number',
+                'index' => 'token_id'
+            ));
 
-        $this->addColumn(
-            'name', array(
-            'header' => $helper->__('Name'),
-            'width' => '250px',
-            'type' => 'text',
-            'index' => 'name'
-            )
-        );
+        $this->addColumn('name',
+            array(
+                'header' => $helper->__('Name'),
+                'width' => '250px',
+                'type' => 'text',
+                'index' => 'name'
+            ));
 
-        $this->addColumn(
-            'payment_method_id', array(
-            'header' => $helper->__('Payment Method'),
-            'type' => 'text',
-            'index' => 'payment_method_id',
-            'renderer' => 'Wallee_Payment_Block_Adminhtml_Customer_Token_PaymentMethod'
-            )
-        );
+        $this->addColumn('payment_method_id',
+            array(
+                'header' => $helper->__('Payment Method'),
+                'type' => 'text',
+                'index' => 'payment_method_id',
+                'renderer' => 'Wallee_Payment_Block_Adminhtml_Customer_Token_PaymentMethod'
+            ));
 
-        $this->addColumn(
-            'state', array(
-            'header' => $helper->__('State'),
-            'type' => 'text',
-            'index' => 'state',
-            'renderer' => 'Wallee_Payment_Block_Adminhtml_Customer_Token_State'
-            )
-        );
+        $this->addColumn('state',
+            array(
+                'header' => $helper->__('State'),
+                'type' => 'text',
+                'index' => 'state',
+                'renderer' => 'Wallee_Payment_Block_Adminhtml_Customer_Token_State'
+            ));
 
-        $this->addColumn(
-            'action', array(
-            'header' => $helper->__('Action'),
-            'width' => '50px',
-            'type' => 'action',
-            'getter' => 'getId',
-            'actions' => array(
-                array(
-                    'caption' => $helper->__('Delete'),
-                    'url' => array(
-                        'base' => 'adminhtml/wallee_token/delete'
-                    ),
-                    'field' => 'id'
-                )
-            ),
-            'filter' => false,
-            'sortable' => false,
-            'index' => 'stores',
-            'is_system' => true
-            )
-        );
+        $this->addColumn('action',
+            array(
+                'header' => $helper->__('Action'),
+                'width' => '50px',
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => array(
+                    array(
+                        'caption' => $helper->__('Delete'),
+                        'url' => array(
+                            'base' => 'adminhtml/wallee_token/delete'
+                        ),
+                        'field' => 'id'
+                    )
+                ),
+                'filter' => false,
+                'sortable' => false,
+                'index' => 'stores',
+                'is_system' => true
+            ));
 
         return parent::_prepareColumns();
     }
@@ -120,12 +117,11 @@ class Wallee_Payment_Block_Adminhtml_Customer_Token extends Mage_Adminhtml_Block
 
     public function getTabUrl()
     {
-        return $this->getUrl(
-            'adminhtml/wallee_token/grid', array(
-            'id' => Mage::registry('current_customer')->getId(),
-            '_current' => true
-            )
-        );
+        return $this->getUrl('adminhtml/wallee_token/grid',
+            array(
+                'id' => Mage::registry('current_customer')->getId(),
+                '_current' => true
+            ));
     }
 
     public function getTabClass()

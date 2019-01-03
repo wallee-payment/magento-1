@@ -57,7 +57,8 @@ class Wallee_Payment_Model_Service_Abstract
      * @param string $operator
      * @return \Wallee\Sdk\Model\EntityQueryFilter
      */
-    protected function createEntityFilter($fieldName, $value, $operator = \Wallee\Sdk\Model\CriteriaOperator::EQUALS)
+    protected function createEntityFilter($fieldName, $value,
+        $operator = \Wallee\Sdk\Model\CriteriaOperator::EQUALS)
     {
         $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
         $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::LEAF);
@@ -74,7 +75,8 @@ class Wallee_Payment_Model_Service_Abstract
      * @param string $sortOrder
      * @return \Wallee\Sdk\Model\EntityQueryOrderBy
      */
-    protected function createEntityOrderBy($fieldName, $sortOrder = \Wallee\Sdk\Model\EntityQueryOrderByType::DESC)
+    protected function createEntityOrderBy($fieldName,
+        $sortOrder = \Wallee\Sdk\Model\EntityQueryOrderByType::DESC)
     {
         $orderBy = new \Wallee\Sdk\Model\EntityQueryOrderBy();
         $orderBy->setFieldName($fieldName);
@@ -93,10 +95,10 @@ class Wallee_Payment_Model_Service_Abstract
     {
         return mb_substr($string, 0, $maxLength, 'UTF-8');
     }
-    
+
     /**
      * Removes all line breaks in the given string and replaces them with a whitespace character.
-     * 
+     *
      * @param string $string
      * @return string
      */
@@ -104,10 +106,10 @@ class Wallee_Payment_Model_Service_Abstract
     {
         return preg_replace("/\r|\n/", ' ', $string);
     }
-    
+
     /**
      * Returns the first line of the given string only.
-     * 
+     *
      * @param string $string
      * @return string
      */
@@ -115,5 +117,4 @@ class Wallee_Payment_Model_Service_Abstract
     {
         return rtrim(strtok($string, "\n"));
     }
-    
 }

@@ -21,7 +21,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      *
      * @var \Wallee\Sdk\Service\RefundService
      */
-    private $refundService;
+    protected $_refundService;
 
     /**
      * Returns the refund by the given external id.
@@ -42,17 +42,17 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             Mage::throwException('The refund could not be found.');
         }
     }
-    
-    public function createForPayment(Mage_Sales_Model_Order_Payment $payment) {
+
+    public function createForPayment(Mage_Sales_Model_Order_Payment $payment)
+    {
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transaction = new \Wallee\Sdk\Model\Transaction();
-        $transaction->setId(
-            $payment->getOrder()
-            ->getWalleeTransactionId()
-            );
-        
-        $baseLineItems = $this->getBaseLineItems($payment->getOrder()->getWalleeSpaceId(), $transaction);
+        $transaction->setId($payment->getOrder()
+            ->getWalleeTransactionId());
+
+        $baseLineItems = $this->getBaseLineItems($payment->getOrder()
+            ->getWalleeSpaceId(), $transaction);
         $reductions = array();
         foreach ($baseLineItems as $lineItem) {
             $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
@@ -61,9 +61,10 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             $reduction->setUnitPriceReduction(0);
             $reductions[] = $reduction;
         }
-        
+
         $refund = new \Wallee\Sdk\Model\RefundCreate();
-        $refund->setExternalId(uniqid($payment->getOrder()->getId() . '-'));
+        $refund->setExternalId(uniqid($payment->getOrder()
+            ->getId() . '-'));
         $refund->setReductions($reductions);
         $refund->setTransaction($transaction);
         $refund->setType(\Wallee\Sdk\Model\RefundType::MERCHANT_INITIATED_ONLINE);
@@ -82,10 +83,8 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         $transaction = new \Wallee\Sdk\Model\Transaction();
-        $transaction->setId(
-            $payment->getOrder()
-            ->getWalleeTransactionId()
-        );
+        $transaction->setId($payment->getOrder()
+            ->getWalleeTransactionId());
 
         $reductions = $this->getProductReductions($creditmemo);
         $shippingReduction = $this->getShippingReduction($creditmemo);
@@ -106,20 +105,24 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
     /**
      * Returns the fixed line item reductions for the creditmemo.
      *
-     * If the amount of the given reductions does not match the creditmemo's grand total, the amount to refund is distributed equally to the line items.
+     * If the amount of the given reductions does not match the creditmemo's grand total, the amount to refund is
+     * distributed equally to the line items.
      *
      * @param Mage_Sales_Model_Order_Creditmemo $creditmemo
      * @param \Wallee\Sdk\Model\Transaction $transaction
      * @param \Wallee\Sdk\Model\LineItemReductionCreate[] $reductions
      * @return \Wallee\Sdk\Model\LineItemReductionCreate[]
      */
-    protected function fixReductions(Mage_Sales_Model_Order_Creditmemo $creditmemo, \Wallee\Sdk\Model\Transaction $transaction, array $reductions)
+    protected function fixReductions(Mage_Sales_Model_Order_Creditmemo $creditmemo,
+        \Wallee\Sdk\Model\Transaction $transaction, array $reductions)
     {
-        $baseLineItems = $this->getBaseLineItems($creditmemo->getOrder()->getWalleeSpaceId(), $transaction);
+        $baseLineItems = $this->getBaseLineItems($creditmemo->getOrder()
+            ->getWalleeSpaceId(), $transaction);
 
         /* @var Wallee_Payment_Helper_LineItem $lineItemHelper */
         $lineItemHelper = Mage::helper('wallee_payment/lineItem');
-        $reductionAmount = $lineItemHelper->getReductionAmount($baseLineItems, $reductions, $creditmemo->getOrderCurrencyCode());
+        $reductionAmount = $lineItemHelper->getReductionAmount($baseLineItems, $reductions,
+            $creditmemo->getOrderCurrencyCode());
 
         if ($reductionAmount != $creditmemo->getGrandTotal()) {
             $fixedReductions = array();
@@ -131,7 +134,9 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
                     $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
                     $reduction->setLineItemUniqueId($lineItem->getUniqueId());
                     $reduction->setQuantityReduction(0);
-                    $reduction->setUnitPriceReduction($this->roundAmount($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity(), $creditmemo->getOrderCurrencyCode()));
+                    $reduction->setUnitPriceReduction(
+                        $this->roundAmount($lineItem->getAmountIncludingTax() * $rate / $lineItem->getQuantity(),
+                            $creditmemo->getOrderCurrencyCode()));
                     $fixedReductions[] = $reduction;
                 }
             }
@@ -154,27 +159,25 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         foreach ($creditmemo->getAllItems() as $item) {
             /* @var Mage_Sales_Model_Order_Creditmemo_Item $item */
             $orderItem = $item->getOrderItem();
-            if ($orderItem->getParentItemId() != null && $orderItem->getParentItem()->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+            if ($orderItem->getParentItemId() != null &&
+                $orderItem->getParentItem()->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                 continue;
             }
 
-            if ($orderItem->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE && $orderItem->getParentItemId() == null) {
+            if ($orderItem->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE &&
+                $orderItem->getParentItemId() == null) {
                 continue;
             }
 
             $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
-            $reduction->setLineItemUniqueId(
-                $orderItem->getQuoteItemId()
-            );
+            $reduction->setLineItemUniqueId($orderItem->getQuoteItemId());
             $reduction->setQuantityReduction($item->getQty());
             $reduction->setUnitPriceReduction(0);
             $reductions[] = $reduction;
-            
+
             if ($orderItem->getDiscountAmount() != 0) {
                 $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
-                $reduction->setLineItemUniqueId(
-                    $orderItem->getQuoteItemId() . '-discount'
-                );
+                $reduction->setLineItemUniqueId($orderItem->getQuoteItemId() . '-discount');
                 $reduction->setQuantityReduction($item->getQty());
                 $reduction->setUnitPriceReduction(0);
                 $reductions[] = $reduction;
@@ -195,12 +198,15 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         if ($creditmemo->getShippingAmount() > 0) {
             $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
             $reduction->setLineItemUniqueId('shipping');
-            if ($creditmemo->getShippingAmount() + $creditmemo->getShippingTaxAmount() == $creditmemo->getOrder()->getShippingInclTax()) {
+            if ($creditmemo->getShippingAmount() + $creditmemo->getShippingTaxAmount() ==
+                $creditmemo->getOrder()->getShippingInclTax()) {
                 $reduction->setQuantityReduction(1);
                 $reduction->setUnitPriceReduction(0);
             } else {
                 $reduction->setQuantityReduction(0);
-                $reduction->setUnitPriceReduction($this->roundAmount($creditmemo->getShippingAmount() + $creditmemo->getShippingTaxAmount(), $creditmemo->getOrderCurrencyCode()));
+                $reduction->setUnitPriceReduction(
+                    $this->roundAmount($creditmemo->getShippingAmount() + $creditmemo->getShippingTaxAmount(),
+                        $creditmemo->getOrderCurrencyCode()));
             }
 
             return $reduction;
@@ -227,7 +233,8 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param \Wallee\Sdk\Model\Refund $refund
      * @param Mage_Sales_Model_Order $order
      */
-    public function registerRefundNotification(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
+    public function registerRefundNotification(\Wallee\Sdk\Model\Refund $refund,
+        Mage_Sales_Model_Order $order)
     {
         /* @var Mage_Sales_Model_Service_Order $serviceModel */
         $serviceModel = Mage::getModel('sales/service_order', $order);
@@ -240,14 +247,15 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $creditmemo->setWalleeExternalId($refund->getExternalId());
         $creditmemo->save();
 
-        $this->updateTotals(
-            $order->getPayment(), array(
-            'amount_refunded' => $creditmemo->getGrandTotal(),
-            'base_amount_refunded_online' => $refund->getAmount()
-            )
-        );
+        $this->updateTotals($order->getPayment(),
+            array(
+                'amount_refunded' => $creditmemo->getGrandTotal(),
+                'base_amount_refunded_online' => $refund->getAmount()
+            ));
 
-        $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, Mage::helper('sales')->__('Registered notification about refunded amount of %s.', $this->formatPrice($order, $refund->getAmount())));
+        $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true,
+            Mage::helper('sales')->__('Registered notification about refunded amount of %s.',
+                $this->formatPrice($order, $refund->getAmount())));
         $order->save();
     }
 
@@ -289,9 +297,11 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
                 case \Wallee\Sdk\Model\LineItemType::PRODUCT:
                     if ($reduction->getQuantityReduction() > 0) {
                         $refundQuantities[$orderItemMap[$reduction->getLineItemUniqueId()]->getId()] = $reduction->getQuantityReduction();
-                        $creditmemoAmount += $reduction->getQuantityReduction() * $orderItemMap[$reduction->getLineItemUniqueId()]->getPriceInclTax();
-                        
-                        $discount = $this->findProductDiscount($refund->getTransaction()->getLineItems(), $reduction->getLineItemUniqueId());
+                        $creditmemoAmount += $reduction->getQuantityReduction() *
+                            $orderItemMap[$reduction->getLineItemUniqueId()]->getPriceInclTax();
+
+                        $discount = $this->findProductDiscount($refund->getTransaction()
+                            ->getLineItems(), $reduction->getLineItemUniqueId());
                         if ($discount != null) {
                             $creditmemoAmount += $discount->getAmountIncludingTax();
                         }
@@ -333,13 +343,14 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             'adjustment_negative' => $negativeAdjustment
         );
     }
-    
+
     /**
-     * 
+     *
      * @param \Wallee\Sdk\Model\LineItem[] $lineItems
      * @param string $productId
      */
-    protected function findProductDiscount(array $lineItems, $productId) {
+    protected function findProductDiscount(array $lineItems, $productId)
+    {
         foreach ($lineItems as $lineItem) {
             if ($lineItem->getUniqueId() == $productId . '-discount') {
                 return $lineItem;
@@ -386,7 +397,8 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param \Wallee\Sdk\Model\Refund $refund
      * @return \Wallee\Sdk\Model\LineItem[]
      */
-    protected function getBaseLineItems($spaceId, \Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
+    protected function getBaseLineItems($spaceId, \Wallee\Sdk\Model\Transaction $transaction,
+        \Wallee\Sdk\Model\Refund $refund = null)
     {
         $lastSuccessfulRefund = $this->getLastSuccessfulRefund($spaceId, $transaction, $refund);
         if ($lastSuccessfulRefund) {
@@ -412,20 +424,21 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
         $filter->setChildren(
             array(
-            $this->createEntityFilter('state', \Wallee\Sdk\Model\TransactionInvoiceState::CANCELED, \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS),
-            $this->createEntityFilter('completion.lineItemVersion.transaction.id', $transaction->getId())
-            )
-        );
+                $this->createEntityFilter('state', \Wallee\Sdk\Model\TransactionInvoiceState::CANCELED,
+                    \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS),
+                $this->createEntityFilter('completion.lineItemVersion.transaction.id', $transaction->getId())
+            ));
         $query->setFilter($filter);
 
         $query->setNumberOfEntities(1);
 
-        $invoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService($this->getHelper()->getApiClient());
+        $invoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService(
+            $this->getHelper()->getApiClient());
         $result = $invoiceService->search($spaceId, $query);
         if (! empty($result)) {
             return $result[0];
         } else {
-            throw new Exception('The transaction invoice could not be found.');
+            Mage::throwException('The transaction invoice could not be found.');
         }
     }
 
@@ -437,7 +450,8 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      * @param \Wallee\Sdk\Model\Refund $refund
      * @return \Wallee\Sdk\Model\Refund
      */
-    protected function getLastSuccessfulRefund($spaceId, \Wallee\Sdk\Model\Transaction $transaction, \Wallee\Sdk\Model\Refund $refund = null)
+    protected function getLastSuccessfulRefund($spaceId, \Wallee\Sdk\Model\Transaction $transaction,
+        \Wallee\Sdk\Model\Refund $refund = null)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
 
@@ -448,7 +462,8 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             $this->createEntityFilter('transaction.id', $transaction->getId())
         );
         if ($refund != null) {
-            $filters[] = $this->createEntityFilter('id', $refund->getId(), \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS);
+            $filters[] = $this->createEntityFilter('id', $refund->getId(),
+                \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS);
         }
 
         $filter->setChildren($filters);
@@ -456,9 +471,8 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
 
         $query->setOrderBys(
             array(
-            $this->createEntityOrderBy('createdOn', \Wallee\Sdk\Model\EntityQueryOrderByType::DESC)
-            )
-        );
+                $this->createEntityOrderBy('createdOn', \Wallee\Sdk\Model\EntityQueryOrderByType::DESC)
+            ));
 
         $query->setNumberOfEntities(1);
 
@@ -477,10 +491,11 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
      */
     protected function getRefundService()
     {
-        if ($this->refundService == null) {
-            $this->refundService = new \Wallee\Sdk\Service\RefundService($this->getHelper()->getApiClient());
+        if ($this->_refundService == null) {
+            $this->_refundService = new \Wallee\Sdk\Service\RefundService(
+                $this->getHelper()->getApiClient());
         }
 
-        return $this->refundService;
+        return $this->_refundService;
     }
 }

@@ -23,7 +23,8 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
      */
     protected function loadEntity(Wallee_Payment_Model_Webhook_Request $request)
     {
-        $transactionInvoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService(Mage::helper('wallee_payment')->getApiClient());
+        $transactionInvoiceService = new \Wallee\Sdk\Service\TransactionInvoiceService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $transactionInvoiceService->read($request->getSpaceId(), $request->getEntityId());
     }
 
@@ -36,28 +37,23 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
     protected function processOrderRelatedInner(Mage_Sales_Model_Order $order, $transactionInvoice)
     {
         /* @var \Wallee\Sdk\Model\TransactionInvoice $transactionInvoice */
-        $invoice = $this->getInvoiceForTransaction(
-            $transactionInvoice->getLinkedSpaceId(), $transactionInvoice->getCompletion()
-            ->getLineItemVersion()
-            ->getTransaction()
-            ->getId(), $order
-        );
+        $invoice = $this->getInvoiceForTransaction($transactionInvoice->getLinkedSpaceId(),
+            $transactionInvoice->getCompletion()
+                ->getLineItemVersion()
+                ->getTransaction()
+                ->getId(), $order);
         if (! $invoice || $invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_OPEN) {
             switch ($transactionInvoice->getState()) {
                 case \Wallee\Sdk\Model\TransactionInvoiceState::NOT_APPLICABLE:
                 case \Wallee\Sdk\Model\TransactionInvoiceState::PAID:
-                    $this->capture(
-                        $transactionInvoice->getCompletion()
+                    $this->capture($transactionInvoice->getCompletion()
                         ->getLineItemVersion()
-                        ->getTransaction(), $order, $transactionInvoice->getAmount(), $invoice
-                    );
+                        ->getTransaction(), $order, $transactionInvoice->getAmount(), $invoice);
                     break;
                 case \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED:
-                    $this->derecognize(
-                        $transactionInvoice->getCompletion()
+                    $this->derecognize($transactionInvoice->getCompletion()
                         ->getLineItemVersion()
-                        ->getTransaction(), $order, $invoice
-                    );
+                        ->getTransaction(), $order, $invoice);
                 default:
                     // Nothing to do.
                     break;
@@ -65,12 +61,13 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         }
     }
 
-    protected function capture(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, $amount, Mage_Sales_Model_Order_Invoice $invoice = null)
+    protected function capture(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order,
+        $amount, Mage_Sales_Model_Order_Invoice $invoice = null)
     {
         if ($order->getWalleeCanceled()) {
             return;
         }
-        
+
         $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
 
         if (! $invoice) {
@@ -95,7 +92,8 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         $order->save();
     }
 
-    protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice = null)
+    protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction,
+        Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice = null)
     {
         if ($invoice && Mage_Sales_Model_Order_Invoice::STATE_OPEN == $invoice->getState()) {
             $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
@@ -138,7 +136,8 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
     protected function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
     {
         foreach ($order->getInvoiceCollection() as $invoice) {
-            if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 && $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
+            if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 &&
+                $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
                 $invoice->load($invoice->getId());
                 return $invoice;
             }

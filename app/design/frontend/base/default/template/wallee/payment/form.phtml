@@ -18,34 +18,41 @@ $method = $block->getMethod();
 
 $code = $block->getMethodCode();
 $imageUrl = $block->getImageUrl();
+$configurationId = $method->getPaymentMethodConfigurationId();
 ?>
 
-<ul class="form-list" id="payment_form_<?php echo $code ?>" style="display:none">
-	<?php if ($method->getConfigData('show_description') || ($method->getConfigData('show_image') && $imageUrl != null)) : ?>
-		<li>
-    		<table style="width: 100%;">
-    			<tr>
-    				<td>
-    					<?php if ($method->getConfigData('show_description')) : ?>
-    						<?php echo $method->getConfigData('description') ?>
-    					<?php endif; ?>
-    				</td>
-    				<td>
-    					<?php if ($method->getConfigData('show_image') && $imageUrl != null) : ?>
-    						<img src="<?php echo $imageUrl ?>" width="50" style="float: right;" />
-    					<?php endif; ?>
-    				</td>
-    			</tr>
-    		</table>
-    	</li>
+<ul class="form-list" id="payment_form_<?php echo $block->escapeHtml($code) ?>" style="display:none">
+    <?php if ($method->getConfigData('show_description')
+        || ($method->getConfigData('show_image') && $imageUrl != null)) : ?>
+        <li>
+            <table style="width: 100%;">
+                <tr>
+                    <td>
+                        <?php if ($method->getConfigData('show_description')) : ?>
+                            <?php echo $block->escapeHtml($method->getConfigData('description')) ?>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if ($method->getConfigData('show_image') && $imageUrl != null) : ?>
+                            <img src="<?php echo $block->escapeHtml($imageUrl) ?>" width="50" style="float: right;" />
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </table>
+        </li>
     <?php endif; ?>
-	<li>
-		<div id="wallee_payment_method_form_<?php echo $method->getPaymentMethodConfigurationId() ?>"></div>
-		<script type="text/javascript">
-			MageWallee.Checkout.registerMethod('<?php echo $code ?>', <?php echo $method->getPaymentMethodConfiguration()->getConfigurationId() ?>, 'wallee_payment_method_form_<?php echo $method->getPaymentMethodConfigurationId() ?>');
-		</script>
-	</li>
-	<li>
-		<div id="wallee_payment_method_form_<?php echo $method->getPaymentMethodConfigurationId() ?>_errors"></div>
-	</li>
+    <li>
+        <div id="wallee_payment_method_form_<?php echo $block->escapeHtml($configurationId) ?>"></div>
+        <script type="text/javascript">
+            MageWallee.Checkout.registerMethod(
+                    '<?php echo $block->escapeHtml($code) ?>',
+                    <?php echo $block->escapeHtml($method->getPaymentMethodConfiguration()->getConfigurationId()) ?>,
+                    'wallee_payment_method_form_<?php echo $block->escapeHtml($configurationId) ?>'
+            );
+        </script>
+    </li>
+    <li>
+        <div id="wallee_payment_method_form_<?php echo $block->escapeHtml($configurationId) ?>_errors">
+        </div>
+    </li>
 </ul>

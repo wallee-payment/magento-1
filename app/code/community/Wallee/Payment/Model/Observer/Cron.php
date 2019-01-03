@@ -42,5 +42,4 @@ class Wallee_Payment_Model_Observer_Cron
             }
         }
     }
-    
 }

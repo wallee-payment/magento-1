@@ -21,105 +21,158 @@ $helper = $block->helper('wallee_payment');
 
 $transactionInfo = $block->getTransactionInfo();
 $labelsByGroup = $block->getGroupedChargeAttemptLabels();
+if ($transactionInfo && $transactionInfo->getImage()) {
+    $imageUrl = $helper->getResourceUrl(
+        $transactionInfo->getImage(), $transactionInfo->getLanguage(),
+        $transactionInfo->getSpaceId(), $transactionInfo->getSpaceViewId()
+    );
+}
 ?>
 
 <?php if ($block->isCreditmemo()) : ?>
-	<?php $refundDownloadUrl = $block->getDownloadRefundUrl(); ?>
+    <?php $refundDownloadUrl = $block->getDownloadRefundUrl(); ?>
     <?php if ($refundDownloadUrl) : ?>
-        <button title="<?php echo $helper->__('Download Refund') ?>" type="button" class="scalable" onclick="setLocation('<?php echo $refundDownloadUrl ?>')" style="float: right;">
-        	<span><span><span><?php echo $helper->__('Download Refund') ?></span></span></span>
+        <button
+            title="<?php echo $block->escapeHtml($helper->__('Download Refund')) ?>"
+            type="button"
+            class="scalable"
+            onclick="setLocation('<?php echo $block->escapeHtml($refundDownloadUrl) ?>')"
+            style="float: right;">
+            <span><span><span><?php echo $block->escapeHtml($helper->__('Download Refund')) ?></span></span></span>
         </button>
     <?php endif; ?>
 <?php endif; ?>
 
 <?php if ($block->isInvoice()) : ?>
-	<?php $invoiceDownloadUrl = $block->getDownloadInvoiceUrl(); ?>
+    <?php $invoiceDownloadUrl = $block->getDownloadInvoiceUrl(); ?>
     <?php if ($invoiceDownloadUrl) : ?>
-    <button title="<?php echo $helper->__('Download Invoice') ?>" type="button" class="scalable" onclick="setLocation('<?php echo $invoiceDownloadUrl ?>')" style="float: right;">
-    	<span><span><span><?php echo $helper->__('Download Invoice') ?></span></span></span>
+    <button
+        title="<?php echo $block->escapeHtml($helper->__('Download Invoice')) ?>"
+        type="button"
+        class="scalable"
+        onclick="setLocation('<?php echo $block->escapeHtml($invoiceDownloadUrl) ?>')"
+        style="float: right;">
+        <span><span><span><?php echo $block->escapeHtml($helper->__('Download Invoice')) ?></span></span></span>
     </button>
     <?php endif; ?>
 <?php endif; ?>
 
 <?php if ($block->isShipment()) : ?>
-	<?php $packingSlipDownloadUrl = $block->getDownloadPackingSlipUrl(); ?>
+    <?php $packingSlipDownloadUrl = $block->getDownloadPackingSlipUrl(); ?>
     <?php if ($packingSlipDownloadUrl) : ?>
-    <button title="<?php echo $helper->__('Download Packing Slip') ?>" type="button" class="scalable" onclick="setLocation('<?php echo $packingSlipDownloadUrl ?>')" style="float: right;">
-    	<span><span><span><?php echo $helper->__('Download Packing Slip') ?></span></span></span>
+    <button
+        title="<?php echo $block->escapeHtml($helper->__('Download Packing Slip')) ?>"
+        type="button"
+        class="scalable"
+        onclick="setLocation('<?php echo $block->escapeHtml($packingSlipDownloadUrl) ?>')"
+        style="float: right;">
+        <span><span><span><?php echo $block->escapeHtml($helper->__('Download Packing Slip')) ?></span></span></span>
     </button>
     <?php endif; ?>
 <?php endif; ?>
 
 <?php if (false && ! $block->isCreditmemo() && ! $block->isInvoice() && ! $block->isShipment()) : ?>
-	<?php $transactionUpdateUrl = $block->getUpdateTransactionUrl(); ?>
+    <?php $transactionUpdateUrl = $block->getUpdateTransactionUrl(); ?>
     <?php if ($transactionUpdateUrl) : ?>
-        <button title="<?php echo $helper->__('Update') ?>" type="button" class="scalable" onclick="setLocation('<?php echo $transactionUpdateUrl ?>')" style="float: right;">
-        	<span><span><span><?php echo $helper->__('Update') ?></span></span></span>
+        <button
+            title="<?php echo $block->escapeHtml($helper->__('Update')) ?>"
+            type="button"
+            class="scalable"
+            onclick="setLocation('<?php echo $block->escapeHtml($transactionUpdateUrl) ?>')"
+            style="float: right;">
+            <span><span><span><?php echo $block->escapeHtml($helper->__('Update')) ?></span></span></span>
         </button>
     <?php endif; ?>
 <?php endif; ?>
 
 <table class="form-list" style="margin-bottom: 20px;">
-	<tbody>
-		<tr>
-            <td class="label"><label><?php echo $helper->__('Payment Method') ?></label></td>
+    <tbody>
+        <tr>
+            <td class="label"><label><?php echo $block->escapeHtml($helper->__('Payment Method')) ?></label></td>
             <td class="value">
-            	<strong><?php echo $method->getPaymentMethodConfiguration()->getConfigurationName() ?></strong>
+                <strong>
+                    <?php echo $block->escapeHtml($method->getPaymentMethodConfiguration()->getConfigurationName()) ?>
+                </strong>
             </td>
         </tr>
         <?php if ($transactionInfo && $transactionInfo->getImage()) : ?>
             <tr>
-            	<td class="label"></td>
-            	<td class="value">
-					<img src="<?php echo $helper->getResourceUrl($transactionInfo->getImage(), $transactionInfo->getLanguage(), $transactionInfo->getSpaceId(), $transactionInfo->getSpaceViewId()) ?>" width="50" /><br/>
-    			</td>
+                <td class="label"></td>
+                <td class="value">
+                    <img src="<?php echo $block->escapeHtml($imageUrl) ?>" width="50" /><br/>
+                </td>
             </tr>
         <?php endif; ?>
         <?php if ($transactionInfo) : ?>
-    		<tr>
-                <td class="label"><label><?php echo $helper->__('Transaction State') ?></label></td>
-                <td class="value"><strong><?php echo $block->getTransactionState() ?></strong></td>
+            <tr>
+                <td class="label"><label><?php echo $block->escapeHtml($helper->__('Transaction State')) ?></label></td>
+                <td class="value">
+                    <strong><?php echo $block->escapeHtml($block->getTransactionState()) ?></strong>
+                </td>
             </tr>
             <?php if ($transactionInfo->getFailureReason() != null) : ?>
-            	<tr>
-                    <td class="label"><label><?php echo $helper->__('Failure Reason') ?></label></td>
-                    <td class="value"><strong><?php echo $transactionInfo->getFailureReason() ?></strong></td>
+                <tr>
+                    <td class="label">
+                        <label><?php echo $block->escapeHtml($helper->__('Failure Reason')) ?></label>
+                    </td>
+                    <td class="value">
+                        <strong><?php echo $block->escapeHtml($transactionInfo->getFailureReason()) ?></strong>
+                    </td>
                 </tr>
             <?php endif; ?>
             <tr>
-                <td class="label"><label><?php echo $helper->__('Authorization Amount') ?></label></td>
-                <td class="value"><strong><?php echo $block->getTransactionCurrency()->format($transactionInfo->getAuthorizationAmount()) ?></strong></td>
+                <td class="label">
+                    <label><?php echo $block->escapeHtml($helper->__('Authorization Amount')) ?></label>
+                </td>
+                <td class="value">
+                    <strong><?php echo $block->getTransactionCurrency()->format($transactionInfo->getAuthorizationAmount()) ?></strong>
+                </td>
             </tr>
             <tr>
-                <td class="label"><label><?php echo $helper->__('Transaction') ?></label></td>
-                <td class="value"><strong>
-                	<a href="<?php echo $block->getTransactionUrl() ?>" target="_blank">
-    					<?php echo $helper->__('View in wallee') ?>
-    				</a>
-    			</strong></td>
+                <td class="label"><label><?php echo $block->escapeHtml($helper->__('Transaction')) ?></label></td>
+                <td class="value">
+                    <strong>
+                        <a href="<?php echo $block->escapeHtml($block->getTransactionUrl()) ?>" target="_blank">
+                            <?php echo $block->escapeHtml($helper->__('View in wallee')) ?>
+                        </a>
+                    </strong>
+                </td>
             </tr>
-		<?php endif; ?>
-	</tbody>
+        <?php endif; ?>
+    </tbody>
 </table>
 
 <?php if (!empty($labelsByGroup)) : ?>
-	<?php foreach ($labelsByGroup as $group) : ?>
-		<div class="wallee-payment-label-container" id="wallee-payment-label-container-<?php echo $group['group']->getId() ?>">
-    		<div class="wallee-payment-label-group"><?php echo $helper->translate($group['group']->getName()) ?></div>
-    		<table class="form-list" style="margin-bottom: 20px;">
-            	<tbody>
-        			<?php foreach ($group['labels'] as $label) : ?>
-                		<tr>
-                            <td class="label"><label><?php echo $helper->translate($label['descriptor']->getName()) ?></label></td>
-                            <td class="value"><strong><?php echo $label['value'] ?></strong></td>
+    <?php foreach ($labelsByGroup as $group) : ?>
+        <?php $groupId = $group['group']->getId() ?>
+        <div
+            class="wallee-payment-label-container"
+            id="wallee-payment-label-container-<?php echo $block->escapeHtml($groupId) ?>">
+            <div class="wallee-payment-label-group">
+                <?php echo $block->escapeHtml($helper->translate($group['group']->getName())) ?>
+            </div>
+            <table class="form-list" style="margin-bottom: 20px;">
+                <tbody>
+                    <?php foreach ($group['labels'] as $label) : ?>
+                        <tr>
+                            <td class="label">
+                                <label><?php echo $block->escapeHtml(
+                                    $helper->translate($label['descriptor']->getName())
+                                ) ?></label>
+                            </td>
+                            <td class="value">
+                                <strong><?php echo $block->escapeHtml($label['value']) ?></strong>
+                            </td>
                         </tr>
-    		    	<?php endforeach; ?>
-    	    	</tbody>
-        	</table>
-    	</div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
-    	<script type="text/javascript">
-            new walleePaymentLabelContainer('wallee-payment-label-container-<?php echo $group['group']->getId() ?>');
+        <script type="text/javascript">
+            new walleePaymentLabelContainer(
+                'wallee-payment-label-container-<?php echo $block->escapeHtml($groupId) ?>'
+            );
         </script>
-	<?php endforeach; ?>
+    <?php endforeach; ?>
 <?php endif; ?>

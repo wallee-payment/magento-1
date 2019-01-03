@@ -44,7 +44,8 @@ class Wallee_Payment_Model_Provider_LabelDescriptorGroup extends Wallee_Payment_
 
     protected function fetchData()
     {
-        $labelDescriptorGroupService = new \Wallee\Sdk\Service\LabelDescriptionGroupService(Mage::helper('wallee_payment')->getApiClient());
+        $labelDescriptorGroupService = new \Wallee\Sdk\Service\LabelDescriptionGroupService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $labelDescriptorGroupService->all();
     }
 

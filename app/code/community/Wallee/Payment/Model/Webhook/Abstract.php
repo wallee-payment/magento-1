@@ -32,5 +32,4 @@ abstract class Wallee_Payment_Model_Webhook_Abstract
      * @param Wallee_Payment_Model_Webhook_Request $request
      */
     abstract protected function process(Wallee_Payment_Model_Webhook_Request $request);
-
 }

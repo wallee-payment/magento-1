@@ -49,8 +49,10 @@ class Wallee_Payment_Model_Service_ManualTask extends Wallee_Payment_Model_Servi
         foreach (Mage::app()->getWebsites() as $website) {
             $spaceId = $website->getConfig('wallee_payment/general/space_id');
             if ($spaceId && ! in_array($spaceId, $spaceIds)) {
-                $websiteNumberOfManualTasks = $manualTaskService->count($spaceId, $this->createEntityFilter('state', \Wallee\Sdk\Model\ManualTaskState::OPEN));
-                Mage::getConfig()->saveConfig(self::CONFIG_KEY, $websiteNumberOfManualTasks, 'websites', $website->getId());
+                $websiteNumberOfManualTasks = $manualTaskService->count($spaceId,
+                    $this->createEntityFilter('state', \Wallee\Sdk\Model\ManualTaskState::OPEN));
+                Mage::getConfig()->saveConfig(self::CONFIG_KEY, $websiteNumberOfManualTasks, 'websites',
+                    $website->getId());
                 if ($websiteNumberOfManualTasks > 0) {
                     $numberOfManualTasks[$website->getId()] = $websiteNumberOfManualTasks;
                 }

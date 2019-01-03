@@ -21,7 +21,7 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
      *
      * @var \Wallee\Sdk\Service\DeliveryIndicationService
      */
-    private $deliveryIndicationService;
+    protected $_deliveryIndicationService;
 
     /**
      * Marks the delivery indication belonging to the given payment as suitable.
@@ -33,10 +33,10 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
     {
         $deliveryIndication = $this->getDeliveryIndicationForTransaction(
             $payment->getOrder()
-            ->getWalleeSpaceId(), $payment->getOrder()
-            ->getWalleeTransactionId()
-        );
-        return $this->getDeliveryIndicationService()->markAsSuitable($deliveryIndication->getLinkedSpaceId(), $deliveryIndication->getId());
+                ->getWalleeSpaceId(), $payment->getOrder()
+                ->getWalleeTransactionId());
+        return $this->getDeliveryIndicationService()->markAsSuitable($deliveryIndication->getLinkedSpaceId(),
+            $deliveryIndication->getId());
     }
 
     /**
@@ -49,10 +49,10 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
     {
         $deliveryIndication = $this->getDeliveryIndicationForTransaction(
             $payment->getOrder()
-            ->getWalleeSpaceId(), $payment->getOrder()
-            ->getWalleeTransactionId()
-        );
-        return $this->getDeliveryIndicationService()->markAsNotSuitable($deliveryIndication->getLinkedSpaceId(), $deliveryIndication->getId());
+                ->getWalleeSpaceId(), $payment->getOrder()
+                ->getWalleeTransactionId());
+        return $this->getDeliveryIndicationService()->markAsNotSuitable($deliveryIndication->getLinkedSpaceId(),
+            $deliveryIndication->getId());
     }
 
     /**
@@ -62,11 +62,12 @@ class Wallee_Payment_Model_Service_DeliveryIndication extends Wallee_Payment_Mod
      */
     protected function getDeliveryIndicationService()
     {
-        if ($this->deliveryIndicationService == null) {
-            $this->deliveryIndicationService = new \Wallee\Sdk\Service\DeliveryIndicationService($this->getHelper()->getApiClient());
+        if ($this->_deliveryIndicationService == null) {
+            $this->_deliveryIndicationService = new \Wallee\Sdk\Service\DeliveryIndicationService(
+                $this->getHelper()->getApiClient());
         }
 
-        return $this->deliveryIndicationService;
+        return $this->_deliveryIndicationService;
     }
 
     /**

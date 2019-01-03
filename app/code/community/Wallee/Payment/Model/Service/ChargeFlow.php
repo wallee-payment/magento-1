@@ -21,7 +21,7 @@ class Wallee_Payment_Model_Service_ChargeFlow extends Wallee_Payment_Model_Servi
      *
      * @var \Wallee\Sdk\Service\ChargeFlowService
      */
-    private $chargeFlowService;
+    protected $_chargeFlowService;
 
     /**
      * Apply a charge flow to the given transaction.
@@ -40,10 +40,11 @@ class Wallee_Payment_Model_Service_ChargeFlow extends Wallee_Payment_Model_Servi
      */
     protected function getChargeFlowService()
     {
-        if ($this->chargeFlowService == null) {
-            $this->chargeFlowService = new \Wallee\Sdk\Service\ChargeFlowService($this->getHelper()->getApiClient());
+        if ($this->_chargeFlowService == null) {
+            $this->_chargeFlowService = new \Wallee\Sdk\Service\ChargeFlowService(
+                $this->getHelper()->getApiClient());
         }
 
-        return $this->chargeFlowService;
+        return $this->_chargeFlowService;
     }
 }

@@ -24,22 +24,33 @@ $tokens = $block->getTokens();
 $selectedToken = $this->getInfoData('wallee_token');
 ?>
 
-<ul id="payment_form_<?php echo $code ?>" style="display:none">
-	<li>
-		<?php echo $helper->__('A charge flow will be used to process the payment.') ?>
-	</li>
-	<?php if (!empty($tokens)) : ?>
-    	<li>
-    		<div><?php echo $helper->__('The customer can be charged by using an existing token. If left empty, no token is used.') ?></div>
-    		<div class="input-box">
-    			<label for="<?php echo $method->getCode() ?>_token"><?php echo $helper->__('Token:') ?></label>
-        		<select id="<?php echo $method->getCode() ?>_token" name="payment[wallee_token]">
-        			<option value=""></option>
-        			<?php foreach ($tokens as $token) : ?>
-        				<option value="<?php echo $token->getId() ?>" <?php echo $selectedToken == $token->getId() ? 'selected="selected"' : '' ?>><?php echo $token->getName() ?> (<?php echo $helper->translate($token->getConnector()->getName()) ?>)</option>
-        			<?php endforeach; ?>
-        		</select>
-        	</div>
-    	</li>
-	<?php endif; ?>
+<ul id="payment_form_<?php echo $block->escapeHtml($code) ?>" style="display:none">
+    <li>
+        <?php echo $block->escapeHtml($helper->__('A charge flow will be used to process the payment.')) ?>
+    </li>
+    <?php if (!empty($tokens)) : ?>
+        <li>
+            <div>
+                <?php echo $block->escapeHtml($helper->__('The customer can be charged by using an existing token. If left empty, no token is used.')) ?>
+            </div>
+            <div class="input-box">
+                <label for="<?php echo $block->escapeHtml($method->getCode()) ?>_token">
+                    <?php echo $block->escapeHtml($helper->__('Token:')) ?>
+                </label>
+                <select
+                    id="<?php echo $block->escapeHtml($method->getCode()) ?>_token"
+                    name="payment[wallee_token]">
+                    <option value=""></option>
+                    <?php foreach ($tokens as $token) : ?>
+                        <option
+                            value="<?php echo $block->escapeHtml($token->getId()) ?>"
+                            <?php echo $selectedToken == $token->getId() ? 'selected="selected"' : '' ?>>
+                            <?php echo $block->escapeHtml($token->getName()) ?>
+                            (<?php echo $block->escapeHtml($helper->translate($token->getConnector()->getName())) ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </li>
+    <?php endif; ?>
 </ul>

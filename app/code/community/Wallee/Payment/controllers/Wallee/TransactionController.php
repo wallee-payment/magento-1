@@ -20,29 +20,28 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/order');
     }
-    
+
     /**
      * Update the transaction info from the gateway.
      */
-    public function updateAction(){
+    public function updateAction()
+    {
         $service = Mage::getSingleton('wallee_payment/service_transaction');
-        
+
         $spaceId = $this->getRequest()->getParam('space_id');
         $transactionId = $this->getRequest()->getParam('transaction_id');
         $transaction = $service->getTransaction($spaceId, $transactionId);
-        
+
         $order = Mage::getModel('sales/order')->loadByIncrementId($transaction->getMerchantReference());
-        
+
         $service->updateTransactionInfo($transaction, $order);
-        
+
         $session = Mage::getSingleton('core/session');
         $session->addSuccess('The transaction has been updated.');
-        
-        $this->_redirect(
-            'adminhtml/sales_order/view', array(
-                'order_id' => $order->getId()
-            )
-        );
+
+        $this->_redirect('adminhtml/sales_order/view', array(
+            'order_id' => $order->getId()
+        ));
     }
 
     /**
@@ -68,11 +67,11 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
                     $session->addError(
                         Mage::helper('wallee_payment')->translate(
                             $refund->getFailureReason()
-                            ->getDescription()
-                        )
-                    );
+                                ->getDescription()));
                 } elseif ($refund->getState() == \Wallee\Sdk\Model\RefundState::PENDING) {
-                    $session->addNotice(Mage::helper('wallee_payment')->__('The refund was requested successfully, but is still pending on the gateway.'));
+                    $session->addNotice(
+                        Mage::helper('wallee_payment')->__(
+                            'The refund was requested successfully, but is still pending on the gateway.'));
                 } else {
                     $session->addSuccess('Successfully refunded.');
                 }
@@ -83,11 +82,9 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
             $session->addError('For this order no refund request exists.');
         }
 
-        $this->_redirect(
-            'adminhtml/sales_order/view', array(
+        $this->_redirect('adminhtml/sales_order/view', array(
             'order_id' => $orderId
-            )
-        );
+        ));
     }
 
     /**
@@ -98,7 +95,8 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
         $spaceId = $this->getRequest()->getParam('space_id');
         $transactionId = $this->getRequest()->getParam('transaction_id');
 
-        $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
+        $service = new \Wallee\Sdk\Service\TransactionService(
+            Mage::helper('wallee_payment')->getApiClient());
         $document = $service->getInvoiceDocument($spaceId, $transactionId);
         $this->download($document);
     }
@@ -111,7 +109,8 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
         $spaceId = $this->getRequest()->getParam('space_id');
         $transactionId = $this->getRequest()->getParam('transaction_id');
 
-        $service = new \Wallee\Sdk\Service\TransactionService(Mage::helper('wallee_payment')->getApiClient());
+        $service = new \Wallee\Sdk\Service\TransactionService(
+            Mage::helper('wallee_payment')->getApiClient());
         $document = $service->getPackingSlip($spaceId, $transactionId);
         $this->download($document);
     }
@@ -128,7 +127,8 @@ class Wallee_Payment_Wallee_TransactionController extends Mage_Adminhtml_Control
         $refundService = Mage::getSingleton('wallee_payment/service_refund');
         $refund = $refundService->getRefundByExternalId($spaceId, $externalId);
 
-        $service = new \Wallee\Sdk\Service\RefundService(Mage::helper('wallee_payment')->getApiClient());
+        $service = new \Wallee\Sdk\Service\RefundService(
+            Mage::helper('wallee_payment')->getApiClient());
         $document = $service->getRefundDocument($spaceId, $refund->getId());
         $this->download($document);
     }

@@ -19,6 +19,7 @@ class Wallee_Payment_Block_Adminhtml_System_Config_Form_Field_State extends Wall
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         $value = $element->getData('value');
-        return $value == 1 ? $this->helper('wallee_payment')->__('Yes') : $this->helper('wallee_payment')->__('No');
+        return $value == 1 ? $this->helper('wallee_payment')->__('Yes') : $this->helper(
+            'wallee_payment')->__('No');
     }
 }

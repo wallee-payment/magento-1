@@ -44,7 +44,8 @@ class Wallee_Payment_Model_Provider_PaymentConnector extends Wallee_Payment_Mode
 
     protected function fetchData()
     {
-        $connectorService = new \Wallee\Sdk\Service\PaymentConnectorService(Mage::helper('wallee_payment')->getApiClient());
+        $connectorService = new \Wallee\Sdk\Service\PaymentConnectorService(
+            Mage::helper('wallee_payment')->getApiClient());
         return $connectorService->all();
     }
 

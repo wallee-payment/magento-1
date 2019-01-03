@@ -65,7 +65,7 @@ class Wallee_Payment_Model_Entity_TransactionInfo extends Mage_Core_Model_Abstra
      *
      * @var Mage_Sales_Model_Order
      */
-    private $_order;
+    protected $_order;
 
     /**
      * Initialize resource model
@@ -80,7 +80,7 @@ class Wallee_Payment_Model_Entity_TransactionInfo extends Mage_Core_Model_Abstra
         parent::_beforeSave();
 
         if ($this->isObjectNew()) {
-            $this->setCreatedAt(date("Y-m-d H:i:s"));
+            $this->setCreatedAt(Mage::getSingleton('core/date')->date());
         }
     }
 
@@ -124,7 +124,9 @@ class Wallee_Payment_Model_Entity_TransactionInfo extends Mage_Core_Model_Abstra
         if ($order->getWalleeSpaceId() && $order->getWalleeTransactionId()) {
             /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
             $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
-            $transactionService->updateTransactionInfo($transactionService->getTransaction($order->getWalleeSpaceId(), $order->getWalleeTransactionId()), $order);
+            $transactionService->updateTransactionInfo(
+                $transactionService->getTransaction($order->getWalleeSpaceId(),
+                    $order->getWalleeTransactionId()), $order);
         }
 
         return $this->load($orderId, 'order_id');
