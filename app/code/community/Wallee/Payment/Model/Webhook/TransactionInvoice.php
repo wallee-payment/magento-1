@@ -13,7 +13,7 @@
 /**
  * Webhook processor to handle transaction inovice transitions.
  */
-class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Model_Webhook_AbstractOrderRelated
+class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Model_Webhook_Transaction
 {
 
     /**
@@ -36,6 +36,11 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
 
     protected function processOrderRelatedInner(Mage_Sales_Model_Order $order, $transactionInvoice)
     {
+        parent::processOrderRelatedInner($order,
+            $transactionInvoice->getCompletion()
+                ->getLineItemVersion()
+                ->getTransaction());
+
         /* @var \Wallee\Sdk\Model\TransactionInvoice $transactionInvoice */
         $invoice = $this->getInvoiceForTransaction($transactionInvoice->getLinkedSpaceId(),
             $transactionInvoice->getCompletion()
@@ -80,7 +85,6 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
             $invoice->setWalleeCapturePending(false)->save();
         }
 
-        $this->sendOrderEmail($order);
         if ($transaction->getState() == \Wallee\Sdk\Model\TransactionState::COMPLETED) {
             $order->setStatus('processing_wallee');
         }
@@ -95,55 +99,21 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
     protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction,
         Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice = null)
     {
+        $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
+
+        $order->getPayment()->registerVoidNotification();
+
         if ($invoice && Mage_Sales_Model_Order_Invoice::STATE_OPEN == $invoice->getState()) {
-            $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
-
-            $order->getPayment()->registerVoidNotification();
-
             $invoice->setWalleeCapturePending(false);
             $order->setWalleePaymentInvoiceAllowManipulation(true);
             $invoice->cancel();
             $order->addRelatedObject($invoice);
-
-            if ($isOrderInReview) {
-                $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true);
-            }
-
-            $order->save();
         }
-    }
-
-    /**
-     * Sends the order email if not already sent.
-     *
-     * @param Mage_Sales_Model_Order $order
-     */
-    protected function sendOrderEmail(Mage_Sales_Model_Order $order)
-    {
-        if ($order->getStore()->getConfig('wallee_payment/email/order') && ! $order->getEmailSent()) {
-            $order->sendNewOrderEmail();
-        }
-    }
-
-    /**
-     * Returns the invoice for the given transaction.
-     *
-     * @param int $spaceId
-     * @param int $transactionId
-     * @param Mage_Sales_Model_Order $order
-     * @return Mage_Sales_Model_Order_Invoice
-     */
-    protected function getInvoiceForTransaction($spaceId, $transactionId, Mage_Sales_Model_Order $order)
-    {
-        foreach ($order->getInvoiceCollection() as $invoice) {
-            if (strpos($invoice->getTransactionId(), $spaceId . '_' . $transactionId) === 0 &&
-                $invoice->getState() != Mage_Sales_Model_Order_Invoice::STATE_CANCELED) {
-                $invoice->load($invoice->getId());
-                return $invoice;
-            }
+        if ($isOrderInReview) {
+            $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true);
         }
 
-        return null;
+        $order->save();
     }
 
     /**

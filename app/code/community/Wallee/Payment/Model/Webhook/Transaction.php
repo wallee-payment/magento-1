@@ -42,25 +42,24 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         if ($transaction->getState() != $transactionInfo->getState()) {
             switch ($transaction->getState()) {
                 case \Wallee\Sdk\Model\TransactionState::AUTHORIZED:
+                case \Wallee\Sdk\Model\TransactionState::COMPLETED:
                     $this->authorize($transaction, $order);
                     break;
                 case \Wallee\Sdk\Model\TransactionState::DECLINE:
+                    $this->authorize($transaction, $order);
                     $this->decline($transaction, $order);
                     break;
                 case \Wallee\Sdk\Model\TransactionState::FAILED:
                     $this->failed($transaction, $order);
                     break;
                 case \Wallee\Sdk\Model\TransactionState::FULFILL:
-                    if (! $order->getWalleeAuthorized()) {
-                        $this->authorize($transaction, $order);
-                    }
-
+                    $this->authorize($transaction, $order);
                     $this->fulfill($transaction, $order);
                     break;
                 case \Wallee\Sdk\Model\TransactionState::VOIDED:
+                    $this->authorize($transaction, $order);
                     $this->voided($transaction, $order);
                     break;
-                case \Wallee\Sdk\Model\TransactionState::COMPLETED:
                 default:
                     // Nothing to do.
                     break;
@@ -74,21 +73,25 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
 
     protected function authorize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
-        $order->getPayment()
-            ->setTransactionId($transaction->getLinkedSpaceId() . '_' . $transaction->getId())
-            ->setIsTransactionClosed(false);
-        $order->getPayment()->registerAuthorizationNotification($transaction->getAuthorizationAmount());
-        $this->sendOrderEmail($order);
-        $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, 'processing_wallee',
-            Mage::helper('wallee_payment')->__(
-                'The order should not be fulfilled yet, as the payment is not guaranteed.'));
-        $order->setWalleeAuthorized(true);
-        $order->save();
-        try {
-            $this->updateShopCustomer($transaction, $order);
-        } catch (Exception $e) {
-            // Try to update the customer, ignore if it fails.
-            Mage::log('Failed to update the customer: ' . $e->getMessage(), null, 'wallee.log');
+        if (! $order->getWalleeAuthorized()) {
+            $order->getPayment()
+                ->setTransactionId($transaction->getLinkedSpaceId() . '_' . $transaction->getId())
+                ->setIsTransactionClosed(false);
+            $order->getPayment()->registerAuthorizationNotification($transaction->getAuthorizationAmount());
+            $this->sendOrderEmail($order);
+            if ($transaction->getState() != \Wallee\Sdk\Model\TransactionState::FULFILL) {
+                $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, 'processing_wallee',
+                    Mage::helper('wallee_payment')->__(
+                        'The order should not be fulfilled yet, as the payment is not guaranteed.'));
+            }
+            $order->setWalleeAuthorized(true);
+            $order->save();
+            try {
+                $this->updateShopCustomer($transaction, $order);
+            } catch (Exception $e) {
+                // Try to update the customer, ignore if it fails.
+                Mage::log('Failed to update the customer: ' . $e->getMessage(), null, 'wallee.log');
+            }
         }
     }
 
