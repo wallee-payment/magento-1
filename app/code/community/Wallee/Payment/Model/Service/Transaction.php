@@ -343,7 +343,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction) ||
                     $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING ||
                     (! empty($customerId) && $customerId != $order->getCustomerId())) {
-                    return $this->createTransactionByOrder($spaceId, $order, $invoice, $chargeFlow);
+                    Mage::throwException('The order failed because the payment timed out.');
                 }
 
                 $pendingTransaction = new \Wallee\Sdk\Model\TransactionPending();
