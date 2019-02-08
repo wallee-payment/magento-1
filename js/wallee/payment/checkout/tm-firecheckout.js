@@ -14,6 +14,8 @@ MageWallee.Checkout.Type.TMFireCheckout = Class.create(
 			payment.switchMethod(payment.currentMethod);
 
 			Payment.prototype.validate = Payment.prototype.validate.wrap(this.validate.bind(this));
+			
+			document.observe('firecheckout:saveBefore', this.submitOrder.bind(this));
 		},
 
 		/**
@@ -38,7 +40,7 @@ MageWallee.Checkout.Type.TMFireCheckout = Class.create(
 				},
 				function(){
 					var container = $('review-buttons-container');
-					ontainer.removeClassName('disabled');
+					container.removeClassName('disabled');
 		            container.setStyle({opacity:1});
 		            this._disableEnableAll(container, false);
 				}.bind(this),
@@ -68,6 +70,14 @@ MageWallee.Checkout.Type.TMFireCheckout = Class.create(
 			} else {
 				return result;
 			}
+		},
+		
+		submitOrder: function(event) {
+			if (this.isSupportedPaymentMethod(payment.currentMethod) && this.getPaymentMethod(payment.currentMethod).handler) {
+  				checkout.setLoadWaiting('payment');
+  				this.getPaymentMethod(payment.currentMethod).handler.validate();
+  				event.memo.stopFurtherProcessing = true;
+  			}
 		},
 
 		createOrder: function() {
