@@ -385,7 +385,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
 
         $tax = new \Wallee\Sdk\Model\TaxCreate();
         $tax->setRate($taxCalculation->getRate($request->setProductClassId($shippingTaxClass)));
-        $tax->setTitle($taxClass->getClassName());
+        $tax->setTitle($this->fixLength($taxClass->getClassName(), 40));
         return $tax;
     }
 
@@ -442,7 +442,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
 
                 $tax = new \Wallee\Sdk\Model\TaxCreate();
                 $tax->setRate($surchargeTaxRate);
-                $tax->setTitle($taxClass->getClassName());
+                $tax->setTitle($this->fixLength($taxClass->getClassName(), 40));
                 return $tax;
             }
         }
@@ -521,7 +521,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
 
         $tax = new \Wallee\Sdk\Model\TaxCreate();
         $tax->setRate($item->getTaxPercent());
-        $tax->setTitle($taxClass->getClassName());
+        $tax->setTitle($this->fixLength($taxClass->getClassName(), 40));
         return $tax;
     }
 
