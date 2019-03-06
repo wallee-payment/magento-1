@@ -109,7 +109,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
     protected function failed(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
-        if ($invoice && $invoice->canCancel()) {
+        if ($invoice != null && $invoice->canCancel()) {
             $order->setWalleePaymentInvoiceAllowManipulation(true);
             $invoice->cancel();
             $order->addRelatedObject($invoice);
@@ -141,7 +141,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
     {
         $order->getPayment()->registerVoidNotification();
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
-        if ($invoice && $invoice->canCancel()) {
+        if ($invoice != null && $invoice->canCancel()) {
             $order->setWalleePaymentInvoiceAllowManipulation(true);
             $invoice->cancel();
             $order->addRelatedObject($invoice);
@@ -180,7 +180,7 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
             }
         }
 
-        return false;
+        return null;
     }
 
     protected function updateShopCustomer(\Wallee\Sdk\Model\Transaction $transaction,

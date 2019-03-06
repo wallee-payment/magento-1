@@ -448,7 +448,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                         'order_id' => $order->getId(),
                         'secret' => $this->getHelper()
                             ->hash($order->getId())
-                    )));
+                    )) . '?utm_nooverride=1');
             $transaction->setFailedUrl(
                 Mage::getUrl('wallee/transaction/failure',
                     array(
@@ -456,7 +456,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                         'order_id' => $order->getId(),
                         'secret' => $this->getHelper()
                             ->hash($order->getId())
-                    )));
+                    )) . '?utm_nooverride=1');
         }
     }
 

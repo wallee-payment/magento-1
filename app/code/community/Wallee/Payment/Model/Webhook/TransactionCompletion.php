@@ -51,7 +51,7 @@ class Wallee_Payment_Model_Webhook_TransactionCompletion extends Wallee_Payment_
     protected function failed(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
     {
         $invoice = $this->getInvoiceForTransaction($transaction->getLinkedSpaceId(), $transaction->getId(), $order);
-        if ($invoice && $invoice->getWalleeCapturePending() &&
+        if ($invoice != null && $invoice->getWalleeCapturePending() &&
             $invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_OPEN) {
             $invoice->setWalleeCapturePending(false);
 
@@ -82,6 +82,6 @@ class Wallee_Payment_Model_Webhook_TransactionCompletion extends Wallee_Payment_
             }
         }
 
-        return false;
+        return null;
     }
 }

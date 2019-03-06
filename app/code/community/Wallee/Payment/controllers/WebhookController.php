@@ -21,6 +21,7 @@ class Wallee_Payment_WebhookController extends Mage_Core_Controller_Front_Action
      */
     public function indexAction()
     {
+        http_response_code(500);
         $this->getResponse()->setHttpResponseCode(500);
         $request = new Wallee_Payment_Model_Webhook_Request(
             json_decode($this->getRequest()->getRawBody()));
