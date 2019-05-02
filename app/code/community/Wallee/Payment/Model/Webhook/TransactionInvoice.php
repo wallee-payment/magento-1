@@ -99,21 +99,13 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
     protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction,
         Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice = null)
     {
-        $isOrderInReview = ($order->getState() == Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW);
-
-        $order->getPayment()->registerVoidNotification();
-
         if ($invoice && Mage_Sales_Model_Order_Invoice::STATE_OPEN == $invoice->getState()) {
             $invoice->setWalleeCapturePending(false);
-            $order->setWalleePaymentInvoiceAllowManipulation(true);
-            $invoice->cancel();
             $order->addRelatedObject($invoice);
+            
+            $order->setWalleeDerecognized(true);
+            $order->save();
         }
-        if ($isOrderInReview) {
-            $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true);
-        }
-
-        $order->save();
     }
 
     /**

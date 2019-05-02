@@ -76,7 +76,8 @@ class Wallee_Payment_Model_Observer_Payment
         }
 
         // This allows to skip the following checks in certain situations.
-        if ($order->getWalleePaymentInvoiceAllowManipulation()) {
+        if ($order->getWalleePaymentInvoiceAllowManipulation()
+            || $order->getWalleeDerecognized()) {
             return;
         }
 

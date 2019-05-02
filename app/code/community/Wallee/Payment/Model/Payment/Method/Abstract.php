@@ -341,6 +341,9 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         parent::cancel($payment);
 
         $order = $payment->getOrder();
+        if ($order->getWalleeDerecognized()) {
+            return $this;
+        }
 
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
@@ -353,7 +356,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         } catch (Exception $e) {
             Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
         }
-
+        
         if ($transaction->getState() == TransactionState::AUTHORIZED) {
             $this->voidOnline($payment);
         } else {

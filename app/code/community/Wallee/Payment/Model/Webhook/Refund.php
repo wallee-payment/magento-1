@@ -52,6 +52,10 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
 
     protected function refunded(\Wallee\Sdk\Model\Refund $refund, Mage_Sales_Model_Order $order)
     {
+        if ($this->isDerecognizedInvoice($refund, $order)) {
+            return;
+        }
+
         if ($order->getWalleeCanceled()) {
             return;
         }
@@ -75,6 +79,20 @@ class Wallee_Payment_Model_Webhook_Refund extends Wallee_Payment_Model_Webhook_A
         $refundJob->loadByExternalId($refund->getExternalId());
         if ($refundJob->getId() > 0) {
             $refundJob->delete();
+        }
+    }
+
+    protected function isDerecognizedInvoice(\Wallee\Sdk\Model\Refund $refund,
+        Mage_Sales_Model_Order $order)
+    {
+        /* @var Wallee_Payment_Model_Service_TransactionInvoice $invoiceService */
+        $invoiceService = Mage::getSingleton('wallee_payment/service_transactionInvoice');
+        $transactionInvoice = $invoiceService->getTransactionInvoiceByTransaction(
+            $order->getWalleeSpaceId(), $order->getWalleeTransactionId());
+        if ($transactionInvoice->getState() == \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

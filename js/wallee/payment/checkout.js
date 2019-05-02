@@ -50,11 +50,11 @@ MageWallee.Checkout.Type = Class.create({
 			}
 
 			this.getPaymentMethod(code).handler = window.IframeCheckoutHandler(this.getPaymentMethod(code).configurationId);
-			this.getPaymentMethod(code).handler.setEnableSubmitCallback(function(){
+			this.getPaymentMethod(code).handler.setResetPrimaryActionCallback(function(){
 				this.getPaymentMethod(code).submitDisabled = false;
 				onEnableSubmit();
 			}.bind(this));
-			this.getPaymentMethod(code).handler.setDisableSubmitCallback(function(){
+			this.getPaymentMethod(code).handler.setReplacePrimaryActionCallback(function(){
 				this.getPaymentMethod(code).submitDisabled = true;
 				onDisableSubmit();
 			}.bind(this));

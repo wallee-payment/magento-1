@@ -33,8 +33,16 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
     public function getTransactionInvoiceByTransaction($spaceId, $transactionId)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
+        $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
+        $filter->setChildren(
+            array(
+                $this->createEntityFilter('state', \Wallee\Sdk\Model\TransactionInvoiceState::CANCELED,
+                    \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS),
+                $this->createEntityFilter('completion.lineItemVersion.transaction.id', $transactionId)
+            ));
+        $query->setFilter($filter);
         $query->setNumberOfEntities(1);
-        $query->setFilter($this->createEntityFilter('completion.lineItemVersion.transaction.id', $transactionId));
         $result = $this->getTransactionInvoiceService()->search($spaceId, $query);
         if ($result != null && ! empty($result)) {
             return current($result);
@@ -53,8 +61,16 @@ class Wallee_Payment_Model_Service_TransactionInvoice extends Wallee_Payment_Mod
     public function getTransactionInvoiceByCompletion($spaceId, $completionId)
     {
         $query = new \Wallee\Sdk\Model\EntityQuery();
+        $filter = new \Wallee\Sdk\Model\EntityQueryFilter();
+        $filter->setType(\Wallee\Sdk\Model\EntityQueryFilterType::_AND);
+        $filter->setChildren(
+            array(
+                $this->createEntityFilter('state', \Wallee\Sdk\Model\TransactionInvoiceState::CANCELED,
+                    \Wallee\Sdk\Model\CriteriaOperator::NOT_EQUALS),
+                $this->createEntityFilter('completion.id', $completionId)
+            ));
+        $query->setFilter($filter);
         $query->setNumberOfEntities(1);
-        $query->setFilter($this->createEntityFilter('completion.id', $completionId));
         $result = $this->getTransactionInvoiceService()->search($spaceId, $query);
         if ($result != null && ! empty($result)) {
             return current($result);
