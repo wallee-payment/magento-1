@@ -168,4 +168,41 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
         $salt = (string) Mage::getConfig()->getNode('global/crypt/key');
         return hash_hmac('sha256', $data, $salt, false);
     }
+
+    /**
+     * Returns the URL to wallee's Javascript library to collect customer data.
+     *
+     * @return string
+     */
+    public function getDeviceJavascriptUrl()
+    {
+        /* @var Mage_Checkout_Model_Session $checkoutSession */
+        $checkoutSession = Mage::getSingleton('checkout/session');
+        $spaceId = $checkoutSession->getQuote()
+            ->getStore()
+            ->getConfig('wallee_payment/general/space_id');
+
+        /* @var Mage_Core_Model_Cookie $cookie */
+        $cookie = Mage::getSingleton('core/cookie');
+        $deviceId = $cookie->get('wallee_device_id');
+        if (empty($deviceId)) {
+            $deviceId = $this->generateUUID();
+            $cookie->set('wallee_device_id', $deviceId);
+        }
+
+        return $this->getBaseGatewayUrl() . '/s/' . $spaceId . '/payment/device.js?sessionIdentifier=' . $deviceId;
+    }
+
+    /**
+     * Generates and returns a unique ID.
+     *
+     * @return string the unique ID
+     */
+    public function generateUUID()
+    {
+        $data = \openssl_random_pseudo_bytes(16);
+        $data[6] = \chr(\ord($data[6]) & 0x0f | 0x40); // set version to 0100
+        $data[8] = \chr(\ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+        return \vsprintf('%s%s-%s-%s-%s-%s%s%s', \str_split(\bin2hex($data), 4));
+    }
 }

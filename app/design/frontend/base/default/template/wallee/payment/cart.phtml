@@ -10,24 +10,12 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
  */
 
-/* @var Wallee_Payment_Block_Payment_Checkout $block */
+/* @var Wallee_Payment_Block_Payment_Cart $block */
 $block = $this;
 
-$javaScriptUrl = $block->getJavaScriptUrl();
-$paymentPageUrl = $block->getPaymentPageUrl();
 $deviceScriptUrl = $block->getDeviceJavascriptUrl();
 ?>
 
 <?php if ($deviceScriptUrl) : ?>
     <script type="text/javascript" src="<?php echo $block->escapeHtml($deviceScriptUrl) ?>"></script>
-<?php endif; ?>
-
-<?php if ($javaScriptUrl) : ?>
-    <script type="text/javascript" src="<?php echo $block->escapeHtml($javaScriptUrl) ?>"></script>
-<?php endif; ?>
-
-<?php if ($paymentPageUrl) : ?>
-    <script type="text/javascript">
-        MageWallee.Checkout.paymentPageUrl = '<?php echo $block->escapeHtml($paymentPageUrl) ?>';
-    </script>
 <?php endif; ?>

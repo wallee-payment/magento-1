@@ -11,6 +11,12 @@
  */
 -->
 <layout>
+	<checkout_cart_index>
+		<reference name="content">
+       		<block type="wallee_payment/payment_cart" name="wallee_payment_cart" after="-" />
+  		</reference>
+	</checkout_cart_index>
+
 	<checkout_onepage_index>
 		<reference name="head">
 			<action method="addItem"><type>js</type><name>wallee/payment/checkout.js</name><params/><if/></action>

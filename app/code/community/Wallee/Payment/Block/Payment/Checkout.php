@@ -57,4 +57,16 @@ class Wallee_Payment_Block_Payment_Checkout extends Mage_Payment_Block_Form
             return false;
         }
     }
+
+    /**
+     * Returns the URL to wallee's Javascript library to collect customer data.
+     *
+     * @return string
+     */
+    public function getDeviceJavascriptUrl()
+    {
+        /* @var Wallee_Payment_Helper_Data $helper */
+        $helper = Mage::helper('wallee_payment');
+        return $helper->getDeviceJavascriptUrl();
+    }
 }

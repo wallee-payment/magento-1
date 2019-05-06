@@ -425,6 +425,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             $transaction->setSpaceViewId(
                 $order->getStore()
                     ->getConfig('wallee_payment/general/store_view_id'));
+            $transaction->setDeviceSessionIdentifier($this->getDeviceSessionIdentifier());
         }
 
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
@@ -606,6 +607,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             $transaction->setSpaceViewId(
                 $quote->getStore()
                     ->getConfig('wallee_payment/general/store_view_id'));
+            $transaction->setDeviceSessionIdentifier($this->getDeviceSessionIdentifier());
         }
 
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
@@ -759,5 +761,17 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $address->setPostCode($this->fixLength($this->removeLinebreaks($customerAddress->getPostcode()), 40));
         $address->setStreet($this->fixLength($customerAddress->getStreetFull(), 300));
         return $address;
+    }
+    
+    /**
+     * Gets the device session identifier from the cookie.
+     *
+     * @return string|NULL
+     */
+    protected function getDeviceSessionIdentifier()
+    {
+        /* @var Mage_Core_Model_Cookie $cookie */
+        $cookie = Mage::getSingleton('core/cookie');
+        return $cookie->get('wallee_device_id');
     }
 }
