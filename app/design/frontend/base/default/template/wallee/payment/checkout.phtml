@@ -13,6 +13,7 @@
 /* @var Wallee_Payment_Block_Payment_Checkout $block */
 $block = $this;
 
+$informationUrl = $block->getInformationUrl();
 $javaScriptUrl = $block->getJavaScriptUrl();
 $paymentPageUrl = $block->getPaymentPageUrl();
 $deviceScriptUrl = $block->getDeviceJavascriptUrl();
@@ -28,6 +29,7 @@ $deviceScriptUrl = $block->getDeviceJavascriptUrl();
 
 <?php if ($paymentPageUrl) : ?>
     <script type="text/javascript">
+    	MageWallee.Checkout.informationUrl = '<?php echo $block->escapeHtml($informationUrl) ?>';
         MageWallee.Checkout.paymentPageUrl = '<?php echo $block->escapeHtml($paymentPageUrl) ?>';
     </script>
 <?php endif; ?>

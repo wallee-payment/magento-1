@@ -21,7 +21,7 @@
 		</a>
 	</li>
 	<li>
-		<a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.40/">
+		<a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.41/">
 			Source
 		</a>
 	</li>
@@ -50,7 +50,7 @@
 					<div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.40/">Download</a> the extension.</p>
+<p><a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.41/">Download</a> the extension.</p>
 </li>
 <li>
 <p>Extract the files and upload them to the root directory of your store using FTP/SSH.</p>
@@ -419,6 +419,17 @@ The extension will then log various unexpected errors or information which can h
 <p>If this does not solve the problem, it could be that you use a special fee or coupon module that we do not support. Try to disable this plugin and see if it helps.
 The payment methods are only displayed if the plugin&#8217;s total calculation matches the actual order total.</p>
 </div>					</div>
+</div>					<div class="section" id="_can_the_whitelabelname_magento_plugin_handle_5ct_roundings_for_swiss_francs">
+	<div class="section-title">
+		<h2>
+			<span class="title-number">10.2</span>Can the wallee Magento Plugin handle 5ct Roundings for Swiss Francs?					</h2>
+	</div>
+	<div class="section-body">
+					<div class="paragraph">
+<p>In general we recommend not to round any prices to avoid any amount mismatch later on. However, if you do need to apply price rounding to your products, you should use the <a href="https://github.com/openstream/Magento5CentRounding" target="_blank">Magento5CentRounding</a>.</p>
+</div><div class="paragraph">
+<p>There is a setting in this plugin to configure whether all prices or just the totals should be rounded. This needs to be set to <strong>All prices and totals</strong> for the wallee plugin to work properly.</p>
+</div>					</div>
 </div>			</div>
 </div>	<div class="chapter" id="_support">
 	<div class="chapter-title">
@@ -547,6 +558,11 @@ The payment methods are only displayed if the plugin&#8217;s total calculation m
 	<a href="#_how_can_i_make_the_payment_methods_appear_in_the_checkout">
 		<span class="item-number">10.1</span>
 		<span class="item-title">How can I make the payment methods appear in the checkout?</span>
+			</a>
+    </li>    		    			<li class="nav-level-2">
+	<a href="#_can_the_whitelabelname_magento_plugin_handle_5ct_roundings_for_swiss_francs">
+		<span class="item-number">10.2</span>
+		<span class="item-title">Can the wallee Magento Plugin handle 5ct Roundings for Swiss Francs?</span>
 			</a>
     </li>    		    	</ul>
     </li>					<li class="nav-level-1">

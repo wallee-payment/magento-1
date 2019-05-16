@@ -187,7 +187,7 @@ class Wallee_Payment_Helper_Data extends Mage_Core_Helper_Data
         $deviceId = $cookie->get('wallee_device_id');
         if (empty($deviceId)) {
             $deviceId = $this->generateUUID();
-            $cookie->set('wallee_device_id', $deviceId);
+            $cookie->set('wallee_device_id', $deviceId, true);
         }
 
         return $this->getBaseGatewayUrl() . '/s/' . $spaceId . '/payment/device.js?sessionIdentifier=' . $deviceId;

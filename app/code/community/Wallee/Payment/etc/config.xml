@@ -13,7 +13,7 @@
 <config>
 	<modules>
 		<Wallee_Payment>
-			<version>1.0.40</version>
+			<version>1.0.41</version>
 		</Wallee_Payment>
 	</modules>
 	<global>
@@ -141,6 +141,24 @@
 					</wallee_payment_payment_capture>
 				</observers>
 			</sales_order_payment_cancel>
+			<sales_quote_payment_import_data_before>
+				<observers>
+					<wallee_payment_payment_import_data_before>
+						<type>singleton</type>
+						<class>wallee_payment/observer_payment</class>
+						<method>paymentImportDataBefore</method>
+					</wallee_payment_payment_import_data_before>
+				</observers>
+			</sales_quote_payment_import_data_before>
+			<sales_model_service_quote_submit_before>
+				<observers>
+					<wallee_payment_quote_submit_before>
+						<type>singleton</type>
+						<class>wallee_payment/observer_payment</class>
+						<method>quoteSubmitBefore</method>
+					</wallee_payment_quote_submit_before>
+				</observers>
+			</sales_model_service_quote_submit_before>
 			<sales_model_service_quote_submit_success>
 				<observers>
 					<wallee_payment_quote_submit_success>
@@ -339,8 +357,8 @@
 	<default>
 		<wallee_payment>
 			<information>
-				<version>1.0.40</version>
-				<sdk_version>1.1.14</sdk_version>
+				<version>1.0.41</version>
+				<sdk_version>1.1.15</sdk_version>
 			</information>
 			<general>
 				<base_gateway_url>https://app-wallee.com/</base_gateway_url>

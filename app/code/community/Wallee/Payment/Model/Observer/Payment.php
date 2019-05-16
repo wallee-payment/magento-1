@@ -76,8 +76,8 @@ class Wallee_Payment_Model_Observer_Payment
         }
 
         // This allows to skip the following checks in certain situations.
-        if ($order->getWalleePaymentInvoiceAllowManipulation()
-            || $order->getWalleeDerecognized()) {
+        if ($order->getWalleePaymentInvoiceAllowManipulation() ||
+            $order->getWalleeDerecognized()) {
             return;
         }
 
@@ -183,6 +183,61 @@ class Wallee_Payment_Model_Observer_Payment
                 $transaction->getLinkedSpaceId(), $transaction->getId());
             $transactionInvoiceService->replace($transactionInvoice->getLinkedSpaceId(), $transactionInvoice->getId(),
                 $invoice);
+        }
+    }
+
+    /**
+     * Ensures that the transaction is in pending state.
+     * 
+     * @param Varien_Event_Observer $observer
+     * @throws Mage_Payment_Model_Info_Exception
+     */
+    public function paymentImportDataBefore(Varien_Event_Observer $observer)
+    {
+        $input = $observer->getInput();
+
+        /* @var Mage_Payment_Helper_Data $paymentHelper */
+        $paymentHelper = Mage::helper('payment');
+        $method = $paymentHelper->getMethodInstance($input->getMethod());
+        if ($method instanceof Wallee_Payment_Model_Payment_Method_Abstract) {
+            /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
+            $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
+            /* @var Mage_Checkout_Model_Session $checkoutSession */
+            $checkoutSession = Mage::getSingleton('checkout/session');
+            $transaction = $transactionService->getTransaction(
+                $checkoutSession->getQuote()
+                    ->getWalleeSpaceId(),
+                $checkoutSession->getQuote()
+                    ->getWalleeTransactionId());
+            if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction) ||
+                $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING) {
+                throw new Mage_Payment_Model_Info_Exception(
+                    Mage::helper('wallee_payment')->__('The payment timed out. Please try again.'));
+            }
+        }
+    }
+
+    /**
+     * Ensures that the transaction is in pending state.
+     *
+     * @param Varien_Event_Observer $observer
+     * @throws Mage_Payment_Model_Info_Exception
+     */
+    public function quoteSubmitBefore(Varien_Event_Observer $observer)
+    {
+        /* @var Mage_Sales_Model_Quote $quote */
+        $quote = $observer->getQuote();
+
+        if ($quote->getPayment()->getMethodInstance() instanceof Wallee_Payment_Model_Payment_Method_Abstract) {
+            /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
+            $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
+            $transaction = $transactionService->getTransaction($quote->getWalleeSpaceId(),
+                $quote->getWalleeTransactionId());
+            if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction) ||
+                $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING) {
+                throw new Mage_Payment_Model_Info_Exception(
+                    Mage::helper('wallee_payment')->__('The payment timed out. Please try again.'));
+            }
         }
     }
 

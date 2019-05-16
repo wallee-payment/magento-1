@@ -31,6 +31,20 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     protected static $_possiblePaymentMethodCache = array();
 
     /**
+     * Cache for JavaScript URLs.
+     *
+     * @var string[]
+     */
+    protected static $_javascriptUrlCache = array();
+
+    /**
+     * Cache for payment page URLs.
+     *
+     * @var string[]
+     */
+    protected static $_paymentPageUrlCache = array();
+
+    /**
      * The transaction API service.
      *
      * @var \Wallee\Sdk\Service\TransactionService
@@ -87,9 +101,12 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     public function getJavaScriptUrl(Mage_Sales_Model_Quote $quote)
     {
-        $transaction = $this->getTransactionByQuote($quote);
-        return $this->getTransactionService()->buildJavaScriptUrl($transaction->getLinkedSpaceId(),
-            $transaction->getId());
+        if (! isset(self::$_javascriptUrlCache[$quote->getId()]) || self::$_javascriptUrlCache[$quote->getId()] == null) {
+            $transaction = $this->getTransactionByQuote($quote);
+            self::$_javascriptUrlCache[$quote->getId()] = $this->getTransactionService()->buildJavaScriptUrl(
+                $transaction->getLinkedSpaceId(), $transaction->getId());
+        }
+        return self::$_javascriptUrlCache[$quote->getId()];
     }
 
     /**
@@ -100,9 +117,12 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     public function getPaymentPageUrl(Mage_Sales_Model_Quote $quote)
     {
-        $transaction = $this->getTransactionByQuote($quote);
-        return $this->getTransactionService()->buildPaymentPageUrl($transaction->getLinkedSpaceId(),
-            $transaction->getId());
+        if (! isset(self::$_paymentPageUrlCache[$quote->getId()]) || self::$_paymentPageUrlCache[$quote->getId()] == null) {
+            $transaction = $this->getTransactionByQuote($quote);
+            self::$_paymentPageUrlCache[$quote->getId()] = $this->getTransactionService()->buildPaymentPageUrl(
+                $transaction->getLinkedSpaceId(), $transaction->getId());
+        }
+        return self::$_paymentPageUrlCache[$quote->getId()];
     }
 
     /**
@@ -190,7 +210,8 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             $transaction->getPaymentConnectorConfiguration() != null ? $transaction->getPaymentConnectorConfiguration()
                 ->getConnector() : null);
         $info->setPaymentMethodId(
-            $transaction->getPaymentConnectorConfiguration() != null && $transaction->getPaymentConnectorConfiguration()
+            $transaction->getPaymentConnectorConfiguration() != null &&
+            $transaction->getPaymentConnectorConfiguration()
                 ->getPaymentMethodConfiguration() != null ? $transaction->getPaymentConnectorConfiguration()
                 ->getPaymentMethodConfiguration()
                 ->getPaymentMethod() : null);
@@ -401,8 +422,8 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param bool $chargeFlow
      */
     protected function assembleOrderTransactionData(Mage_Sales_Model_Order $order,
-        Mage_Sales_Model_Order_Invoice $invoice, \Wallee\Sdk\Model\AbstractTransactionPending $transaction,
-        $chargeFlow = false)
+        Mage_Sales_Model_Order_Invoice $invoice,
+        \Wallee\Sdk\Model\AbstractTransactionPending $transaction, $chargeFlow = false)
     {
         $transaction->setCurrency($order->getOrderCurrencyCode());
         $transaction->setBillingAddress($this->getOrderBillingAddress($order));
@@ -762,7 +783,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $address->setStreet($this->fixLength($customerAddress->getStreetFull(), 300));
         return $address;
     }
-    
+
     /**
      * Gets the device session identifier from the cookie.
      *
@@ -772,6 +793,11 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     {
         /* @var Mage_Core_Model_Cookie $cookie */
         $cookie = Mage::getSingleton('core/cookie');
-        return $cookie->get('wallee_device_id');
+        $deviceId = $cookie->get('wallee_device_id');
+        if (! empty($deviceId)) {
+            return $deviceId;
+        } else {
+            return null;
+        }
     }
 }
