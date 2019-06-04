@@ -138,6 +138,16 @@ if ($transactionInfo && $transactionInfo->getImage()) {
                     </strong>
                 </td>
             </tr>
+            <tr>
+                <td class="label"><label><?php echo $block->escapeHtml($helper->__('Customer')) ?></label></td>
+                <td class="value">
+                    <strong>
+                        <a href="<?php echo $block->escapeHtml($block->getCustomerUrl()) ?>" target="_blank">
+                            <?php echo $block->escapeHtml($helper->__('View in wallee')) ?>
+                        </a>
+                    </strong>
+                </td>
+            </tr>
         <?php endif; ?>
     </tbody>
 </table>

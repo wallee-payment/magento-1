@@ -41,11 +41,6 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             }
 
             $lineItems[] = $this->getProductLineItem($item, $invoice->getOrderCurrencyCode());
-
-            $discountItem = $this->getDiscountLineItem($item, $invoice->getOrderCurrencyCode());
-            if ($discountItem) {
-                $lineItems[] = $discountItem;
-            }
         }
 
         $shippingItem = $this->getInvoiceShippingLineItem($invoice);
@@ -67,13 +62,14 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         if (! empty($awGiftCards)) {
             $lineItems = array_merge($lineItems, $awGiftCards);
         }
-        
+
         $result = new StdClass();
         $result->items = $lineItems;
-        Mage::dispatchEvent('wallee_payment_convert_invoice_line_items', array(
-            'result' => $result,
-            'invoice' => $invoice
-        ));
+        Mage::dispatchEvent('wallee_payment_convert_invoice_line_items',
+            array(
+                'result' => $result,
+                'invoice' => $invoice
+            ));
         return $this->getLineItemHelper()->getItemsByReductionAmount($result->items, $amount);
     }
 
@@ -143,13 +139,14 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         if (! empty($awGiftCards)) {
             $lineItems = array_merge($lineItems, $awGiftCards);
         }
-        
+
         $result = new StdClass();
         $result->items = $lineItems;
-        Mage::dispatchEvent('wallee_payment_convert_line_items', array(
-            'result' => $result,
-            'entity' => $entity
-        ));
+        Mage::dispatchEvent('wallee_payment_convert_line_items',
+            array(
+                'result' => $result,
+                'entity' => $entity
+            ));
         return $this->getLineItemHelper()->cleanupLineItems($result->items, $entity->getGrandTotal(),
             $this->getCurrencyCode($entity));
     }
@@ -182,11 +179,6 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
             }
 
             $lineItems[] = $this->getProductLineItem($item, $currency);
-
-            $discountItem = $this->getDiscountLineItem($item, $currency);
-            if ($discountItem) {
-                $lineItems[] = $discountItem;
-            }
         }
 
         return $lineItems;
@@ -241,14 +233,34 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         if (! empty($attributes)) {
             $lineItem->setAttributes($attributes);
         }
-        
+
+        if ($productItem->getDiscountAmount() != 0) {
+            /* @var Mage_Tax_Helper_Data $taxHelper */
+            $taxHelper = Mage::helper('tax');
+            if ($taxHelper->priceIncludesTax($productItem->getStoreId()) ||
+                ! $taxHelper->applyTaxAfterDiscount($productItem->getStoreId())) {
+                $lineItem->setDiscountIncludingTax($this->roundAmount($productItem->getDiscountAmount(), $currency));
+                $lineItem->setAmountIncludingTax(
+                    $this->roundAmount($productItem->getRowTotalInclTax() - $productItem->getDiscountAmount(), $currency));
+            } else {
+                $lineItem->setDiscountIncludingTax(
+                    $this->roundAmount($productItem->getDiscountAmount() * ($productItem->getTaxPercent() / 100 + 1),
+                        $currency));
+                $lineItem->setAmountIncludingTax(
+                    $this->roundAmount(
+                        $productItem->getRowTotal() - $productItem->getDiscountAmount() + $productItem->getTaxAmount(),
+                        $currency));
+            }
+        }
+
         $result = new StdClass();
         $result->item = $lineItem;
-        Mage::dispatchEvent('wallee_payment_convert_product_line_item', array(
-            'result' => $result,
-            'entityItem' => $productItem,
-            'currency' => $currency
-        ));
+        Mage::dispatchEvent('wallee_payment_convert_product_line_item',
+            array(
+                'result' => $result,
+                'entityItem' => $productItem,
+                'currency' => $currency
+            ));
         return $this->cleanLineItem($result->item);
     }
 
@@ -295,58 +307,6 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
     }
 
     /**
-     * Returns the line item for the discounts of the given product.
-     *
-     * @param Mage_Sales_Model_Order_Item|Mage_Sales_Model_Quote_Item|Mage_Sales_Model_Order_Invoice_Item $productItem
-     * @param string $currency
-     * @return \Wallee\Sdk\Model\LineItemCreate
-     */
-    protected function getDiscountLineItem($productItem, $currency)
-    {
-        /* @var Mage_Tax_Helper_Data $taxHelper */
-        $taxHelper = Mage::helper('tax');
-        if ($productItem->getDiscountAmount() != 0) {
-            if ($taxHelper->priceIncludesTax($productItem->getStoreId()) ||
-                ! $taxHelper->applyTaxAfterDiscount($productItem->getStoreId())) {
-                $amountIncludingTax = - 1 * $productItem->getDiscountAmount();
-            } else {
-                $amountIncludingTax = - 1 * $productItem->getDiscountAmount() * ($productItem->getTaxPercent() / 100 + 1);
-            }
-
-            $lineItem = new \Wallee\Sdk\Model\LineItemCreate();
-            $lineItem->setAmountIncludingTax($this->roundAmount($amountIncludingTax, $currency));
-            $lineItem->setName($this->getHelper()
-                ->__('Discount'));
-            $lineItem->setQuantity($productItem->getQty() ? $productItem->getQty() : $productItem->getQtyOrdered());
-            $lineItem->setSku($productItem->getSku() . '-discount');
-            if ($taxHelper->applyTaxAfterDiscount($productItem->getStore()) && $productItem->getTaxPercent() > 0) {
-                $lineItem->setTaxes(array(
-                    $this->getTax($productItem)
-                ));
-            }
-
-            $lineItem->setType(\Wallee\Sdk\Model\LineItemType::DISCOUNT);
-            $uniqueId = $productItem->getId();
-            if ($productItem instanceof Mage_Sales_Model_Order_Item) {
-                $uniqueId = $productItem->getQuoteItemId();
-            } elseif ($productItem instanceof Mage_Sales_Model_Order_Invoice_Item) {
-                $uniqueId = $productItem->getOrderItem()->getQuoteItemId();
-            }
-
-            $lineItem->setUniqueId($uniqueId . '-discount');
-            
-            $result = new StdClass();
-            $result->item = $lineItem;
-            Mage::dispatchEvent('wallee_payment_convert_discount_line_item', array(
-                'result' => $result,
-                'entityItem' => $productItem,
-                'currency' => $currency
-            ));
-            return $this->cleanLineItem($result->item);
-        }
-    }
-
-    /**
      * Returns the line item for the shipping.
      *
      * @param Mage_Sales_Model_Order|Mage_Sales_Model_Quote $entity
@@ -383,13 +343,14 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
 
             $lineItem->setType(\Wallee\Sdk\Model\LineItemType::SHIPPING);
             $lineItem->setUniqueId('shipping');
-            
+
             $result = new StdClass();
             $result->item = $lineItem;
-            Mage::dispatchEvent('wallee_payment_convert_shipping_line_item', array(
-                'result' => $result,
-                'entity' => $entity
-            ));
+            Mage::dispatchEvent('wallee_payment_convert_shipping_line_item',
+                array(
+                    'result' => $result,
+                    'entity' => $entity
+                ));
             return $this->cleanLineItem($result->item);
         }
     }
