@@ -1,5 +1,4 @@
 <?php
-use Wallee\Sdk\Model\TransactionState;
 
 /**
  * wallee Magento 1
@@ -163,7 +162,7 @@ class Wallee_Payment_Model_Observer_Payment
             Mage::throwException(Mage::helper('wallee_payment')->__('The invoice cannot be created.'));
         }
 
-        if ($transaction->getState() == TransactionState::AUTHORIZED) {
+        if ($transaction->getState() == \Wallee\Sdk\Model\TransactionState::AUTHORIZED) {
             // Completes the transaction on the gateway if necessary, otherwise just update the line items.
             if ($invoice->getWalleePaymentNeedsCapture()) {
                 $order->getPayment()
