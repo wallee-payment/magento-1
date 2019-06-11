@@ -387,33 +387,6 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     }
 
     /**
-     * Creates a transaction for the given order.
-     *
-     * @param int $spaceId
-     * @param Mage_Sales_Model_Order $order
-     * @param Mage_Sales_Model_Order_Invoice $invoice
-     * @return \Wallee\Sdk\Model\TransactionCreate
-     */
-    protected function createTransactionByOrder($spaceId, Mage_Sales_Model_Order $order,
-        Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
-    {
-        $createTransaction = new \Wallee\Sdk\Model\TransactionCreate();
-        $createTransaction->setCustomersPresence(\Wallee\Sdk\Model\CustomersPresence::VIRTUAL_PRESENT);
-        $createTransaction->setAutoConfirmationEnabled(false);
-        $this->assembleOrderTransactionData($order, $invoice, $createTransaction, $chargeFlow);
-        if ($token != null) {
-            $createTransaction->setToken($token->getId());
-        }
-
-        $transaction = $this->getTransactionService()->create($spaceId, $createTransaction);
-        $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
-        $quote->setWalleeSpaceId($transaction->getLinkedSpaceId());
-        $quote->setWalleeTransactionId($transaction->getId());
-        $quote->save();
-        return $transaction;
-    }
-
-    /**
      * Assemble the transaction data for the given order and invoice.
      *
      * @param Mage_Sales_Model_Order $order
