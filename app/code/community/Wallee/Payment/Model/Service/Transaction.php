@@ -347,24 +347,29 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     /**
      * Update the transaction with the given order's data.
      *
-     * @param int $transactionId
-     * @param int $spaceId
+     * @param \Wallee\Sdk\Model\Transaction $transaction
      * @param Mage_Sales_Model_Order $order
      * @param Mage_Sales_Model_Order_Invoice $invoice
      * @param bool $chargeFlow
      * @return \Wallee\Sdk\Model\Transaction
      */
-    public function confirmTransaction($transactionId, $spaceId, Mage_Sales_Model_Order $order,
-        Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false, \Wallee\Sdk\Model\Token $token = null)
+    public function confirmTransaction(\Wallee\Sdk\Model\Transaction $transaction,
+        Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false,
+        \Wallee\Sdk\Model\Token $token = null)
     {
+        $spaceId = $transaction->getLinkedSpaceId();
+        $transactionId = $transaction->getId();
+
         for ($i = 0; $i < 5; $i ++) {
             try {
-                $transaction = $this->getTransactionService()->read($spaceId, $transactionId);
-                $customerId = $transaction->getCustomerId();
-                if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction) ||
-                    $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING ||
-                    (! empty($customerId) && $customerId != $order->getCustomerId())) {
-                    Mage::throwException('The order failed because the payment timed out.');
+                if ($i > 0) {
+                    $transaction = $this->getTransactionService()->read($spaceId, $transactionId);
+                    $customerId = $transaction->getCustomerId();
+                    if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction) ||
+                        $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING ||
+                        (! empty($customerId) && $customerId != $order->getCustomerId())) {
+                        Mage::throwException('The order failed because the payment timed out.');
+                    }
                 }
 
                 $pendingTransaction = new \Wallee\Sdk\Model\TransactionPending();

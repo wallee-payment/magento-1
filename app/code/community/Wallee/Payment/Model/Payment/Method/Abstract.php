@@ -253,24 +253,28 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
 
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
-        $transaction = $transactionService->confirmTransaction($quote->getWalleeTransactionId(),
-            $quote->getWalleeSpaceId(), $order, $this->getCheckoutInvoice(),
+
+        $this->getCheckoutOrder()->setWalleeSpaceId($quote->getWalleeSpaceId());
+        $this->getCheckoutOrder()->setWalleeTransactionId(
+            $quote->getWalleeTransactionId());
+        $order->setWalleeSpaceId($quote->getWalleeSpaceId());
+        $order->setWalleeTransactionId($quote->getWalleeTransactionId());
+        $order->save();
+
+        $transaction = $transactionService->getTransaction($quote->getWalleeSpaceId(),
+            $quote->getWalleeTransactionId());
+        $transactionService->updateTransactionInfo($transaction, $order);
+
+        $transaction = $transactionService->confirmTransaction($transaction, $order, $this->getCheckoutInvoice(),
             Mage::app()->getStore()
                 ->isAdmin(), $token);
         $transactionService->updateTransactionInfo($transaction, $order);
-
-        $this->getCheckoutOrder()->setWalleeSpaceId($transaction->getLinkedSpaceId());
-        $this->getCheckoutOrder()->setWalleeTransactionId($transaction->getId());
-        $order->setWalleeSpaceId($transaction->getLinkedSpaceId());
-        $order->setWalleeTransactionId($transaction->getId());
 
         if (Mage::app()->getStore()->isAdmin()) {
             // Set the selected token on the order and tell it to apply the charge flow after it is saved.
             $this->getCheckoutOrder()->setWalleeChargeFlow(true);
             $this->getCheckoutOrder()->setWalleeToken($token);
         }
-
-        $order->save();
     }
 
     /**
@@ -356,7 +360,7 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         } catch (Exception $e) {
             Mage::throwException($this->getHelper()->__('The transaction linked to the order could not be loaded.'));
         }
-        
+
         if ($transaction->getState() == TransactionState::AUTHORIZED) {
             $this->voidOnline($payment);
         } else {
