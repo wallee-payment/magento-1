@@ -198,6 +198,12 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         /* @var Wallee_Payment_Model_Entity_TransactionInfo $info */
         $info = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByTransaction(
             $transaction->getLinkedSpaceId(), $transaction->getId());
+
+        if ($info->getId() && $info->getOrderId() != $order->getId()) {
+            Mage::throwException(
+                $this->getHelper()->__('The wallee transaction info is already linked to a different order.'));
+        }
+
         $info->setTransactionId($transaction->getId());
         $info->setAuthorizationAmount($transaction->getAuthorizationAmount());
         $info->setOrderId($order->getId());
@@ -357,6 +363,10 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice, $chargeFlow = false,
         \Wallee\Sdk\Model\Token $token = null)
     {
+        if ($transaction->getState() == \Wallee\Sdk\Model\TransactionState::CONFIRMED) {
+            return $transaction;
+        }
+
         $spaceId = $transaction->getLinkedSpaceId();
         $transactionId = $transaction->getId();
 
@@ -365,7 +375,10 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                 if ($i > 0) {
                     $transaction = $this->getTransactionService()->read($spaceId, $transactionId);
                     $customerId = $transaction->getCustomerId();
-                    if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction) ||
+                    if ($transaction instanceof \Wallee\Sdk\Model\Transaction &&
+                        $transaction->getState() == \Wallee\Sdk\Model\TransactionState::CONFIRMED) {
+                        return $transaction;
+                    } else if (! ($transaction instanceof \Wallee\Sdk\Model\Transaction) ||
                         $transaction->getState() != \Wallee\Sdk\Model\TransactionState::PENDING ||
                         (! empty($customerId) && $customerId != $order->getCustomerId())) {
                         Mage::throwException('The order failed because the payment timed out.');

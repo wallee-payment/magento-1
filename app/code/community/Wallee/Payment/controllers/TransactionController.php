@@ -16,34 +16,34 @@
  */
 class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Action
 {
-    
+
     /**
      * Returns the information to collect the customer's payment data.
      */
     public function informationAction()
     {
         $result = array();
-        
+
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
         /* @var Mage_Checkout_Model_Session $checkoutSession */
         $checkoutSession = Mage::getSingleton('checkout/session');
-        
+
         $transaction = $transactionService->getTransactionByQuote($checkoutSession->getQuote());
         $result['transactionId'] = $transaction->getId();
-        
+
         try {
             $result['javascriptUrl'] = $transactionService->getJavaScriptUrl($checkoutSession->getQuote());
         } catch (Exception $e) {
             $result['javascriptUrl'] = false;
         }
-        
+
         try {
             $result['paymentPageUrl'] = $transactionService->getPaymentPageUrl($checkoutSession->getQuote());
         } catch (Exception $e) {
             $result['paymentPageUrl'] = false;
         }
-        
+
         $this->_prepareDataJSON($result);
     }
 
@@ -76,6 +76,9 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
             ->setIsActive(false)
             ->save();
         $checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
+
+        $checkoutSession->setLastOrderId($order->getId())
+            ->setLastRealOrderId($order->getIncrementId());
 
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
@@ -281,11 +284,12 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
 
         return false;
     }
-    
+
     /**
      * Prepare JSON formatted data for response to client
      *
-     * @param $response
+     * @param
+     *            $response
      * @return Zend_Controller_Response_Abstract
      */
     protected function _prepareDataJSON($response)

@@ -254,12 +254,22 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
         $transactionService = Mage::getSingleton('wallee_payment/service_transaction');
 
+        if ($order->getWalleeSpaceId() != null ||
+            $order->getWalleeTransactionId() != null) {
+            Mage::throwException(
+                $this->getHelper()->__('The wallee payment transaction has already been set on the order.'));
+        }
+
         $this->getCheckoutOrder()->setWalleeSpaceId($quote->getWalleeSpaceId());
         $this->getCheckoutOrder()->setWalleeTransactionId(
             $quote->getWalleeTransactionId());
         $order->setWalleeSpaceId($quote->getWalleeSpaceId());
         $order->setWalleeTransactionId($quote->getWalleeTransactionId());
         $order->save();
+
+        if (! $this->checkTransactionInfo($order)) {
+            return;
+        }
 
         $transaction = $transactionService->getTransaction($quote->getWalleeSpaceId(),
             $quote->getWalleeTransactionId());
@@ -274,6 +284,24 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
             // Set the selected token on the order and tell it to apply the charge flow after it is saved.
             $this->getCheckoutOrder()->setWalleeChargeFlow(true);
             $this->getCheckoutOrder()->setWalleeToken($token);
+        }
+    }
+
+    /**
+     * Checks whether the transaction info for the transaction linked to the order is already linked to another order.
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return boolean
+     */
+    protected function checkTransactionInfo(Mage_Sales_Model_Order $order)
+    {
+        /* @var Wallee_Payment_Model_Entity_TransactionInfo $info */
+        $info = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByTransaction(
+            $order->getWalleeSpaceId(), $order->getWalleeTransactionId());
+        if ($info->getId() && $info->getOrderId() != $order->getId()) {
+            return false;
+        } else {
+            return true;
         }
     }
 
