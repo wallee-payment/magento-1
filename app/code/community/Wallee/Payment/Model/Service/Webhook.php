@@ -71,8 +71,7 @@ class Wallee_Payment_Model_Service_Webhook extends Wallee_Payment_Model_Service_
             'Transaction Invoice',
             array(
                 \Wallee\Sdk\Model\TransactionInvoiceState::NOT_APPLICABLE,
-                \Wallee\Sdk\Model\TransactionInvoiceState::PAID,
-                \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED
+                \Wallee\Sdk\Model\TransactionInvoiceState::PAID
             ));
         $this->_webhookEntities[] = new Wallee_Payment_Model_Webhook_Entity(1472041831364,
             'Transaction Completion', array(

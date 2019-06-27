@@ -71,7 +71,8 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
         $transactionStoreService->updateTransactionInfo($transaction, $order);
     }
 
-    protected function authorize(\Wallee\Sdk\Model\Transaction $transaction, Mage_Sales_Model_Order $order)
+    protected function authorize(\Wallee\Sdk\Model\Transaction $transaction,
+        Mage_Sales_Model_Order $order)
     {
         if (! $order->getWalleeAuthorized()) {
             $order->getPayment()
@@ -186,7 +187,8 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
     protected function updateShopCustomer(\Wallee\Sdk\Model\Transaction $transaction,
         Mage_Sales_Model_Order $order)
     {
-        if ($order->getCustomerIsGuest()) {
+        if ($order->getCustomerIsGuest() || $order->getBillingAddress() == null ||
+            ! $order->getBillingAddress()->getCustomerAddressId()) {
             return;
         }
 

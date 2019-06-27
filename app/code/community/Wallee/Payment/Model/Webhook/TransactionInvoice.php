@@ -56,9 +56,6 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
                         ->getTransaction(), $order, $transactionInvoice->getAmount(), $invoice);
                     break;
                 case \Wallee\Sdk\Model\TransactionInvoiceState::DERECOGNIZED:
-                    $this->derecognize($transactionInvoice->getCompletion()
-                        ->getLineItemVersion()
-                        ->getTransaction(), $order, $invoice);
                 default:
                     // Nothing to do.
                     break;
@@ -94,18 +91,6 @@ class Wallee_Payment_Model_Webhook_TransactionInvoice extends Wallee_Payment_Mod
         }
 
         $order->save();
-    }
-
-    protected function derecognize(\Wallee\Sdk\Model\Transaction $transaction,
-        Mage_Sales_Model_Order $order, Mage_Sales_Model_Order_Invoice $invoice = null)
-    {
-        if ($invoice && Mage_Sales_Model_Order_Invoice::STATE_OPEN == $invoice->getState()) {
-            $invoice->setWalleeCapturePending(false);
-            $order->addRelatedObject($invoice);
-            
-            $order->setWalleeDerecognized(true);
-            $order->save();
-        }
     }
 
     /**
