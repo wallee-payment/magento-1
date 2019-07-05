@@ -32,6 +32,9 @@ MageWallee.Checkout = {
 	},
 	
 	fetchInformation: function(callback) {
+		if(!this.informationUrl) {
+			return;
+		}
 		new Ajax.Request(
             this.informationUrl,
             {
