@@ -21,7 +21,7 @@
 		</a>
 	</li>
 	<li>
-		<a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.50/">
+		<a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.51/">
 			Source
 		</a>
 	</li>
@@ -50,7 +50,7 @@
 					<div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.50/">Download</a> the extension.</p>
+<p><a href="https://github.com/wallee-payment/magento-1/releases/tag/1.0.51/">Download</a> the extension.</p>
 </li>
 <li>
 <p>Extract the files and upload them to the root directory of your store using FTP/SSH.</p>
@@ -165,7 +165,34 @@ can be found in the <a href="https://app-wallee.com/en-us/doc/payment/transactio
 <div class="content">
 <img src="resource/magento_state_graph_order.svg" alt="magento state graph order"/>
 </div>
+</div><div class="olist glossary">
+<ol class="glossary">
+<li>
+<p>If the transaction is <code>authorized</code> in wallee, the Magento order is marked as <code>Hold Delivery</code>. As long as the transaction is in wallee in state <code>pending</code>, the order will appear in Magento as <code>Pending Payment</code>. In case the transaction timed out the transaction will switch into cancel state.</p>
+</li>
+<li>
+<p>If the transaction fails during the authorization process, the Magento order is marked as <code>Canceled</code>.</p>
+</li>
+<li>
+<p>In case the delivery indication is pending, the order within Magento will move into <code>Payment Review</code> (in this case you have to decide the outcome of the delivery indication e.g. You have configured to manually check transactions without 3d Secure). In such situations a manual task is created and an alert appears in the wallee &amp; Magento backends. You can then resolve the manual task within the wallee backend. This changes the transaction status, which is transmitted back to Magento.  See more details in <a href="#_on_hold_orders">On hold orders</a>.</p>
+</li>
+<li>
+<p>If the transaction&#8217;s authorization is voided or the risk assessments indicate that the order should not be fulfilled, the order is marked as <code>Processing</code>.</p>
+</li>
+<li>
+<p>If the transaction in wallee is marked as <code>fulfill</code>, the Magento order is marked as <code>Processing</code>, indicating that it can now be fulfilled. Once the shipment has been created, we recommend to change the order&#8217;s status.</p>
+</li>
+</ol>
+</div>							<div class="section" id="_general_remarks_regarding_order_statuses">
+	<div class="section-title">
+		<h3>
+			<span class="title-number">5.1.1</span>General remarks regarding order statuses					</h3>
+	</div>
+	<div class="section-body">
+					<div class="paragraph">
+<p>We recommend that you only change the order status to indicate that shipping has taken place. If you change it before the transaction has reached a final state in wallee, the plugin may changed the order status again. If you want different order statuses to be set, you can change the behaviour in the plugin configuration.</p>
 </div>					</div>
+</div>			</div>
 </div>					<div class="section" id="_state_mapping_of_magento_invoices">
 	<div class="section-title">
 		<h2>
@@ -178,7 +205,31 @@ can be found in the <a href="https://app-wallee.com/en-us/doc/payment/transactio
 <div class="content">
 <img src="resource/magento_stage_graph_invoice.svg" alt="magento stage graph invoice"/>
 </div>
+</div><div class="olist glossary">
+<ol class="glossary">
+<li>
+<p>If the transaction in wallee is <code>authorized</code>, the invoice status of the Magento order is set to <code>Pending</code>.</p>
+</li>
+<li>
+<p>If the transaction fails during the authorization process, the invoice status of the Magento order is set to <code>Canceled</code>.</p>
+</li>
+<li>
+<p>If the transaction&#8217;s authorization is voided, the invoice status of the Magento order is set to <code>Canceled</code>.</p>
+</li>
+<li>
+<p>Once the invoice is paid, the invoice status of the Magento order is set to <code>Paid</code>. This also applies if the invoice is not traceable due to external administration (invoice not applicable).</p>
+</li>
+</ol>
+</div>							<div class="section" id="_general_remarks_regarding_order_statuses_2">
+	<div class="section-title">
+		<h3>
+			<span class="title-number">5.2.1</span>General remarks regarding order statuses					</h3>
+	</div>
+	<div class="section-body">
+					<div class="paragraph">
+<p>We recommend that you do not change the invoice status manually. If you do so, it may be changed again by the plugin.</p>
 </div>					</div>
+</div>			</div>
 </div>			</div>
 </div>	<div class="chapter" id="_transaction_management">
 	<div class="chapter-title">
@@ -490,11 +541,25 @@ The payment methods are only displayed if the plugin&#8217;s total calculation m
 		<span class="item-number">5.1</span>
 		<span class="item-title">State mapping of Magento orders</span>
 			</a>
+        	<ul  class="nav">
+    		    			<li class="nav-level-3">
+	<a href="#_general_remarks_regarding_order_statuses">
+		<span class="item-number">5.1.1</span>
+		<span class="item-title">General remarks regarding order statuses</span>
+			</a>
+    </li>    		    	</ul>
     </li>    		    			<li class="nav-level-2">
 	<a href="#_state_mapping_of_magento_invoices">
 		<span class="item-number">5.2</span>
 		<span class="item-title">State mapping of Magento invoices</span>
 			</a>
+        	<ul  class="nav">
+    		    			<li class="nav-level-3">
+	<a href="#_general_remarks_regarding_order_statuses_2">
+		<span class="item-number">5.2.1</span>
+		<span class="item-title">General remarks regarding order statuses</span>
+			</a>
+    </li>    		    	</ul>
     </li>    		    	</ul>
     </li>					<li class="nav-level-1">
 	<a href="#_transaction_management">

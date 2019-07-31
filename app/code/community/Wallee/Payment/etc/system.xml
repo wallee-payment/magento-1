@@ -30,7 +30,7 @@
 					<show_in_default>1</show_in_default>
 					<show_in_website>1</show_in_website>
 					<show_in_store>1</show_in_store>
-					<comment><![CDATA[If you need help setting up the wallee extension, check out the <a href="https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.0.50/docs/en/documentation.html" target="_blank">documentation</a>.]]></comment>
+					<comment><![CDATA[If you need help setting up the wallee extension, check out the <a href="https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.0.51/docs/en/documentation.html" target="_blank">documentation</a>.]]></comment>
 					<fields>
 						<version translate="label">
 							<label>Module Version</label>
@@ -190,6 +190,16 @@
 							<show_in_store>1</show_in_store>
 							<depends><overwrite_shipping_description>1</overwrite_shipping_description></depends>
 						</custom_shipping_description>
+						<enforce_consistency>
+							<label>Enforce Consistency</label>
+							<frontend_type>select</frontend_type>
+							<sort_order>30</sort_order>
+							<comment>Require that the line items of the transaction correspond to those of the purchase order in Magento. This may result in the wallee payment methods not being available to the customer in certain cases. In return, it is ensured that only correct data is transmitted to wallee.</comment>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</enforce_consistency>
 					</fields>
 				</line_item>
 			</groups>

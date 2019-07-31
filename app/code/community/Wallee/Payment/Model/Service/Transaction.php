@@ -413,8 +413,8 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @param bool $chargeFlow
      */
     protected function assembleOrderTransactionData(Mage_Sales_Model_Order $order,
-        Mage_Sales_Model_Order_Invoice $invoice,
-        \Wallee\Sdk\Model\AbstractTransactionPending $transaction, $chargeFlow = false)
+        Mage_Sales_Model_Order_Invoice $invoice, \Wallee\Sdk\Model\TransactionPending $transaction,
+        $chargeFlow = false)
     {
         $transaction->setCurrency($order->getOrderCurrencyCode());
         $transaction->setBillingAddress($this->getOrderBillingAddress($order));
@@ -443,6 +443,8 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         /* @var Wallee_Payment_Model_Service_LineItem $lineItems */
         $lineItems = Mage::getSingleton('wallee_payment/service_lineItem');
         $transaction->setLineItems($lineItems->collectLineItems($order));
+        $this->logAdjustmentLineItemInfo($order, $transaction);
+
         $transaction->setMerchantReference($order->getIncrementId());
         $transaction->setInvoiceMerchantReference($invoice->getIncrementId());
         if ($chargeFlow) {
@@ -470,6 +472,30 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
                         'secret' => $this->getHelper()
                             ->hash($order->getId())
                     )) . '?utm_nooverride=1');
+        }
+    }
+
+    /**
+     * Checks whether an adjustment line item has been added to the transaction and adds a log message if so.
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @param \Wallee\Sdk\Model\TransactionPending $transaction
+     */
+    protected function logAdjustmentLineItemInfo(Mage_Sales_Model_Order $order,
+        \Wallee\Sdk\Model\TransactionPending $transaction)
+    {
+        foreach ($transaction->getLineItems() as $lineItem) {
+            if ($lineItem->getUniqueId() == 'adjustment') {
+                $expectedSum = Mage::helper('wallee_payment/lineItem')->getTotalAmountIncludingTax(
+                    $transaction->getLineItems()) - $lineItem->getAmountIncludingTax();
+                Mage::log(
+                    'An adjustment line item has been added to the transaction ' . $transaction->getId() .
+                    ', because the line item total amount of ' .
+                    $this->roundAmount($order->getGrandTotal(), $order->getOrderCurrencyCode()) .
+                    ' did not match the invoice amount of ' . $expectedSum . ' of the order ' . $order->getId() . '.',
+                    null, 'wallee.log');
+                return;
+            }
         }
     }
 

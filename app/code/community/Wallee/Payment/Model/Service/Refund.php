@@ -89,13 +89,27 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $baseLineItems = $this->getBaseLineItems($creditmemo->getOrder()
             ->getWalleeSpaceId(), $transaction);
 
-        $reductions = $this->getProductReductions($creditmemo, $baseLineItems);
-        $shippingReduction = $this->getShippingReduction($creditmemo);
-        if ($shippingReduction != null) {
-            $reductions[] = $shippingReduction;
-        }
+        /* @var Wallee_Payment_Helper_LineItem $lineItemHelper */
+        $lineItemHelper = Mage::helper('wallee_payment/lineItem');
+        if ($this->compareAmounts($lineItemHelper->getTotalAmountIncludingTax($baseLineItems),
+            $creditmemo->getGrandTotal(), $creditmemo->getOrderCurrencyCode()) == 0) {
+            $reductions = array();
+            foreach ($baseLineItems as $lineItem) {
+                $reduction = new \Wallee\Sdk\Model\LineItemReductionCreate();
+                $reduction->setLineItemUniqueId($lineItem->getUniqueId());
+                $reduction->setQuantityReduction($lineItem->getQuantity());
+                $reduction->setUnitPriceReduction(0);
+                $reductions[] = $reduction;
+            }
+        } else {
+            $reductions = $this->getProductReductions($creditmemo, $baseLineItems);
+            $shippingReduction = $this->getShippingReduction($creditmemo);
+            if ($shippingReduction != null) {
+                $reductions[] = $shippingReduction;
+            }
 
-        $reductions = $this->fixReductions($creditmemo, $transaction, $reductions, $baseLineItems);
+            $reductions = $this->fixReductions($creditmemo, $transaction, $reductions, $baseLineItems);
+        }
 
         $refund = new \Wallee\Sdk\Model\RefundCreate();
         $refund->setExternalId(uniqid($creditmemo->getOrderId() . '-'));

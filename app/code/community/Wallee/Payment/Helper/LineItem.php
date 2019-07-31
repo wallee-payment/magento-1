@@ -33,6 +33,11 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
 
         $amount = 0;
         foreach ($reductions as $reduction) {
+            if (! isset($lineItemMap[$reduction->getLineItemUniqueId()])) {
+                Mage::throwException(
+                    'The refund cannot be executed as the transaction\'s line items do not match the order\'s.');
+            }
+
             $lineItem = $lineItemMap[$reduction->getLineItemUniqueId()];
             $unitPrice = $lineItem->getAmountIncludingTax() / $lineItem->getQuantity();
             $amount += $unitPrice * $reduction->getQuantityReduction();
@@ -60,13 +65,39 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Returns the total tax amount of the given line items.
+     *
+     * @param \Wallee\Sdk\Model\LineItem[] $lineItems
+     * @param string $currency
+     * @return float
+     */
+    public function getTotalTaxAmount(array $lineItems, $currency)
+    {
+        $sum = 0;
+        foreach ($lineItems as $lineItem) {
+            $aggregatedTaxRate = 0;
+            if (is_array($lineItem->getTaxes())) {
+                foreach ($lineItem->getTaxes() as $tax) {
+                    $aggregatedTaxRate += $tax->getRate();
+                }
+            }
+            $amountExcludingTax = $this->roundAmount(
+                $lineItem->getAmountIncludingTax() / (1 + $aggregatedTaxRate / 100), $currency);
+            $sum += $lineItem->getAmountIncludingTax() - $amountExcludingTax;
+        }
+
+        return $sum;
+    }
+
+    /**
      * Reduces the amounts of the given line items proportionally to match the given expected sum.
      *
      * @param \Wallee\Sdk\Model\LineItemCreate[] $originalLineItems
      * @param float $expectedSum
+     * @param string $currency
      * @return \Wallee\Sdk\Model\LineItemCreate[]
      */
-    public function getItemsByReductionAmount(array $lineItems, $expectedSum)
+    public function getItemsByReductionAmount(array $lineItems, $expectedSum, $currency)
     {
         if (empty($lineItems)) {
             Mage::throwException("No line items provided.");
@@ -78,13 +109,15 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
         $appliedTotal = 0;
         foreach ($lineItems as $lineItem) {
             /* @var \Wallee\Sdk\Model\LineItem $lineItem */
-            $lineItem->setAmountIncludingTax($lineItem->getAmountIncludingTax() * $factor);
+            $lineItem->setAmountIncludingTax(
+                $this->roundAmount($lineItem->getAmountIncludingTax() * $factor, $currency));
             $appliedTotal += $lineItem->getAmountIncludingTax() * $factor;
         }
 
         // Fix rounding error
         $roundingDifference = $expectedSum - $appliedTotal;
-        $lineItems[0]->setAmountIncludingTax($lineItems[0]->getAmountIncludingTax() + $roundingDifference);
+        $lineItems[0]->setAmountIncludingTax(
+            $this->roundAmount($lineItems[0]->getAmountIncludingTax() + $roundingDifference, $currency));
         return $this->ensureUniqueIds($lineItems);
     }
 
@@ -96,7 +129,8 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
      * @param string $currency
      * @return \Wallee\Sdk\Model\LineItemCreate[]
      */
-    public function cleanupLineItems(array $lineItems, $expectedSum, $currency)
+    public function cleanupLineItems(array $lineItems, $expectedSum, $currency, $ensureConsistency = true,
+        array $taxInfo = array())
     {
         $diff = $this->getDifference($lineItems, $expectedSum, $currency);
         if ($diff != 0) {
@@ -106,7 +140,11 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
                 $this->fixDiscountLineItem($lineItems, $diff, $currency);
             }
 
-            $this->checkAmount($lineItems, $expectedSum, $currency);
+            if ($ensureConsistency) {
+                $this->checkAmount($lineItems, $expectedSum, $currency);
+            } else {
+                $this->adjustLineItems($lineItems, $expectedSum, $currency, $taxInfo);
+            }
         }
 
         return $this->ensureUniqueIds($lineItems);
@@ -118,10 +156,55 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
      * @param float $amount
      * @param string $currency
      */
+    protected function adjustLineItems(array &$lineItems, $expectedSum, $currency, array $taxInfo)
+    {
+        $expectedSum = $this->roundAmount($expectedSum, $currency);
+        $effectiveSum = $this->roundAmount($this->getTotalAmountIncludingTax($lineItems), $currency);
+        $diff = $expectedSum - $effectiveSum;
+
+        $adjustmentLineItem = new \Wallee\Sdk\Model\LineItemCreate();
+        $adjustmentLineItem->setAmountIncludingTax($this->roundAmount($diff, $currency));
+        $adjustmentLineItem->setName($this->__('Adjustment'));
+        $adjustmentLineItem->setQuantity(1);
+        $adjustmentLineItem->setSku('adjustment');
+        $adjustmentLineItem->setUniqueId('adjustment');
+        $adjustmentLineItem->setShippingRequired(false);
+        $adjustmentLineItem->setType(
+            $diff > 0 ? \Wallee\Sdk\Model\LineItemType::FEE : \Wallee\Sdk\Model\LineItemType::DISCOUNT);
+
+        if (! empty($taxInfo) && count($taxInfo) == 1) {
+            $taxAmount = $this->getTotalTaxAmount($lineItems, $currency);
+            $taxDiff = $this->roundAmount($taxInfo[0]['amount'] - $taxAmount, $currency);
+            if ($taxDiff != 0) {
+                $rate = $taxInfo[0]['percent'];
+                $adjustmentTaxAmount = $this->roundAmount($diff - $diff / (1 + $rate / 100), $currency);
+                if ($adjustmentTaxAmount == $taxDiff) {
+                    $taxes = array();
+                    foreach ($taxInfo[0]['rates'] as $rate) {
+                        $tax = new \Wallee\Sdk\Model\TaxCreate();
+                        $tax->setRate($rate['percent']);
+                        $tax->setTitle($this->fixLength($rate['title'], 40));
+                        $taxes[] = $tax;
+                    }
+                    $adjustmentLineItem->setTaxes($taxes);
+                }
+            }
+        }
+
+        $lineItems[] = $adjustmentLineItem;
+    }
+
+    /**
+     *
+     * @param \Wallee\Sdk\Model\LineItemCreate[] $lineItems
+     * @param float $amount
+     * @param string $currency
+     */
     protected function getDifference(array $lineItems, $expectedSum, $currency)
     {
+        $expectedSum = $this->roundAmount($expectedSum, $currency);
         $effectiveSum = $this->roundAmount($this->getTotalAmountIncludingTax($lineItems), $currency);
-        return $this->roundAmount($expectedSum, $currency) - $effectiveSum;
+        return $expectedSum - $effectiveSum;
     }
 
     /**
@@ -132,8 +215,9 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
      */
     protected function checkAmount(array $lineItems, $expectedSum, $currency)
     {
+        $expectedSum = $this->roundAmount($expectedSum, $currency);
         $effectiveSum = $this->roundAmount($this->getTotalAmountIncludingTax($lineItems), $currency);
-        $diff = $this->roundAmount($expectedSum, $currency) - $effectiveSum;
+        $diff = $expectedSum - $effectiveSum;
         if ($diff != 0) {
             Mage::throwException(
                 'The line item total amount of ' . $effectiveSum . ' does not match the order\'s invoice amount of ' .
@@ -206,5 +290,17 @@ class Wallee_Payment_Helper_LineItem extends Mage_Core_Helper_Abstract
         /* @var Wallee_Payment_Helper_Data $helper */
         $helper = Mage::helper('wallee_payment');
         return round($amount, $helper->getCurrencyFractionDigits($currencyCode));
+    }
+
+    /**
+     * Changes the given string to have no more characters as specified.
+     *
+     * @param string $string
+     * @param int $maxLength
+     * @return string
+     */
+    protected function fixLength($string, $maxLength)
+    {
+        return mb_substr($string, 0, $maxLength, 'UTF-8');
     }
 }

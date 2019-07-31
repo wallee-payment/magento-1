@@ -209,13 +209,17 @@ class Wallee_Payment_Block_Payment_Info extends Mage_Payment_Block_Info
     {
         if ($this->_transactionInfo === null) {
             if ($this->getInfo() instanceof Mage_Sales_Model_Order_Payment) {
-                /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
-                $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder(
-                    $this->getInfo()
-                        ->getOrder());
-                if ($transactionInfo->getId()) {
-                    $this->_transactionInfo = $transactionInfo;
-                } else {
+                try {
+                    /* @var Wallee_Payment_Model_Entity_TransactionInfo $transactionInfo */
+                    $transactionInfo = Mage::getModel('wallee_payment/entity_transactionInfo')->loadByOrder(
+                        $this->getInfo()
+                            ->getOrder());
+                    if ($transactionInfo->getId()) {
+                        $this->_transactionInfo = $transactionInfo;
+                    } else {
+                        $this->_transactionInfo = false;
+                    }
+                } catch (Exception $e) {
                     $this->_transactionInfo = false;
                 }
             } else {

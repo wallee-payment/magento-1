@@ -70,7 +70,8 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
                 'result' => $result,
                 'invoice' => $invoice
             ));
-        return $this->getLineItemHelper()->getItemsByReductionAmount($result->items, $amount);
+        return $this->getLineItemHelper()->getItemsByReductionAmount($result->items, $amount,
+            $invoice->getOrderCurrencyCode());
     }
 
     /**
@@ -148,7 +149,9 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
                 'entity' => $entity
             ));
         return $this->getLineItemHelper()->cleanupLineItems($result->items, $entity->getGrandTotal(),
-            $this->getCurrencyCode($entity));
+            $this->getCurrencyCode($entity),
+            Mage::getStoreConfig('wallee_payment/line_item/enforce_consistency', $entity->getStore()),
+            $entity instanceof Mage_Sales_Model_Order ? $entity->getFullTaxInfo() : array());
     }
 
     /**
