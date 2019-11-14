@@ -86,6 +86,10 @@ class Wallee_Payment_Model_Payment_Method_Abstract extends Mage_Payment_Model_Me
 
     public function canVoid(Varien_Object $payment)
     {
+        if (! $payment->getOrder()) {
+            return parent::canVoid($payment);
+        }
+
         if (! parent::canVoid($payment)) {
             return false;
         }
