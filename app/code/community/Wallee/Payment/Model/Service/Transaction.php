@@ -50,7 +50,21 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      * @var \Wallee\Sdk\Service\TransactionService
      */
     protected $_transactionService;
-
+    
+    /**
+     * The transaction invoice API service.
+     *
+     * @var \Wallee\Sdk\Service\TransactionInvoiceService
+     */
+    protected $_transactionPaymentPageService;
+    
+    /**
+     * The transaction iframe API service.
+     *
+     * @var \Wallee\Sdk\Service\TransactionIframeService
+     */
+    protected $_transactionIframeService;
+    
     /**
      * Returns the transaction API service.
      *
@@ -58,12 +72,42 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
      */
     protected function getTransactionService()
     {
-        if ($this->_transactionService == null) {
-            $this->_transactionService = new \Wallee\Sdk\Service\TransactionService(
-                $this->getHelper()->getApiClient());
-        }
-
-        return $this->_transactionService;
+    	if ($this->_transactionService == null) {
+    		$this->_transactionService = new \Wallee\Sdk\Service\TransactionService(
+    				$this->getHelper()->getApiClient());
+    	}
+    	
+    	return $this->_transactionService;
+    }
+    
+    /**
+     * Returns the transaction API service.
+     *
+     * @return \Wallee\Sdk\Service\TransactionPaymentPageService
+     */
+    protected function getTransactionPaymentPageService()
+    {
+    	if ($this->_transactionPaymentPageService == null) {
+    		$this->_transactionPaymentPageService = new \Wallee\Sdk\Service\TransactionPaymentPageService(
+    				$this->getHelper()->getApiClient());
+    	}
+    	
+    	return $this->_transactionPaymentPageService;
+    }
+    
+    /**
+     * Returns the transaction API service.
+     *
+     * @return \Wallee\Sdk\Service\TransactionIframeService
+     */
+    protected function getTransactionIframeService()
+    {
+    	if ($this->_transactionIframeService == null) {
+    		$this->_transactionIframeService = new \Wallee\Sdk\Service\TransactionIframeService(
+    				$this->getHelper()->getApiClient());
+    	}
+    	
+    	return $this->_transactionIframeService;
     }
 
     /**
@@ -103,7 +147,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     {
         if (! isset(self::$_javascriptUrlCache[$quote->getId()]) || self::$_javascriptUrlCache[$quote->getId()] == null) {
             $transaction = $this->getTransactionByQuote($quote);
-            self::$_javascriptUrlCache[$quote->getId()] = $this->getTransactionService()->buildJavaScriptUrl(
+            self::$_javascriptUrlCache[$quote->getId()] = $this->getTransactionIframeService()->javascriptUrl(
                 $transaction->getLinkedSpaceId(), $transaction->getId());
         }
         return self::$_javascriptUrlCache[$quote->getId()];
@@ -119,7 +163,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
     {
         if (! isset(self::$_paymentPageUrlCache[$quote->getId()]) || self::$_paymentPageUrlCache[$quote->getId()] == null) {
             $transaction = $this->getTransactionByQuote($quote);
-            self::$_paymentPageUrlCache[$quote->getId()] = $this->getTransactionService()->buildPaymentPageUrl(
+            self::$_paymentPageUrlCache[$quote->getId()] = $this->getTransactionPaymentPageService()->paymentPageUrl(
                 $transaction->getLinkedSpaceId(), $transaction->getId());
         }
         return self::$_paymentPageUrlCache[$quote->getId()];
