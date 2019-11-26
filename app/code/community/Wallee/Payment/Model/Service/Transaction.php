@@ -614,6 +614,7 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $createTransaction = new \Wallee\Sdk\Model\TransactionCreate();
         $createTransaction->setCustomersPresence(\Wallee\Sdk\Model\CustomersPresence::VIRTUAL_PRESENT);
         $createTransaction->setAutoConfirmationEnabled(false);
+        $createTransaction->setChargeRetryEnabled(false);
         $this->assembleQuoteTransactionData($quote, $createTransaction);
         $transaction = $this->getTransactionService()->create($spaceId, $createTransaction);
         $quote->setWalleeSpaceId($transaction->getLinkedSpaceId());
