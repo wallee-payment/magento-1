@@ -10,19 +10,17 @@ This repository contains the Magento 1 extension that enables to process payment
 
 ## Documentation
 
-* [Documentation](https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.0.56/docs/en/documentation.html)
+* [Documentation](https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.0.57/docs/en/documentation.html)
 
-## Supported One-Step Checkouts
+## Supported One Step Checkouts
 
 We do provide special integrations for the following one step checkouts:
 
-* aheadWorks One Step Checkout 
-* GoMage LightCheckout
-* Idev OneStepCheckout
-* IWD Checkout Suite
-* IWD OnePageCheckout
-* MageStore OneStepCheckout
-* TM FireCheckout
+* [OneStepCheckout](https://www.onestepcheckout.com/magento-1)
+* [One Step Checkout by Aheadworks](https://marketplace.magento.com/aheadworks-onestepcheckout.html)
+* [GoMage LightCheckout for Magento](https://www.gomage.com/gomage-lightcheckout.html)
+* [Checkout Suite for Magento 1](https://www.iwdagency.com/extensions/checkout-suite-m1.html)
+* [One Page Checkout by Template Master](https://marketplace.magento.com/swissup-tm-firecheckout.html)
 
 ## Magento 1.6.x
 
@@ -30,4 +28,4 @@ For Magento 1.6.x you need to install the [Magento compatibility module](https:/
 
 ## License
 
-Please see the [license file](https://github.com/wallee-payment/magento-1/blob/1.0.56/LICENSE) for more information.
+Please see the [license file](https://github.com/wallee-payment/magento-1/blob/1.0.57/LICENSE) for more information.
