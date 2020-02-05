@@ -111,18 +111,18 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
 
         $refund = new \Wallee\Sdk\Model\RefundCreate();
         $refund->setExternalId(uniqid($creditmemo->getOrderId() . '-'));
-        
+
         if ($this->validateReductions($creditmemo, $transaction, $reductions, $baseLineItems)) {
             $refund->setReductions($reductions);
         } else {
-            $refund->setAmount($creditmemo->getGrandTotal());
+            $refund->setAmount($this->roundAmount($creditmemo->getGrandTotal(), $creditmemo->getOrderCurrencyCode()));
         }
-        
+
         $refund->setTransaction($transaction);
         $refund->setType(\Wallee\Sdk\Model\RefundType::MERCHANT_INITIATED_ONLINE);
         return $refund;
     }
-    
+
     /**
      * Validates whether the given reductions total amount matches the one of the creditmemo.
      *
@@ -140,7 +140,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         $reductionAmount = $lineItemHelper->getReductionAmount($baseLineItems, $reductions,
             $creditmemo->getOrderCurrencyCode());
 
-        if ($reductionAmount != $creditmemo->getGrandTotal()) {
+        if ($this->compareAmounts($reductionAmount, $creditmemo->getGrandTotal(), $creditmemo->getOrderCurrencyCode()) != 0) {
             return false;
         } else {
             return true;
