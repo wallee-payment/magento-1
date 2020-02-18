@@ -310,6 +310,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
 
         $creditmemoAmount = 0;
         $shippingAmount = 0;
+        $shippingTaxRate = 0;
         foreach ($refund->getReductions() as $reduction) {
             $lineItem = $lineItems[$reduction->getLineItemUniqueId()];
             switch ($lineItem->getType()) {
@@ -323,6 +324,7 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
                 case \Wallee\Sdk\Model\LineItemType::DISCOUNT:
                     break;
                 case \Wallee\Sdk\Model\LineItemType::SHIPPING:
+                    $shippingTaxRate = $baseLineItems[$reduction->getLineItemUniqueId()]->getAggregatedTaxRate();
                     if ($reduction->getQuantityReduction() > 0) {
                         $shippingAmount = $baseLineItems[$reduction->getLineItemUniqueId()]->getAmountIncludingTax();
                     } elseif ($reduction->getUnitPriceReduction() > 0) {
@@ -348,9 +350,14 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             $positiveAdjustment = $refund->getAmount() - $creditmemoAmount;
         }
 
+        $shippingAmountExcludingTax = 0;
+        if ($shippingAmount > 0) {
+            $shippingAmountExcludingTax = $this->roundAmount($shippingAmount / (1 + $shippingTaxRate / 100), $refund->getTransaction()->getCurrency());
+        }
+        
         return array(
             'qtys' => $refundQuantities,
-            'shipping_amount' => $shippingAmount,
+            'shipping_amount' => $shippingAmountExcludingTax,
             'adjustment_positive' => $positiveAdjustment,
             'adjustment_negative' => $negativeAdjustment
         );
