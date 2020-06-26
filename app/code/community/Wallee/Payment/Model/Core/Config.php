@@ -16,9 +16,9 @@
 class Wallee_Payment_Model_Core_Config extends Mage_Core_Model_Config
 {
     
-    public function reinit($options = array())
+    public function loadDb()
     {
-        parent::reinit($options);
+        parent::loadDb();
         
         Mage::getModel('wallee_payment/system_config')->initConfigValues();
     }
