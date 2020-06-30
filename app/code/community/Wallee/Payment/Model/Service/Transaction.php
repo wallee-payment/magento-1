@@ -840,7 +840,9 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
         $address->setGivenName($this->fixLength($this->removeLinebreaks($customerAddress->getFirstname()), 100));
         $address->setOrganizationName($this->fixLength($this->removeLinebreaks($customerAddress->getCompany()), 100));
         $address->setPhoneNumber($customerAddress->getTelephone());
-        $address->setPostalState($customerAddress->getRegionCode());
+        if (! empty($customerAddress->getCountryId()) && ! empty($customerAddress->getRegionCode())) {
+            $address->setPostalState($customerAddress->getCountryId() . '-' . $customerAddress->getRegionCode());
+        }
         $address->setPostCode($this->fixLength($this->removeLinebreaks($customerAddress->getPostcode()), 40));
         $address->setStreet($this->fixLength($customerAddress->getStreetFull(), 300));
         return $address;
