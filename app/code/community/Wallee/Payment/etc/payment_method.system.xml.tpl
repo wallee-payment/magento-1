@@ -65,6 +65,16 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</show_image>
+						<order_email translate="label comment">
+							<label>Send Order Email</label>
+							<frontend_type>select</frontend_type>
+							<sort_order>80</sort_order>
+							<comment>Send the Magento store's order email.</comment>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<show_in_default>0</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_email>
 						<sort_order translate="label">
 							<label>Sort Order</label>
 							<frontend_type>text</frontend_type>

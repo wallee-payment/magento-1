@@ -158,7 +158,10 @@ class Wallee_Payment_Model_Webhook_Transaction extends Wallee_Payment_Model_Webh
      */
     protected function sendOrderEmail(Mage_Sales_Model_Order $order)
     {
-        if ($order->getStore()->getConfig('wallee_payment/email/order') && ! $order->getEmailSent()) {
+        if ($order->getStore()->getConfig('wallee_payment/email/order') &&
+            $order->getPayment()
+                ->getMethodInstance()
+                ->getConfigData('order_email') && ! $order->getEmailSent()) {
             $order->sendNewOrderEmail();
         }
     }

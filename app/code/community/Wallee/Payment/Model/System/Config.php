@@ -142,6 +142,7 @@ class Wallee_Payment_Model_System_Config
                         $configValues['websites/' . $website->getCode() . $basePath . 'sort_order'] = $paymentMethod->getSortOrder();
                         $configValues['websites/' . $website->getCode() . $basePath . 'show_description'] = 1;
                         $configValues['websites/' . $website->getCode() . $basePath . 'show_image'] = 1;
+                        $configValues['websites/' . $website->getCode() . $basePath . 'order_email'] = 1;
                         $configValues['websites/' . $website->getCode() . $basePath . 'model'] = $model;
                         $configValues['websites/' . $website->getCode() . $basePath . 'payment_action'] = $action;
                         
@@ -155,6 +156,7 @@ class Wallee_Payment_Model_System_Config
                             $configValues['stores/' . $store->getCode() . $basePath . 'sort_order'] = $paymentMethod->getSortOrder();
                             $configValues['stores/' . $store->getCode() . $basePath . 'show_description'] = 1;
                             $configValues['stores/' . $store->getCode() . $basePath . 'show_image'] = 1;
+                            $configValues['stores/' . $store->getCode() . $basePath . 'order_email'] = 1;
                             $configValues['stores/' . $store->getCode() . $basePath . 'model'] = $model;
                             $configValues['stores/' . $store->getCode() . $basePath . 'payment_action'] = $action;
                         }
