@@ -491,15 +491,16 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
 
         $transaction->setMerchantReference($order->getIncrementId());
         $transaction->setInvoiceMerchantReference($invoice->getIncrementId());
-        if ($chargeFlow) {
-            $transaction->setAllowedPaymentMethodConfigurations(
-                array(
-                    $order->getPayment()
-                        ->getMethodInstance()
-                        ->getPaymentMethodConfiguration()
-                        ->getConfigurationId()
-                ));
-        } else {
+        
+        $transaction->setAllowedPaymentMethodConfigurations(
+            array(
+                $order->getPayment()
+                    ->getMethodInstance()
+                    ->getPaymentMethodConfiguration()
+                    ->getConfigurationId()
+            ));
+        
+        if (!$chargeFlow) {
             $transaction->setSuccessUrl(
                 Mage::getUrl('wallee/transaction/success',
                     array(
