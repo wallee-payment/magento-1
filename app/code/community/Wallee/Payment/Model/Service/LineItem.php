@@ -267,14 +267,35 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
         return $this->cleanLineItem($result->item);
     }
 
-    protected function getAttributeKey($option)
-    {
-        if (isset($option['option_id']) && ! empty($option['option_id'])) {
-            return $this->fixLength('option_' . $option['option_id'], 40);
-        } else {
-            return $this->fixLength(preg_replace('/[^a-z0-9]/', '', strtolower($option['label'])), 40);
-        }
-    }
+	/**
+	 * Get attribute array key value
+	 *
+	 * @param array $option
+	 *
+	 * @return string
+	 */
+	protected function getAttributeKey(array $option)
+	{
+		$attributeKey = 'random_' . rand(10, 10000);
+		$label        = empty($option['label']) ? null : $option['label'];
+
+		if (!empty($option['option_id'])) {
+			$attributeKey = 'option_' . $option['option_id'];
+		} elseif (!empty($label)) {
+
+			$attributeKeyTmp = preg_replace('/[^a-z0-9]/', '', strtolower($label));
+			if (empty($attributeKeyTmp)) {
+				$attributeKey = 'hash_' . md5($label);
+			} else {
+				$attributeKey = is_numeric($attributeKeyTmp[0]) ? 'o_' . $attributeKeyTmp : $attributeKeyTmp;
+			}
+		}
+
+		$attributeKey = $this->fixLength($attributeKey, 40);
+
+		return $attributeKey;
+
+	}
 
     /**
      *
