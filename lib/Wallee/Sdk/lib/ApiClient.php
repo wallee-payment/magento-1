@@ -54,7 +54,7 @@ final class ApiClient {
 	 *
 	 * @var string
 	 */
-	private $userAgent = 'PHP-Client/2.0.18/php';
+	private $userAgent = 'PHP-Client/2.1.4/php';
 
 	/**
 	 * The path to the certificate authority file.
@@ -76,6 +76,7 @@ final class ApiClient {
 	 * @var integer
 	 */
 	private $connectionTimeout = 20;
+	CONST CONNECTION_TIMEOUT = 20;
 
 	/**
 	 * The http client type to use for communication.
@@ -238,6 +239,16 @@ final class ApiClient {
 		}
 
 		$this->connectionTimeout = $connectionTimeout;
+		return $this;
+	}
+
+	/**
+	 * Resets the connection timeout in seconds.
+	 *
+	 * @return ApiClient
+	 */
+	public function resetConnectionTimeout() {
+		$this->connectionTimeout = self::CONNECTION_TIMEOUT;
 		return $this;
 	}
 
@@ -428,9 +439,11 @@ final class ApiClient {
 	 * @param array  $headerParams the header parameters
 	 * @param string $responseType the expected response type
 	 * @param string $endpointPath the path to the method endpoint before expanding parameters
-	 * @throws ApiException on a non 2xx response
-	 * @throws VersioningException on a versioning/locking problem
-	 * @return mixed
+	 *
+	 * @return \Wallee\Sdk\ApiResponse
+	 * @throws \Wallee\Sdk\ApiException
+	 * @throws \Wallee\Sdk\Http\ConnectionException
+	 * @throws \Wallee\Sdk\VersioningException
 	 */
 	public function callApi($resourcePath, $method, $queryParams, $postData, $headerParams, $responseType = null, $endpointPath = null) {
 		$request = new HttpRequest($this->getSerializer(), $this->buildRequestUrl($resourcePath, $queryParams), $method, $this->generateUniqueToken());
@@ -1027,6 +1040,18 @@ final class ApiClient {
         return $this->paymentTerminalService;
     }
     
+    protected $paymentTerminalTillService;
+
+    /**
+     * @return \Wallee\Sdk\Service\PaymentTerminalTillService
+     */
+    public function getPaymentTerminalTillService() {
+        if(is_null($this->paymentTerminalTillService)){
+            $this->paymentTerminalTillService = new \Wallee\Sdk\Service\PaymentTerminalTillService($this);
+        }
+        return $this->paymentTerminalTillService;
+    }
+    
     protected $permissionService;
 
     /**
@@ -1133,6 +1158,18 @@ final class ApiClient {
             $this->shopifySubscriptionVersionService = new \Wallee\Sdk\Service\ShopifySubscriptionVersionService($this);
         }
         return $this->shopifySubscriptionVersionService;
+    }
+    
+    protected $shopifyTransactionService;
+
+    /**
+     * @return \Wallee\Sdk\Service\ShopifyTransactionService
+     */
+    public function getShopifyTransactionService() {
+        if(is_null($this->shopifyTransactionService)){
+            $this->shopifyTransactionService = new \Wallee\Sdk\Service\ShopifyTransactionService($this);
+        }
+        return $this->shopifyTransactionService;
     }
     
     protected $spaceService;

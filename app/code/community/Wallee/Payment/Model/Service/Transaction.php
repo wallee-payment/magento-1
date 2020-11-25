@@ -6,7 +6,7 @@
  * This Magento extension enables to process payments with wallee (https://www.wallee.com/).
  *
  * @package Wallee_Payment
- * @author customweb GmbH (http://www.customweb.com/)
+ * @author wallee AG (http://www.wallee.com/)
  * @license http://www.apache.org/licenses/LICENSE-2.0  Apache Software License (ASL 2.0)
  */
 
@@ -374,8 +374,8 @@ class Wallee_Payment_Model_Service_Transaction extends Wallee_Payment_Model_Serv
             $transaction = $this->getTransactionByQuote($quote);
 
             try {
-                $paymentMethods = $this->getTransactionService()->fetchPossiblePaymentMethods(
-                    $transaction->getLinkedSpaceId(), $transaction->getId());
+                $paymentMethods = $this->getTransactionService()->fetchPaymentMethods(
+                    $transaction->getLinkedSpaceId(), $transaction->getId(), 'iframe');
             } catch (\WhitelabelMachineName\Sdk\ApiException $e) {
                 self::$_possiblePaymentMethodCache[$quote->getId()] = array();
                 throw $e;

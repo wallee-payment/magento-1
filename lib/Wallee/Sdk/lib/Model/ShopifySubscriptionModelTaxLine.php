@@ -19,10 +19,12 @@
 
 
 namespace Wallee\Sdk\Model;
+
+use \ArrayAccess;
 use \Wallee\Sdk\ObjectSerializer;
 
 /**
- * ShopifySubscriptionProductActive model
+ * ShopifySubscriptionModelTaxLine model
  *
  * @category    Class
  * @description 
@@ -30,7 +32,7 @@ use \Wallee\Sdk\ObjectSerializer;
  * @author      customweb GmbH
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache License v2
  */
-class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProductActive 
+class ShopifySubscriptionModelTaxLine implements ModelInterface, ArrayAccess
 {
     const DISCRIMINATOR = null;
 
@@ -39,7 +41,7 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
       *
       * @var string
       */
-    protected static $swaggerModelName = 'ShopifySubscriptionProduct.Active';
+    protected static $swaggerModelName = 'ShopifySubscriptionModel.TaxLine';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -47,8 +49,8 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'id' => 'int',
-        'version' => 'int'
+        'rate' => 'float',
+        'title' => 'string'
     ];
 
     /**
@@ -57,8 +59,8 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
       * @var string[]
       */
     protected static $swaggerFormats = [
-        'id' => 'int64',
-        'version' => 'int64'
+        'rate' => null,
+        'title' => null
     ];
 
     /**
@@ -68,8 +70,8 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      * @var string[]
      */
     protected static $attributeMap = [
-        'id' => 'id',
-        'version' => 'version'
+        'rate' => 'rate',
+        'title' => 'title'
     ];
 
     /**
@@ -78,8 +80,8 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      * @var string[]
      */
     protected static $setters = [
-        'id' => 'setId',
-        'version' => 'setVersion'
+        'rate' => 'setRate',
+        'title' => 'setTitle'
     ];
 
     /**
@@ -88,12 +90,18 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      * @var string[]
      */
     protected static $getters = [
-        'id' => 'getId',
-        'version' => 'getVersion'
+        'rate' => 'getRate',
+        'title' => 'getTitle'
     ];
 
     
 
+    /**
+     * Associative array for storing property values
+     *
+     * @var mixed[]
+     */
+    protected $container = [];
 
     /**
      * Constructor
@@ -103,12 +111,10 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      */
     public function __construct(array $data = null)
     {
-        parent::__construct($data);
-
         
-        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['rate'] = isset($data['rate']) ? $data['rate'] : null;
         
-        $this->container['version'] = isset($data['version']) ? $data['version'] : null;
+        $this->container['title'] = isset($data['title']) ? $data['title'] : null;
         
     }
 
@@ -119,14 +125,8 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      */
     public function listInvalidProperties()
     {
-        $invalidProperties = parent::listInvalidProperties();
+        $invalidProperties = [];
 
-        if ($this->container['id'] === null) {
-            $invalidProperties[] = "'id' can't be null";
-        }
-        if ($this->container['version'] === null) {
-            $invalidProperties[] = "'version' can't be null";
-        }
         return $invalidProperties;
     }
 
@@ -137,7 +137,7 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      */
     public static function swaggerTypes()
     {
-        return self::$swaggerTypes + parent::swaggerTypes();
+        return self::$swaggerTypes;
     }
 
     /**
@@ -147,7 +147,7 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      */
     public static function swaggerFormats()
     {
-        return self::$swaggerFormats + parent::swaggerFormats();
+        return self::$swaggerFormats;
     }
 
 
@@ -159,7 +159,7 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      */
     public static function attributeMap()
     {
-        return parent::attributeMap() + self::$attributeMap;
+        return self::$attributeMap;
     }
 
     /**
@@ -169,7 +169,7 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      */
     public static function setters()
     {
-        return parent::setters() + self::$setters;
+        return self::$setters;
     }
 
     /**
@@ -179,7 +179,7 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
      */
     public static function getters()
     {
-        return parent::getters() + self::$getters;
+        return self::$getters;
     }
 
     /**
@@ -208,50 +208,50 @@ class ShopifySubscriptionProductActive extends AbstractShopifySubscriptionProduc
     
 
     /**
-     * Gets id
+     * Gets rate
      *
-     * @return int
+     * @return float
      */
-    public function getId()
+    public function getRate()
     {
-        return $this->container['id'];
+        return $this->container['rate'];
     }
 
     /**
-     * Sets id
+     * Sets rate
      *
-     * @param int $id The ID is the primary key of the entity. The ID identifies the entity uniquely.
+     * @param float $rate 
      *
      * @return $this
      */
-    public function setId($id)
+    public function setRate($rate)
     {
-        $this->container['id'] = $id;
+        $this->container['rate'] = $rate;
 
         return $this;
     }
     
 
     /**
-     * Gets version
+     * Gets title
      *
-     * @return int
+     * @return string
      */
-    public function getVersion()
+    public function getTitle()
     {
-        return $this->container['version'];
+        return $this->container['title'];
     }
 
     /**
-     * Sets version
+     * Sets title
      *
-     * @param int $version The version number indicates the version of the entity. The version is incremented whenever the entity is changed.
+     * @param string $title 
      *
      * @return $this
      */
-    public function setVersion($version)
+    public function setTitle($title)
     {
-        $this->container['version'] = $version;
+        $this->container['title'] = $title;
 
         return $this;
     }
