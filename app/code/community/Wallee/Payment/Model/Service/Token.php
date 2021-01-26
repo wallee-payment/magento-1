@@ -78,6 +78,14 @@ class Wallee_Payment_Model_Service_Token extends Wallee_Payment_Model_Service_Ab
 
             return;
         }
+        
+        if (! $tokenVersion->getPaymentConnectorConfiguration()) {
+            if ($info->getId()) {
+                $info->delete();
+            }
+            
+            return;
+        }
 
         $info->setCustomerId($tokenVersion->getToken()
             ->getCustomerId());
