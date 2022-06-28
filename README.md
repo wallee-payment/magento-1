@@ -3,7 +3,7 @@
 # wallee Magento 1
 This repository contains the Magento 1 extension that enables to process payments with [wallee](https://www.wallee.com/).
 
-###### To use this extension, a [wallee](https://www.wallee.com/) account is required.
+###### To use this extension, a [wallee](https://app-wallee.com/user/signup) account is required.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ This repository contains the Magento 1 extension that enables to process payment
 
 ## Documentation
 
-* [Documentation](https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.1.5/docs/en/documentation.html)
+* [Documentation](https://plugin-documentation.wallee.com/wallee-payment/magento-1/1.1.6/docs/en/documentation.html)
 
 ## Support
 
@@ -34,4 +34,4 @@ For Magento 1.6.x you need to install the [Magento compatibility module](https:/
 
 ## License
 
-Please see the [license file](https://github.com/wallee-payment/magento-1/blob/1.1.5/LICENSE) for more information.
+Please see the [license file](https://github.com/wallee-payment/magento-1/blob/1.1.6/LICENSE) for more information.
