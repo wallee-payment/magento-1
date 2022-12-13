@@ -238,7 +238,7 @@ class Wallee_Payment_Model_Service_LineItem extends Wallee_Payment_Model_Service
 
             $attribute = new \Wallee\Sdk\Model\LineItemAttributeCreate();
             $attribute->setLabel($this->fixLength($this->getFirstLine($option['label']), 512));
-            $attribute->setValue($this->fixLength($this->getFirstLine($value), 512));
+            $attribute->setValue($this->fixLength(strip_tags($this->getFirstLine($value)), 512));
             $attributes[$this->getAttributeKey($option)] = $attribute;
         }
 
