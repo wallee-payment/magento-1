@@ -1,0 +1,20 @@
+{
+  "name": "wallee/magento-1",
+  "description": "wallee integration for Magento 1 / OpenMage",
+  "keywords": [
+    "wallee",
+    "payment",
+    "php",
+    "magento",
+    "openmage"
+  ],
+  "homepage": "https://www.wallee.com",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "wallee AG",
+      "homepage": "https://www.wallee.com"
+    }
+  ],
+  "type": "magento-module"
+}
