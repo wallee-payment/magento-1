@@ -255,16 +255,19 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
     public function registerRefundNotification(\Wallee\Sdk\Model\Refund $refund,
         Mage_Sales_Model_Order $order)
     {
-        /* @var Mage_Sales_Model_Service_Order $serviceModel */
-        $serviceModel = Mage::getModel('sales/service_order', $order);
-        $creditmemo = $serviceModel->prepareCreditmemo($this->getCreditmemoData($refund, $order));
+        $creditmemo = $this->simulateAdminhtmlFormRequest($refund, $order);
+        if ($creditmemo === false) {
+            /* @var Mage_Sales_Model_Service_Order $serviceModel */
+            $serviceModel = Mage::getModel('sales/service_order', $order);
+            $creditmemo = $serviceModel->prepareCreditmemo($this->getCreditmemoData($refund, $order));
 
-        $creditmemo->setPaymentRefundDisallowed(true);
-        $creditmemo->setAutomaticallyCreated(true);
-        $creditmemo->register();
-        $creditmemo->addComment(Mage::helper('sales')->__('Credit memo has been created automatically'));
-        $creditmemo->setWalleeExternalId($refund->getExternalId());
-        $creditmemo->save();
+            $creditmemo->setPaymentRefundDisallowed(true);
+            $creditmemo->setAutomaticallyCreated(true);
+            $creditmemo->register();
+            $creditmemo->addComment(Mage::helper('sales')->__('Credit memo has been created automatically'));
+            $creditmemo->setWalleeExternalId($refund->getExternalId());
+            $creditmemo->save();
+        }
 
         $this->updateTotals($order->getPayment(),
             array(
@@ -276,6 +279,87 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
             Mage::helper('sales')->__('Registered notification about refunded amount of %s.',
                 $this->formatPrice($order, $refund->getAmount())));
         $order->save();
+    }
+
+    /**
+     * Create creditmemo with adminhtml features support like back to stock
+     *
+     * @param \Wallee\Sdk\Model\Refund $refund
+     * @param \Mage_Sales_Model_Order $order
+     * @return bool
+     * @throws \Throwable
+     */
+    protected function simulateAdminhtmlFormRequest(\Wallee\Sdk\Model\Refund $refund,
+        Mage_Sales_Model_Order $order)
+    {
+        $refundJob = $this->getRefundJob($refund);
+        $data = $refundJob->getAdminhtmlFormdata();
+
+        if ($data === null) {
+            return false;
+        }
+
+        /* @var Mage_Sales_Model_Service_Order $serviceModel */
+        $serviceModel = Mage::getModel('sales/service_order', $order);
+        $creditmemo = $serviceModel->prepareCreditmemo($this->getCreditmemoData($refund, $order));
+
+        // set post data to request object to support third party extensions
+        Mage::app()->getRequest()->setParam('creditmemo', $data);
+        $savedData = $data['items'];
+
+        // add back to stock support
+        $backToStock = [];
+        foreach ($savedData as $orderItemId => $itemData) {
+            if (isset($itemData['back_to_stock'])) {
+                $backToStock[$orderItemId] = true;
+            }
+        }
+
+        // process back to stock flags
+        foreach ($creditmemo->getAllItems() as $creditmemoItem) {
+            $orderItem = $creditmemoItem->getOrderItem();
+            $parentId = $orderItem->getParentItemId();
+            if (isset($backToStock[$orderItem->getId()])) {
+                $creditmemoItem->setBackToStock(true);
+            } elseif ($orderItem->getParentItem() && isset($backToStock[$parentId]) && $backToStock[$parentId]) {
+                $creditmemoItem->setBackToStock(true);
+            } elseif (empty($savedData)) {
+                $creditmemoItem->setBackToStock(Mage::helper('cataloginventory')->isAutoReturnEnabled());
+            } else {
+                $creditmemoItem->setBackToStock(false);
+            }
+        }
+
+        // add comment support
+        $comment = '';
+        if (!empty($data['comment_text'])) {
+            $creditmemo->addComment(
+                $data['comment_text'],
+                isset($data['comment_customer_notify']),
+                isset($data['is_visible_on_front'])
+            );
+            if (isset($data['comment_customer_notify'])) {
+                $comment = $data['comment_text'];
+            }
+        }
+
+        $creditmemo->setPaymentRefundDisallowed(true);
+        $creditmemo->setAutomaticallyCreated(true);
+        $creditmemo->addComment(Mage::helper('sales')->__('Credit memo has been created automatically'));
+        $creditmemo->setWalleeExternalId($refund->getExternalId());
+
+        $creditmemo->register();
+
+        // add email sent support
+        if (!empty($data['send_email'])) {
+            $creditmemo->setEmailSent(true);
+        }
+
+        $creditmemo->getOrder()->setCustomerNoteNotify(!empty($data['send_email']));
+        $creditmemo->save();
+        $creditmemo->sendEmail(!empty($data['send_email']), $comment);
+
+        return $creditmemo;
     }
 
     /**
@@ -501,5 +585,18 @@ class Wallee_Payment_Model_Service_Refund extends Wallee_Payment_Model_Service_A
         }
 
         return $this->_refundService;
+    }
+
+    /**
+     * Get refund job
+     *
+     * @param \Wallee\Sdk\Model\Refund $refund
+     * @return \Wallee_Payment_Model_Entity_RefundJob
+     */
+    protected function getRefundJob(\Wallee\Sdk\Model\Refund $refund)
+    {
+        /* @var Wallee_Payment_Model_Entity_RefundJob $refundJob */
+        $refundJob = Mage::getModel('wallee_payment/entity_refundJob');
+        return $refundJob->loadByExternalId($refund->getExternalId());
     }
 }
