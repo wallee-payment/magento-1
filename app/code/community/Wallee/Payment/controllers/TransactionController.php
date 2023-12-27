@@ -75,9 +75,10 @@ class Wallee_Payment_TransactionController extends Mage_Core_Controller_Front_Ac
         $checkoutSession->getQuote()
             ->setIsActive(false)
             ->save();
-        $checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
 
-        $checkoutSession->setLastOrderId($order->getId())
+        $checkoutSession->setLastQuoteId($order->getQuoteId())
+            ->setLastSuccessQuoteId($order->getQuoteId())
+            ->setLastOrderId($order->getId())
             ->setLastRealOrderId($order->getIncrementId());
 
         /* @var Wallee_Payment_Model_Service_Transaction $transactionService */
