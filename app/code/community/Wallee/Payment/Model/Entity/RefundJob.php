@@ -64,6 +64,12 @@ class Wallee_Payment_Model_Entity_RefundJob extends Mage_Core_Model_Abstract
 
         if ($this->isObjectNew()) {
             $this->setCreatedAt(Mage::getSingleton('core/date')->date());
+
+            // store formdata from adminhtml creditmemo request
+            $postData = Mage::app()->getRequest()->getParam('creditmemo');
+            if ($postData !== null) {
+                $this->setData('adminhtml_formdata', json_encode($postData));
+            }
         }
     }
 
@@ -107,5 +113,20 @@ class Wallee_Payment_Model_Entity_RefundJob extends Mage_Core_Model_Abstract
         }
 
         return $this->_order;
+    }
+
+    /**
+     * Returns adminhtml formdata from creditmemo/save request
+     *
+     * @return array|mixed|null
+     */
+    public function getAdminhtmlFormdata()
+    {
+        $data = $this->getData('adminhtml_formdata');
+        if ($data !== null) {
+            $data = json_decode($data, true);
+        }
+
+        return $data;
     }
 }
